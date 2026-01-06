@@ -28,6 +28,7 @@ const navItems: NavItem[] = [
     { label: "Access Programs", href: "/access-program", message: 'View managed access program you are enrolled ' },
     { label: "Patients", href: "/patients", message: 'View all patients enrolled in managed access program' },
     { label: "Physicians", href: "/physicians", message: 'View all physician you are associated to at you institute' },
+    { label: "Shortage", href: "/shortage", message: 'View drug shortage in your country' },
     { label: "Contact", href: "/support", message: 'Find frequent asked question and other support materials' },
     { label: "Report Adverse Event", href: "/report-event", message: 'Click here to report adverse event your patient may have experience' },
 ];
@@ -108,12 +109,12 @@ const Header = () => {
                 </div>
             </div>
             <div className="hidden lg:block">
-                <div className="bg-[#706FE4] px-4 py-6 text-gray-300 flex items-center justify-center space-x-16">
+                <div className="bg-[#706FE4] px-4 py-6 text-white flex items-center justify-center space-x-16">
                 {navItems.map((item) => (
                     <AppTooltip key={item.href} content={item.message}>
-                        <Link href={item.href} className={clsx('hover:text-[#ACA8C6] hover:underline decoration-2 underline-offset-8',
+                        <Link href={item.href} className={clsx('hover:text-black hover:underline decoration-2 underline-offset-8',
                             {
-                                'text-[#ACA8C6] underline': pathname === item.href
+                                'text-[#F4625C] underline': pathname === item.href
                             })}>
                             {item.label}
                         </Link>

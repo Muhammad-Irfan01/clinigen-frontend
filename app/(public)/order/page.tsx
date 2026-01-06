@@ -30,20 +30,20 @@ export default function Orders() {
     return (
         <div className="min-h-screen text-custom-text">
             <div className="bg-white border-b border-gray-100"></div>
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="flex justify-around items-center bg-white py-4"
-                >
-                    <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
-                    <div className=" w-full max-w-lg">
-                      <SearchInput button={false}/>
-                    </div>
-                </motion.div>
+            <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="flex justify-around items-center bg-white py-4"
+            >
+                <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
+                <div className=" w-full max-w-lg">
+                    <SearchInput button={false} />
+                </div>
+            </motion.div>
 
             <main className="max-w-7xl mx-auto py-10 px-6">
-                
+
 
                 <div className="mb-6 flex items-center gap-4">
                     <span className="text-sm font-medium text-gray-500">Filter by</span>
@@ -73,8 +73,8 @@ export default function Orders() {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {MOCK_ORDERS.map((order) => (
-                                <motion.tr 
-                                    key={order.id} 
+                                <motion.tr
+                                    key={order.id}
                                     whileHover={{ backgroundColor: '#f9f9f9' }}
                                     className="text-sm"
                                     onClick={() => router.push('/checkout')}
@@ -98,7 +98,7 @@ export default function Orders() {
                 </motion.div>
 
                 {/* Pagination (Exact layout from the image) */}
-                  <Pagination 
+                <Pagination
                     currentPage={currentPage}
                     totalPages={totalPages}
                     resultsPerPage={resultsPerPage}
@@ -107,11 +107,11 @@ export default function Orders() {
                         setResultPerPage(count);
                         setCurrentPage(1);
                     }}
-                  />
+                />
             </main>
-                  <div className='py-10'>
-                    <RecentlyViewed />
-                  </div>
+            <div className='py-10'>
+                <RecentlyViewed />
+            </div>
         </div>
     );
 }
