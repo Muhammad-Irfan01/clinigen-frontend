@@ -1,20 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Search, X, ChevronDown, ArrowRight, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, X, ChevronDown, ArrowRight, ExternalLink, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Pagination from '@/components/ui/Pagination';
 import { useRouter } from 'next/navigation';
-
-const PRODUCTS = [
-  { id: 1, name: "Abacavir / Lamivudine", generic: "Abacavir sulfate / Lamivudine", program: "Access Program", area: "Antiinfectives for Systemic Use" },
-  { id: 2, name: "Anastrozole", generic: "Anastrozole", program: "Available", area: "Antineoplastic and Immunomodulating Agents" },
-  { id: 3, name: "Bicalutamide", generic: "Bicalutamide", program: "Available On Request", area: "Antineoplastic and Immunomodulating Agents" },
-  { id: 4, name: "Capecitabine", generic: "Capecitabine", program: "Access Program", area: "Antineoplastic and Immunomodulating Agents" },
-  { id: 5, name: "Dolutegravir", generic: "Dolutegravir sodium", program: "Available", area: "Antiinfectives for Systemic Use" },
-];
+import { productAPI } from '@/lib/productAPI';
+import { Product } from '@/types/product';
 
 const THERAPEUTIC_AREAS = [
   "Alimentary Tract and Metabolism", "Antiinfectives for Systemic Use",
@@ -29,17 +23,119 @@ const ProductCatalogue = () => {
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [resultsPerPage, setResultPerPage] = useState<number>(5);
-  const totalPages = 15
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productAPI.getAllProducts();
+        setProducts(response);
+        setTotalPages(Math.ceil(response.length / resultsPerPage));
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Handle search
+  useEffect(() => {
+    const fetchSearchedProducts = async () => {
+      if (searchTerm.trim() === '') {
+        const response = await productAPI.getAllProducts();
+        setProducts(response);
+        setTotalPages(Math.ceil(response.length / resultsPerPage));
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const response = await productAPI.searchProducts({
+          q: searchTerm,
+          page: currentPage,
+          limit: resultsPerPage
+        });
+
+        setProducts(response.data);
+        setTotalPages(response.meta.pages);
+      } catch (error) {
+        console.error('Error searching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSearchedProducts();
+  }, [searchTerm]);
+
+  // Handle pagination
+  useEffect(() => {
+    const fetchPaginatedProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await productAPI.searchProducts({
+          q: searchTerm,
+          page: currentPage,
+          limit: resultsPerPage
+        });
+
+        setProducts(response.data);
+        setTotalPages(response.meta.pages);
+      } catch (error) {
+        console.error('Error fetching paginated products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (searchTerm) {
+      fetchPaginatedProducts();
+    }
+  }, [currentPage, resultsPerPage, searchTerm]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const getProductName = (product: Product) => {
+    return product.product_translations && product.product_translations.length > 0
+      ? product.product_translations[0].name
+      : `Product ${product.id}`;
+  };
+
+  const getProductDescription = (product: Product) => {
+    return product.product_translations && product.product_translations.length > 0
+      ? product.product_translations[0].short_description || product.product_translations[0].description
+      : '';
+  };
+
+  const getProductCategory = (product: Product) => {
+    if (product.product_categories && product.product_categories.length > 0) {
+      const category = product.product_categories[0].categories;
+      return category.name || category.slug || 'N/A';
+    }
+    return 'N/A';
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans text-[#431d60]">
       <div className="max-w-7xl mx-auto py-12 px-4">
-        
-        <motion.h1 
-          initial={{ opacity: 0, x: -20 }} 
+
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="text-4xl md:text-5xl font-bold mb-10"
         >
-          Product catalogue
+          Product catalogue (Static + Dynamic Data)
         </motion.h1>
 
         {/* --- Filter Section --- */}
@@ -53,10 +149,12 @@ const ProductCatalogue = () => {
             <div className="flex-1 p-4 flex items-center gap-4">
               <span className="font-bold text-xs tracking-widest uppercase">Search</span>
               <div className="relative flex-1">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="By program, generic name or brand name"
                   className="w-full bg-white border border-gray-300 rounded px-4 py-2 italic text-sm focus:outline-none"
+                  value={searchTerm}
+                  onChange={handleSearch}
                 />
                 <Search className="absolute right-3 top-2.5 text-gray-400" size={16} />
               </div>
@@ -67,7 +165,15 @@ const ProductCatalogue = () => {
                 <div>
                   <div className="flex justify-between mb-4">
                     <h3 className="text-[11px] font-bold tracking-widest uppercase">Advanced Filtering</h3>
-                    <button className="text-[#706FE4] text-sm font-bold">Clear all</button>
+                    <button
+                      className="text-[#706FE4] text-sm font-bold"
+                      onClick={() => {
+                        setSelectedAreas([]);
+                        setIsExpanded(false);
+                      }}
+                    >
+                      Clear all
+                    </button>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["Access Program", "Available", "Available On Request"].map(f => (
@@ -78,15 +184,26 @@ const ProductCatalogue = () => {
 
                 <div>
                   <h3 className="text-[11px] font-bold tracking-widest uppercase mb-4">Therapeutic Area</h3>
-                  <motion.div 
-                    animate={{ height: isExpanded ? 'auto' : '85px' }} 
+                  <motion.div
+                    animate={{ height: isExpanded ? 'auto' : '85px' }}
                     className="flex flex-wrap gap-2 overflow-hidden"
                   >
                     {THERAPEUTIC_AREAS.map(area => (
-                      <FilterChip key={area} label={area} active={selectedAreas.includes(area)} />
+                      <FilterChip
+                        key={area}
+                        label={area}
+                        active={selectedAreas.includes(area)}
+                        onClick={() => {
+                          if (selectedAreas.includes(area)) {
+                            setSelectedAreas(selectedAreas.filter(a => a !== area));
+                          } else {
+                            setSelectedAreas([...selectedAreas, area]);
+                          }
+                        }}
+                      />
                     ))}
                   </motion.div>
-                  <button 
+                  <button
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="mt-4 flex items-center text-[#7c3aed] font-bold text-sm"
                   >
@@ -96,7 +213,6 @@ const ProductCatalogue = () => {
               </div>
             )}
         </div>
-
 
         {/* --- Product Table/List Section --- */}
         <div className="mt-12 overflow-x-auto">
@@ -110,66 +226,83 @@ const ProductCatalogue = () => {
               </tr>
             </thead>
             <tbody>
-              <AnimatePresence>
-                {PRODUCTS.map((product, idx) => (
-                  <motion.tr 
-                    key={product.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors group"
-                    onClick={() => router.push(`/products/${product.id}`)}
-                  >
-                    <td className="py-6 px-4">
-                      <div className="font-bold text-lg">{product.name}</div>
-                      <div className="text-sm text-gray-500 italic">{product.generic}</div>
-                    </td>
-                    <td className="py-6 px-4">
-                      <span className={clsx(
-                        "text-xs font-bold px-2 py-1 rounded border",
-                        product.program === "Access Program" ? "border-purple-200 text-[#D89AFE] bg-purple-50" : "border-gray-200 text-gray-600 bg-gray-50"
-                      )}>
-                        {product.program}
-                      </span>
-                    </td>
-                    <td className="py-6 px-4 text-sm text-gray-600">
-                      {product.area}
-                    </td>
-                    <td className="py-6 px-4 text-right">
-                      <button className="inline-flex items-center text-[#706FE4] font-bold text-sm hover:underline">
-                        REQUEST <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                      </button>
-                    </td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center">
+                    <Loader2 className="mx-auto h-8 w-8 animate-spin" />
+                    <p className="mt-2">Loading products...</p>
+                  </td>
+                </tr>
+              ) : (
+                <AnimatePresence>
+                  {products.map((product, idx) => (
+                    <motion.tr
+                      key={product.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors group cursor-pointer"
+                      onClick={() => router.push(`/products/${product.id}`)}
+                    >
+                      <td className="py-6 px-4">
+                        <div className="font-bold text-lg">{getProductName(product)}</div>
+                        <div className="text-sm text-gray-500 italic">{getProductDescription(product)}</div>
+                        <div className="text-xs text-gray-600 mt-1">DB: {getProductName(product)}</div>
+                      </td>
+                      <td className="py-6 px-4">
+                        <span className={clsx(
+                          "text-xs font-bold px-2 py-1 rounded border",
+                          "border-purple-200 text-[#D89AFE] bg-purple-50"
+                        )}>
+                          Access Program
+                        </span>
+                        <div className="text-xs text-gray-600 mt-1">DB: {product.is_active ? "Available" : "Inactive"}</div>
+                      </td>
+                      <td className="py-6 px-4 text-sm text-gray-600">
+                        Antiinfectives for Systemic Use
+                        <div className="text-xs text-gray-600 mt-1">DB: {getProductCategory(product)}</div>
+                      </td>
+                      <td className="py-6 px-4 text-right">
+                        <button className="inline-flex items-center text-[#706FE4] font-bold text-sm hover:underline">
+                          REQUEST <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* --- Pagination Placeholder --- */}
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    resultsPerPage={resultsPerPage}
-                    onPageChange={(page) => setCurrentPage(page)}
-                    onResultsPerPageChange={(count) => {
-                      setResultPerPage(count);
-                      setCurrentPage(1);
-                    }}
-                />
+        {/* --- Pagination --- */}
+        {!loading && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            resultsPerPage={resultsPerPage}
+            onPageChange={(page) => setCurrentPage(page)}
+            onResultsPerPageChange={(count) => {
+              setResultPerPage(count);
+              setCurrentPage(1);
+            }}
+          />
+        )}
       </div>
     </div>
   );
 };
 
-const FilterChip = ({ label, active }: { label: string, active?: boolean }) => (
-  <button className={clsx(
-    "px-4 py-2 border rounded text-sm font-medium transition-all",
-    active 
-      ? "bg-[#706FE4] text-white border-[#706FE4]" 
-      : "bg-white text-[#706FE4] border-gray-300 hover:border-[#706FE4] hover:bg-[#706FE4] hover:text-white"
-  )}>
+const FilterChip = ({ label, active, onClick }: { label: string, active?: boolean, onClick?: () => void }) => (
+  <button
+    className={clsx(
+      "px-4 py-2 border rounded text-sm font-medium transition-all",
+      active
+        ? "bg-[#706FE4] text-white border-[#706FE4]"
+        : "bg-white text-[#706FE4] border-gray-300 hover:border-[#706FE4] hover:bg-[#706FE4] hover:text-white"
+    )}
+    onClick={onClick}
+  >
     {label}
   </button>
 );

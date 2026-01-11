@@ -10,6 +10,7 @@ import { Input } from "../ui/Input";
 import { useForm } from "react-hook-form";
 import HaloHealthModal from "../ui/HaloHealthModal";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 
 interface NavItem {
     label: string,
@@ -38,6 +39,13 @@ const Header = () => {
     const { register, handleSubmit } = useForm<SearchForm>()
     const [showMenuItems, setShowMenuItems] = useState<boolean>(false);
     const [haloHealthModalOpen, setHaloHealthModalOpen] = useState<boolean>(false)
+    const { logout } = useAuthStore();
+
+    const handleLogout = () => {
+        logout();
+        router.push('/'); // Redirect to home after logout
+    };
+
     return (
         <header>
             <div className='flex items-center justify-between px-4 bg-[#270272] text-white py-8'>
@@ -94,7 +102,7 @@ const Header = () => {
                                 <span onClick={() => router.push('/preference')} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                                     Preference
                                 </span>
-                                <span className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500">
+                                <span onClick={handleLogout} className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500">
                                     Logout
                                 </span>
                             </div>

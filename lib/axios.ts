@@ -1,8 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { error } from "console";
 import Cookies from "js-cookie";
 
-const API_BASE = '';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000'; // Update this to your backend URL
 
 const apiClient: AxiosInstance = axios.create({
     baseURL : API_BASE,
@@ -26,13 +25,36 @@ apiClient.interceptors.request.use(
 );
 
 apiClient.interceptors.response.use(
-    (response: AxiosResponse) => response,
-    (error: AxiosError<any>) => {
-        const message = error.response?.data?.message || error.message || "something went wrong";
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
 
-        return Promise.reject(new Error (message));
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const refreshResponse = await apiClient.post("/auth/refresh");
+
+        Cookies.set("accessToken", refreshResponse.data.accessToken);
+        Cookies.set("refreshToken", refreshResponse.data.refreshToken);
+
+        originalRequest.headers.Authorization =
+          `Bearer ${refreshResponse.data.accessToken}`;
+
+        return apiClient(originalRequest);
+      } catch {
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
+        window.location.href = "/signin";
+      }
     }
-)
+
+    return Promise.reject(error);
+  }
+);
 
 
 export default apiClient;

@@ -1,31 +1,46 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
-import Image from "next/image";
-
-// Assuming your Input component is here
-// import { Input } from "@/components/ui/Input"; 
+import { useAuthStore } from "@/store/auth.store";
+import { useRouter } from "next/navigation";
+import useToast from "@/lib/useToast";
 
 export default function RecoverPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const { forgotPassword } = useAuthStore();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
-  const onSubmit = (data: any) => {
-    console.log("Recovery Email Sent to:", data.email);
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    try {
+      await forgotPassword(data.email);
+      toast.success("Password reset link sent to your email");
+      // Redirect to sign in after successful request
+      setTimeout(() => {
+        router.push("/signin");
+      }, 2000);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send reset link");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] flex flex-col items-center justify-center p-4 font-sans">
-      
+
       {/* Main Card Container */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-4xl bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden"
       >
-        
+
         {/* Left Side: Recovery Form */}
         <div className="flex-[1.2] p-8 md:p-12">
           <header className="text-center mb-8">
@@ -49,19 +64,24 @@ export default function RecoverPasswordPage() {
                 placeholder="info@haloishere.com"
                 className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
               />
-              {errors.email && <span className="text-xs text-red-500 ml-1">Email is required</span>}
+              {errors.email && <span className="text-xs text-red-500 ml-1">{errors.email.message as string}</span>}
             </div>
 
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-[#7B3FE4] hover:bg-[#6832ca] text-white font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm"
+              type="submit"
+              disabled={isLoading}
+              className={`w-full font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm
+                ${isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#7B3FE4] hover:bg-[#6832ca] text-white"}`}
             >
-              Email me a recovery link
+              {isLoading ? "Sending..." : "Email me a recovery link"}
             </motion.button>
 
             <div className="text-center mt-6">
-              <Link href="/login" className="w-full inline-block border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#F3F2FF] font-bold py-2.5 rounded-full transition-all text-sm">
+              <Link href="/signin" className="w-full inline-block border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#F3F2FF] font-bold py-2.5 rounded-full transition-all text-sm">
                 Back to login
               </Link>
             </div>

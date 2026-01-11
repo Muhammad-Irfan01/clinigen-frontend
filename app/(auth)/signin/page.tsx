@@ -2,28 +2,42 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
-// Import your existing Input component here
-// import { Input } from "@/components/ui/Input"; 
+import { useAuthStore } from "@/store/auth.store";
+import { useRouter } from "next/navigation";
+
+type LoginFormInputs = {
+  email: string;
+  password: string;
+};
 
 export default function LoginPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: {errors}} = useForm<LoginFormInputs>();
+  const { isLoading, login } = useAuthStore();
+  const router = useRouter();
 
-  const onSubmit = (data: any) => {
-    console.log("Login Data:", data);
+
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
+    // console.log("Login Data:", data);
+    try {
+      await login(data.email, data.password);
+      router.push('/')
+    } catch (error) {
+
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] flex flex-col items-center justify-center p-4 font-sans">
-      
+
       {/* Main Card Container */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-4xl bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden"
       >
-        
+
         {/* Left Side: Login Form */}
         <div className="flex-[1.2] p-8 md:p-12">
           <header className="text-center mb-8">
@@ -65,9 +79,14 @@ export default function LoginPage() {
             <motion.button
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full bg-[#7B3FE4] hover:bg-[#6832ca] text-white font-bold py-3.5 rounded-full mt-4 shadow-lg shadow-indigo-100 transition-all"
-            >
-              Login
+              type="submit"
+              disabled={isLoading}
+              className={`w-full font-bold py-3.5 rounded-full mt-4 transition-all
+    ${isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#7B3FE4] hover:bg-[#6832ca] text-white shadow-lg shadow-indigo-100"}
+  `}            >
+              {isLoading ? "Logging in..." : "Login"}
             </motion.button>
 
             <div className="text-center mt-6">
@@ -97,7 +116,7 @@ export default function LoginPage() {
               </p>
             </div>
             <div className="absolute -top-3 -right-3 w-10 h-10 bg-[#FF5E62] rounded-full flex items-center justify-center text-white shadow-md">
-               💊
+              💊
             </div>
             {/* Dotted path SVG would go here */}
           </div>
