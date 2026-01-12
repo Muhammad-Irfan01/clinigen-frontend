@@ -1,12 +1,12 @@
-import { authApi } from './apiService';
 import { Order, OrderApiResponse } from '@/types/order';
+import { api } from './api';
 
 // Order API functions using the auth API instance to avoid redirect
 export const orderAPI = {
   // Get all orders for the authenticated user
   getUserOrders: async () => {
     try {
-      return await authApi<Order[]>('/orders/history', { method: 'GET' });
+      return await api<Order[]>('/orders/history', { method: 'GET' });
     } catch (error: any) {
       // Check if it's an unauthorized error (401) and handle appropriately
       if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
@@ -22,7 +22,7 @@ export const orderAPI = {
   // Get all orders (admin only)
   getAllOrders: async () => {
     try {
-      return await authApi<Order[]>('/orders', { method: 'GET' });
+      return await api<Order[]>('/orders', { method: 'GET' });
     } catch (error: any) {
       // Check if it's an unauthorized error (401) and handle appropriately
       if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
@@ -37,7 +37,7 @@ export const orderAPI = {
   // Get order by ID
   getOrderById: async (id: number) => {
     try {
-      return await authApi<Order>(`/orders/${id}`, { method: 'GET' });
+      return await api<Order>(`/orders/${id}`, { method: 'GET' });
     } catch (error: any) {
       // Check if it's an unauthorized error (401) and handle appropriately
       if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
@@ -54,7 +54,7 @@ export const orderAPI = {
   // Get orders by status (admin only)
   getOrdersByStatus: async (status: string) => {
     try {
-      return await authApi<Order[]>(`/orders/status/${status}`, { method: 'GET' });
+      return await api<Order[]>(`/orders/status/${status}`, { method: 'GET' });
     } catch (error: any) {
       // Check if it's an unauthorized error (401) and handle appropriately
       if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
@@ -63,6 +63,24 @@ export const orderAPI = {
       }
       console.warn(`Failed to fetch orders with status ${status}:`, error);
       return [];
+    }
+  },
+
+  // Update order status (admin only)
+  updateOrderStatus: async (id: number, status: string) => {
+    try {
+      return await api<Order>(`/orders/${id}/status`, {
+        method: 'PATCH',
+        data: { status }
+      });
+    } catch (error: any) {
+      // Check if it's an unauthorized error (401) and handle appropriately
+      if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
+        console.warn(`Unauthorized to update order ${id} status:`, error?.response?.data?.message || 'Unauthorized');
+        throw error; // Re-throw to allow UI to handle appropriately
+      }
+      console.warn(`Failed to update order ${id} status:`, error);
+      throw error;
     }
   },
 };

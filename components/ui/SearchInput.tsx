@@ -6,11 +6,13 @@ interface SearchProps {
   placeholder?: string;
   button?: boolean
   onSearch?: (val: string) => void;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const SearchInput = ({ placeholder = "Search for a product...", button, onSearch }: SearchProps) => {
+export const SearchInput = ({ placeholder = "Search for a product...", button, onSearch, value, onChange }: SearchProps) => {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="relative w-full max-w-2xl mx-auto group"
@@ -22,10 +24,14 @@ export const SearchInput = ({ placeholder = "Search for a product...", button, o
         type="text"
         className="block w-full pl-12 pr-4 py-4 bg-white border border-gray-200 rounded-full shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-700"
         placeholder={placeholder}
-        onChange={(e) => onSearch?.(e.target.value)}
+        value={value}
+        onChange={(e) => {
+          onChange?.(e);
+          onSearch?.(e.target.value);
+        }}
       />
      {button && (
-       <button className="absolute right-2 top-2 bottom-2 btn-gradient text-white px-6 rounded-full font-medium transition-colors">
+       <button type="submit" className="absolute right-2 top-2 bottom-2 btn-gradient text-white px-6 rounded-full font-medium transition-colors">
         Search
       </button>
      )}

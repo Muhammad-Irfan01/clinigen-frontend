@@ -18,6 +18,7 @@ import {
 import { useRouter } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { Product } from '@/types/product';
+import useToast from '@/lib/useToast';
 
 export default function SingleProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -27,6 +28,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
   const [loading, setLoading] = useState<boolean>(true);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [isBookmarkLoading, setIsBookmarkLoading] = useState<boolean>(false);
+  const { success: showSuccess, error: showError } = useToast();
 
   // Fetch product details from backend
   useEffect(() => {
@@ -36,6 +38,17 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
     const fetchProduct = async () => {
       try {
         console.log('Fetching product with ID:', id);
+
+        // Validate the ID parameter
+        const productId = parseInt(id);
+        if (isNaN(productId)) {
+          console.error('Invalid product ID:', id);
+          if (!cancelled) {
+            setLoading(false);
+          }
+          return;
+        }
+
         setLoading(true);
 
         // Set a timeout to prevent hanging
@@ -47,7 +60,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
         }, 10000); // 10 seconds timeout
 
         // Fetch product data
-        const productData = await productAPI.getProductById(parseInt(id));
+        const productData = await productAPI.getProductById(productId);
         console.log('Product data received:', productData);
 
         // Clear the timeout since we got the data
@@ -58,7 +71,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
 
           // Check if product is bookmarked (this requires auth)
           try {
-            const bookmarked = await productAPI.isBookmarked(parseInt(id));
+            const bookmarked = await productAPI.isBookmarked(productId);
             if (!cancelled) setIsBookmarked(bookmarked);
           } catch (error: any) {
             // Check if it's an unauthorized error (401) - meaning user is not logged in or token is invalid
@@ -110,18 +123,18 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
         productId: product.id,
         quantity: 1
       });
-      alert('Product added to cart successfully!');
+      showSuccess('Product added to cart successfully!');
     } catch (error: any) {
       console.error('Error adding to cart:', error);
       // Check if it's an unauthorized error (401) and handle appropriately
       if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
-        alert('Please sign in to add products to your cart');
+        showError('Please sign in to add products to your cart');
         // Redirect to sign in page
-        // router.push('/signin');
+        router.push('/signin');
       } else {
         // For other errors (not auth-related), show the specific error
         const errorMessage = error?.response?.data?.message || error?.message || 'Failed to add product to cart';
-        alert(errorMessage);
+        showError(errorMessage);
       }
     }
   };
@@ -139,18 +152,18 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
         setIsBookmarked(true);
       }
       // Show success message
-      alert(isBookmarked ? 'Bookmark removed successfully!' : 'Added to bookmarks successfully!');
+      showSuccess(isBookmarked ? 'Bookmark removed successfully!' : 'Added to bookmarks successfully!');
     } catch (error: any) {
       console.error('Error toggling bookmark:', error);
       // Check if it's an unauthorized error (401) and handle appropriately
       if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
-        alert('Please sign in to bookmark products');
+        showError('Please sign in to bookmark products');
         // Optionally redirect to sign in page
         // router.push('/signin');
       } else {
         // For other errors (not auth-related), show the specific error
         const errorMessage = error?.response?.data?.message || error?.message || (isBookmarked ? 'Failed to remove bookmark' : 'Failed to add bookmark');
-        alert(errorMessage);
+        showError(errorMessage);
       }
     } finally {
       setIsBookmarkLoading(false);

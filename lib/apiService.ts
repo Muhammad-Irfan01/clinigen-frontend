@@ -1,41 +1,80 @@
-import { AxiosRequestConfig } from "axios";
-import { apiClient, publicApiClient, authApiClient } from './axiosConfig';
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from "axios";
 
-// Main API function that may redirect on auth failure
-export async function api<T>(
-    endpoint: string,
-    options?: AxiosRequestConfig
-): Promise<T> {
-    const response = await apiClient({
-        url: endpoint,
-        ...options
-    });
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
 
-    return response.data as T;
-}
+/* ================= AXIOS INSTANCE ================= */
+const axiosInstance = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true, // ✅ REQUIRED for cookies
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-// Public API function that doesn't redirect on auth failure
-export async function publicApi<T>(
-    endpoint: string,
-    options?: AxiosRequestConfig
-): Promise<T> {
-    const response = await publicApiClient({
-        url: endpoint,
-        ...options
-    });
+// Track refresh attempts to prevent infinite loops
+let refreshAttempts = 0;
+const MAX_REFRESH_ATTEMPTS = 3;
 
-    return response.data as T;
-}
+/* ================= RESPONSE INTERCEPTOR ================= */
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error: AxiosError) => {
+    const originalRequest: any = error.config;
 
-// Authenticated API function that doesn't redirect on auth failure
+    if (error.response?.status === 401 && !originalRequest?._retry) {
+      originalRequest._retry = true;
+
+      // Prevent infinite refresh attempts
+      if (refreshAttempts >= MAX_REFRESH_ATTEMPTS) {
+        console.log(`Max refresh attempts (${MAX_REFRESH_ATTEMPTS}) reached, redirecting to login`);
+        refreshAttempts = 0; // Reset counter
+        window.location.href = "/signin";
+        return Promise.reject(error);
+      }
+
+      refreshAttempts++; // Increment attempt counter
+
+      try {
+        // 🔥 Refresh token is sent automatically via cookie
+        await axios.post(
+          `${BASE_URL}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
+
+        // Reset attempt counter on successful refresh
+        refreshAttempts = 0;
+
+        // retry original request
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        refreshAttempts = 0; // Reset counter on error
+        console.error("Token refresh failed:", refreshError);
+        // backend already cleared cookies
+        window.location.href = "/signin";
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+/* ================= GENERIC AUTH API ================= */
 export async function authApi<T>(
-    endpoint: string,
-    options?: AxiosRequestConfig
+  url: string,
+  config: AxiosRequestConfig = {}
 ): Promise<T> {
-    const response = await authApiClient({
-        url: endpoint,
-        ...options
-    });
+  const response: AxiosResponse<T> = await axiosInstance({
+    url,
+    method: config.method || "GET",
+    data: config.data,
+    params: config.params,
+  });
 
-    return response.data as T;
+  return response.data;
 }

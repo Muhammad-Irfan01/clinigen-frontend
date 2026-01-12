@@ -1,215 +1,448 @@
-"use client";
+'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronDown, ChevronUp, Download, Package, MessageCircle } from 'lucide-react';
+import { CreditCard, MapPin, User, Mail, Phone, Lock, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { productAPI } from '@/lib/productAPI';
+import { Cart, CartItem } from '@/types/product';
+import useToast from '@/lib/useToast';
 
-// --- Types ---
-interface Product {
-  id: string;
-  name: string;
-  strength: string;
-  dosage: string;
-  status: 'Processing' | 'Shipped' | 'Delivered';
-  price: number;
-  quantity: number;
-  brand: string;
-  manufacturer: string;
-  country: string;
-  storage: string;
+interface CheckoutFormData {
+  paymentMethod: string;
+  shippingAddress: string;
+  shippingCity: string;
+  shippingState: string;
+  shippingZip: string;
+  shippingCountry: string;
+  billingAddress: string;
+  billingCity: string;
+  billingState: string;
+  billingZip: string;
+  billingCountry: string;
+  sameAsShipping: boolean;
+  notes: string;
 }
 
-// --- Mock Data ---
-const productData: Product = {
-  id: "1001300",
-  name: "Zinc aspartate",
-  strength: "30 mg/10 ml",
-  dosage: "Solution for Injection 5 x 10 ml",
-  status: "Processing",
-  price: 19.70,
-  quantity: 2,
-  brand: "Unizink",
-  manufacturer: "Kohler",
-  country: "Germany",
-  storage: "15-25 °C"
-};
+export default function CheckoutPage() {
+  const router = useRouter();
+  const { success: showSuccess, error: showError } = useToast();
+  const [cart, setCart] = useState<Cart | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState<CheckoutFormData>({
+    paymentMethod: 'credit_card',
+    shippingAddress: '',
+    shippingCity: '',
+    shippingState: '',
+    shippingZip: '',
+    shippingCountry: 'UK',
+    billingAddress: '',
+    billingCity: '',
+    billingState: '',
+    billingZip: '',
+    billingCountry: 'UK',
+    sameAsShipping: true,
+    notes: '',
+  });
 
-export default function OrderDetailsPage() {
-    const router = useRouter();
-  const [isProductExpanded, setIsProductExpanded] = useState(true);
+  // Load cart items on component mount
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const cartData = await productAPI.getCart();
+        setCart(cartData);
+      } catch (error: any) {
+        console.error('Error fetching cart:', error);
+        showError(error.message || 'Failed to load cart');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  return (
-    <div className="min-h-screen bg-[#F9F9F9] text-[#1A1A1A] font-sans">
-        <header className="bg-white flex flex-col md:flex-row justify-evenly items-start md:items-center mb-8 gap-4 p-6">
-            <div>
-                <button onClick={() => router.push('/order')} className="flex items-center text-sm font-medium text-blue-600 hover:underline mb-4">
-            <ChevronLeft className="w-4 h-4 mr-1" /> View orders
-            </button>
-            <h1 className="text-3xl font-extrabold tracking-tight">Order 10535700</h1>
-            </div>
-          
-          <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 px-6 py-2.5 bg-[#D1D5DB] text-gray-700 rounded-full font-semibold text-sm hover:bg-gray-300 transition-colors">
-              <Download className="w-4 h-4" /> Download invoice
-            </button>
-            
-            <div className="bg-[#F3E8FF] border border-[#E9D5FF] p-4 rounded-xl flex items-center gap-4">
-              <div className="bg-white p-2 rounded-lg shadow-sm">
-                <Package className="w-6 h-6 text-[#7C3AED]" />
-              </div>
-              <div>
-                <p className="text-xs text-gray-500 font-medium uppercase">Estimated delivery</p>
-                <p className="text-[#7C3AED] font-bold">Friday, Jan 16</p>
-                <p className="text-xs text-purple-400">Tracking link pending</p>
-              </div>
-            </div>
-          </div>
-        </header>
-      <div className="max-w-6xl mx-auto">
-        
+    fetchCart();
+  }, [showError]);
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Delivery Info Card */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-            <h2 className="text-lg font-bold border-b pb-4 mb-4">Delivery information</h2>
-            <div className="grid grid-cols-2 gap-8">
-              <div>
-                <p className="text-xs text-gray-400 font-semibold mb-1 uppercase">Delivery method:</p>
-                <span className="px-3 py-1 bg-[#F3F4F6] text-gray-600 rounded-full text-xs font-bold italic">
-                  Mail available
-                </span>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 font-semibold mb-1 uppercase">Date submitted:</p>
-                <p className="text-sm font-bold">Monday, December 8</p>
-              </div>
-              <div className="col-span-2">
-                <p className="text-xs text-gray-400 font-semibold mb-1 uppercase">Delivery address:</p>
-                <p className="text-sm font-bold">Halo Health</p>
-                <p className="text-sm text-gray-600">Part Ground Floor, Drayton Court, Drayton Road, Solihull, B90 4NG, United Kingdom</p>
-              </div>
-            </div>
-          </div>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({
+        ...prev,
+        [name]: checked
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
 
-          {/* Order Summary Card */}
-          <div className="bg-white rounded-xl shadow-sm border-2 border-black p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-extrabold">Order summary</h2>
-              <ChevronDown className="w-5 h-5" />
-            </div>
-            <div className="space-y-3 text-sm border-b pb-6">
-              <div className="flex justify-between text-gray-600">
-                <span>Products (see breakdown below)</span>
-                <span className="font-bold">£39.40</span>
-              </div>
-              <div className="flex justify-between text-gray-600">
-                <span>VAT:</span>
-                <span className="font-bold">£7.88</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center pt-6">
-              <span className="text-xl font-extrabold">Total:</span>
-              <span className="text-2xl font-black">£39.28</span>
-            </div>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      // Prepare checkout data
+      const checkoutData = {
+        paymentMethod: formData.paymentMethod,
+        shippingAddress: `${formData.shippingAddress}, ${formData.shippingCity}, ${formData.shippingState}, ${formData.shippingZip}, ${formData.shippingCountry}`,
+        billingAddress: formData.sameAsShipping 
+          ? `${formData.shippingAddress}, ${formData.shippingCity}, ${formData.shippingState}, ${formData.shippingZip}, ${formData.shippingCountry}`
+          : `${formData.billingAddress}, ${formData.billingCity}, ${formData.billingState}, ${formData.billingZip}, ${formData.billingCountry}`,
+        notes: formData.notes,
+        sameAsShipping: formData.sameAsShipping,
+      };
+
+      // Call checkout API
+      const response = await productAPI.checkout(checkoutData);
+      
+      showSuccess(response.message || 'Order placed successfully!');
+      
+      // Redirect to order confirmation page
+      setTimeout(() => {
+        router.push(`/order/${response.orderId}`);
+      }, 1500);
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      showError(error.message || 'Failed to place order. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+        <span className="ml-3">Loading checkout...</span>
+      </div>
+    );
+  }
+
+  if (!cart || !cart.items || cart.items.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-12 font-sans text-[#1A1A1A]">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-black text-[#1D0E62] mb-6">Checkout</h1>
+          <div className="p-12 text-center text-gray-500 border rounded-xl bg-white">
+            Your basket is empty. Add products from the catalog!
           </div>
         </div>
+      </div>
+    );
+  }
 
-        {/* Product Details Table */}
-        <section className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-6 border-b flex justify-between items-center bg-white sticky top-0">
-            <h2 className="text-lg font-bold">Product details</h2>
-            <button className="bg-[#7C3AED] text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-[#6D28D9] transition-all">
-              Order available items again
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-[#F9FAFB] text-[10px] uppercase font-bold text-gray-400 border-b">
-                <tr>
-                  <th className="px-6 py-4">Strength</th>
-                  <th className="px-6 py-4">Dosage form and pack size</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4">Pack price</th>
-                  <th className="px-6 py-4">Quantity</th>
-                  <th className="px-6 py-4">Total</th>
-                  <th className="px-6 py-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b last:border-0">
-                  <td className="px-6 py-6">
-                    <p className="font-bold text-sm">{productData.name}</p>
-                    <p className="text-xs text-gray-500">{productData.strength}</p>
-                  </td>
-                  <td className="px-6 py-6 text-sm text-gray-600">{productData.dosage}</td>
-                  <td className="px-6 py-6">
-                    <span className="px-4 py-1 bg-green-50 text-green-600 rounded-full text-xs font-bold border border-green-100">
-                      {productData.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-6 text-sm font-medium">£{productData.price.toFixed(2)}</td>
-                  <td className="px-6 py-6 text-sm font-medium">{productData.quantity}</td>
-                  <td className="px-6 py-6 text-sm font-bold">£{(productData.price * productData.quantity).toFixed(2)}</td>
-                  <td className="px-6 py-6">
-                    <div className="flex items-center gap-4">
-                      <button className="text-[#7C3AED] font-bold text-sm hover:underline">Order again</button>
-                      <button 
-                        onClick={() => setIsProductExpanded(!isProductExpanded)}
-                        className="text-gray-400 hover:text-gray-600"
-                      >
-                        {isProductExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-                      </button>
+  return (
+    <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-12 font-sans text-[#1A1A1A]">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-black text-[#1D0E62] mb-6">Checkout</h1>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column: Shipping & Billing Info */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Shipping Information */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h2 className="text-xl font-bold text-[#1D0E62] mb-4 flex items-center">
+                  <MapPin className="mr-2" /> Shipping Information
+                </h2>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+                    <input
+                      type="text"
+                      name="shippingAddress"
+                      value={formData.shippingAddress}
+                      onChange={handleChange}
+                      required
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                      <input
+                        type="text"
+                        name="shippingCity"
+                        value={formData.shippingCity}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                      />
                     </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Expandable Section */}
-          <AnimatePresence>
-            {isProductExpanded && (
-              <motion.div 
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="bg-[#FDFDFF] border-t overflow-hidden"
-              >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 p-8">
-                  <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-gray-400 uppercase">Product Information</h4>
-                    <div className="space-y-2">
-                      <div><p className="text-xs text-gray-400">Brand</p><p className="text-sm font-bold">{productData.brand}</p></div>
-                      <div><p className="text-xs text-gray-400">Manufacturer</p><p className="text-sm font-bold">{productData.manufacturer}</p></div>
-                      <div><p className="text-xs text-gray-400">Product code</p><p className="text-sm font-bold">{productData.id}</p></div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                      <input
+                        type="text"
+                        name="shippingState"
+                        value={formData.shippingState}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                      />
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-gray-400 uppercase">Licensing</h4>
-                    <div className="space-y-2">
-                      <div><p className="text-xs text-gray-400">Country of license</p><p className="text-sm font-bold">{productData.country}</p></div>
-                      <div><p className="text-xs text-gray-400">License holder</p><p className="text-sm font-bold">Kohler</p></div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
+                      <input
+                        type="text"
+                        name="shippingZip"
+                        value={formData.shippingZip}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                      />
                     </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h4 className="text-xs font-bold text-gray-400 uppercase">Handling and storage</h4>
-                    <div className="space-y-2">
-                      <div><p className="text-xs text-gray-400">Controlled drug status</p><p className="text-sm font-bold">Not Controlled</p></div>
-                      <div>
-                        <p className="text-xs text-gray-400">Storage</p>
-                        <span className="inline-block mt-1 px-2 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded">
-                          {productData.storage}
-                        </span>
-                      </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+                      <input
+                        type="text"
+                        name="shippingCountry"
+                        value={formData.shippingCountry}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                      />
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </section>
+              </div>
+              
+              {/* Billing Information */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold text-[#1D0E62] flex items-center">
+                    <MapPin className="mr-2" /> Billing Information
+                  </h2>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="sameAsShipping"
+                      checked={formData.sameAsShipping}
+                      onChange={handleChange}
+                      className="rounded border-gray-300 text-[#7C3AED] focus:ring-[#7C3AED]"
+                    />
+                    <span className="ml-2 text-sm">Same as shipping address</span>
+                  </label>
+                </div>
+                
+                <AnimatePresence>
+                  {!formData.sameAsShipping && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden space-y-4"
+                    >
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+                        <input
+                          type="text"
+                          name="billingAddress"
+                          value={formData.billingAddress}
+                          onChange={handleChange}
+                          required={!formData.sameAsShipping}
+                          disabled={formData.sameAsShipping}
+                          className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] ${
+                            formData.sameAsShipping ? 'bg-gray-100' : ''
+                          }`}
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+                          <input
+                            type="text"
+                            name="billingCity"
+                            value={formData.billingCity}
+                            onChange={handleChange}
+                            required={!formData.sameAsShipping}
+                            disabled={formData.sameAsShipping}
+                            className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] ${
+                              formData.sameAsShipping ? 'bg-gray-100' : ''
+                            }`}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">State *</label>
+                          <input
+                            type="text"
+                            name="billingState"
+                            value={formData.billingState}
+                            onChange={handleChange}
+                            required={!formData.sameAsShipping}
+                            disabled={formData.sameAsShipping}
+                            className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] ${
+                              formData.sameAsShipping ? 'bg-gray-100' : ''
+                            }`}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">ZIP Code *</label>
+                          <input
+                            type="text"
+                            name="billingZip"
+                            value={formData.billingZip}
+                            onChange={handleChange}
+                            required={!formData.sameAsShipping}
+                            disabled={formData.sameAsShipping}
+                            className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] ${
+                              formData.sameAsShipping ? 'bg-gray-100' : ''
+                            }`}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Country *</label>
+                          <input
+                            type="text"
+                            name="billingCountry"
+                            value={formData.billingCountry}
+                            onChange={handleChange}
+                            required={!formData.sameAsShipping}
+                            disabled={formData.sameAsShipping}
+                            className={`w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED] ${
+                              formData.sameAsShipping ? 'bg-gray-100' : ''
+                            }`}
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              
+              {/* Special Instructions */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h2 className="text-xl font-bold text-[#1D0E62] mb-4">Special Instructions</h2>
+                <textarea
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  placeholder="Any special instructions for your order..."
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-[#7C3AED] focus:ring-1 focus:ring-[#7C3AED]"
+                />
+              </div>
+            </div>
+            
+            {/* Right Column: Order Summary & Payment */}
+            <div className="lg:col-span-1 space-y-6">
+              {/* Order Summary */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h2 className="text-xl font-bold text-[#1D0E62] mb-4">Order Summary</h2>
+                
+                <div className="space-y-4">
+                  {cart.items.map((item: CartItem) => (
+                    <div key={item.productId} className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">
+                          {item.product?.product_translations?.[0]?.name || `Product ${item.productId}`}
+                        </p>
+                        <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                      </div>
+                      <p className="font-bold">£{item.subtotal.toFixed(2)}</p>
+                    </div>
+                  ))}
+                  
+                  <div className="border-t pt-4 space-y-2">
+                    <div className="flex justify-between">
+                      <span>Subtotal:</span>
+                      <span>£{cart.total.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Shipping:</span>
+                      <span>Free</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-lg border-t pt-2">
+                      <span>Total:</span>
+                      <span>£{cart.total.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Payment Method */}
+              <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6">
+                <h2 className="text-xl font-bold text-[#1D0E62] mb-4 flex items-center">
+                  <CreditCard className="mr-2" /> Payment Method
+                </h2>
+                
+                <div className="space-y-4">
+                  <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="credit_card"
+                      checked={formData.paymentMethod === 'credit_card'}
+                      onChange={handleChange}
+                      className="mr-3"
+                    />
+                    <CreditCard className="mr-2" size={20} />
+                    <span>Credit Card</span>
+                  </label>
+                  
+                  <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="paypal"
+                      checked={formData.paymentMethod === 'paypal'}
+                      onChange={handleChange}
+                      className="mr-3"
+                    />
+                    <span>PayPal</span>
+                  </label>
+                  
+                  <label className="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="bank_transfer"
+                      checked={formData.paymentMethod === 'bank_transfer'}
+                      onChange={handleChange}
+                      className="mr-3"
+                    />
+                    <span>Bank Transfer</span>
+                  </label>
+                </div>
+              </div>
+              
+              {/* Place Order Button */}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold text-sm rounded-full shadow-lg flex items-center justify-center disabled:opacity-50"
+              >
+                {submitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <Lock className="mr-2 h-4 w-4" />
+                    Place Order
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   );

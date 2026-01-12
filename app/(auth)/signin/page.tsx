@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
+import useToast from "@/lib/useToast";
 
 type LoginFormInputs = {
   email: string;
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const { register, handleSubmit, formState: {errors}} = useForm<LoginFormInputs>();
   const { isLoading, login } = useAuthStore();
   const router = useRouter();
+  const { error: showError } = useToast();
 
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
@@ -23,8 +25,8 @@ export default function LoginPage() {
     try {
       await login(data.email, data.password);
       router.push('/')
-    } catch (error) {
-
+    } catch (error: any) {
+      showError(error.message || "Login failed. Please try again.");
     }
   };
 

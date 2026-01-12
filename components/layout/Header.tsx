@@ -122,7 +122,7 @@ const Header = () => {
                     <AppTooltip key={item.href} content={item.message}>
                         <Link href={item.href} className={clsx('hover:text-black hover:underline decoration-2 underline-offset-8',
                             {
-                                'text-[#F4625C] underline': pathname === item.href
+                                'text-black underline': pathname === item.href
                             })}>
                             {item.label}
                         </Link>

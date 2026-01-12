@@ -7,41 +7,117 @@ import { useRouter } from 'next/navigation';
 import { orderAPI } from '@/lib/orderAPI';
 import { Order } from '@/types/order';
 
-export default function OrderDetailPage({ params }: { params: { id: string } }) {
+// Static mock data structure based on the original frontend
+const STATIC_ORDERS = [
+    { id: '10535700', po: '10535700', patient: '--', product: 'Uniznik - zinc aspartat...', cost: '£47.28', date: '08/Dec/2025', status: 'Processing' },
+    { id: '10531425', po: '10531425', patient: '--', product: 'Uniznik - zinc aspartat...', cost: '£118.20', date: '26/Nov/2025', status: 'Shipped' },
+    { id: '10526297', po: '10526297', patient: '--', product: 'Uniznik - zinc aspartat...', cost: '£118.20', date: '12/Nov/2025', status: 'Shipped' },
+    { id: '10472068', po: 'Kenacort', patient: '--', product: 'Kenacort Retard - tria...', cost: '£902.81', date: '16/Jun/2025', status: 'Shipped' },
+    { id: '10470697', po: 'Kenalog', patient: '--', product: 'Kenalog...', cost: '£36.00', date: '11/Jun/2025', status: 'Shipped' },
+];
+
+export default function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter();
     const [isProductExpanded, setIsProductExpanded] = useState(true);
     const [order, setOrder] = useState<Order | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isStaticOrder, setIsStaticOrder] = useState<boolean>(false);
 
-    // Fetch order from backend
+    // Determine if the order ID is from static data or dynamic data
     useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                setLoading(true);
-                const orderData = await orderAPI.getOrderById(parseInt(params.id));
-                setOrder(orderData);
-            } catch (error: any) {
-                console.error('Error fetching order:', error);
-                // Check for unauthorized error (401) and handle appropriately
-                if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
-                    // Show unauthorized message instead of redirecting
-                    console.log('Authentication required to view order details:', error?.response?.data?.message || 'Unauthorized');
-                    // Set order to null to trigger the "Order not found or access denied" message
-                    setOrder(null);
-                } else {
-                    // For other errors, also set order to null
-                    console.log('Other error occurred:', error?.response?.data?.message || error.message);
-                    setOrder(null);
-                }
-            } finally {
+        const fetchParams = async () => {
+            const resolvedParams = await params;
+            const orderId = resolvedParams.id;
+
+            // Check if this is a static order ID
+            const staticOrder = STATIC_ORDERS.find(staticOrder => staticOrder.id === orderId);
+
+            if (staticOrder) {
+                // Handle static order
+                setIsStaticOrder(true);
                 setLoading(false);
+
+                // Create a mock order object based on static data
+                const mockOrder: Order = {
+                    id: parseInt(orderId) || 0,
+                    customerEmail: 'mock@example.com',
+                    customerPhone: '000-000-0000',
+                    customerName: 'Mock Customer',
+                    billingAddress: {
+                        firstName: 'Mock',
+                        lastName: 'Customer',
+                        address1: '123 Mock Street',
+                        city: 'Mock City',
+                        state: 'Mock State',
+                        zip: 'MOCK 123',
+                        country: 'UK'
+                    },
+                    shippingAddress: {
+                        firstName: 'Mock',
+                        lastName: 'Customer',
+                        address1: '123 Mock Street',
+                        city: 'Mock City',
+                        state: 'Mock State',
+                        zip: 'MOCK 123',
+                        country: 'UK'
+                    },
+                    subTotal: parseFloat(staticOrder.cost.replace('£', '')) || 0,
+                    shippingCost: 0,
+                    discount: 0,
+                    total: parseFloat(staticOrder.cost.replace('£', '')) || 0,
+                    paymentMethod: 'Credit Card',
+                    currency: 'GBP',
+                    currencyRate: 1,
+                    locale: 'en',
+                    status: staticOrder.status,
+                    note: 'This is a sample order for demonstration purposes.',
+                    createdAt: new Date(staticOrder.date).toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    products: [{
+                        id: 1,
+                        productId: 1,
+                        productName: staticOrder.product,
+                        unitPrice: parseFloat(staticOrder.cost.replace('£', '')) / 2 || 23.64,
+                        quantity: 2,
+                        lineTotal: parseFloat(staticOrder.cost.replace('£', '')) || 47.28
+                    }],
+                    transaction: null
+                };
+
+                setOrder(mockOrder);
+            } else {
+                // Handle dynamic order - fetch from backend
+                const fetchOrder = async () => {
+                    try {
+                        setLoading(true);
+                        const orderData = await orderAPI.getOrderById(parseInt(orderId));
+                        setOrder(orderData);
+                    } catch (error: any) {
+                        console.error('Error fetching order:', error);
+                        // Check for unauthorized error (401) and handle appropriately
+                        if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
+                            // Show unauthorized message instead of redirecting
+                            console.log('Authentication required to view order details:', error?.response?.data?.message || 'Unauthorized');
+                            // Set order to null to trigger the "Order not found or access denied" message
+                            setOrder(null);
+                        } else {
+                            // For other errors, also set order to null
+                            console.log('Other error occurred:', error?.response?.data?.message || error.message);
+                            setOrder(null);
+                        }
+                    } finally {
+                        setLoading(false);
+                    }
+                };
+
+                if (orderId) {
+                    fetchOrder();
+                }
             }
         };
 
-        if (params.id) {
-            fetchOrder();
-        }
-    }, [params.id]);
+        fetchParams();
+    }, [params]);
 
     if (loading) {
         return (
@@ -93,13 +169,13 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
             <div className="max-w-7xl mx-auto">
 
                 {/* Breadcrumb */}
-                <button onClick={() => router.back()} className="flex items-center text-sm font-semibold text-blue-600 hover:underline mb-4">
+                <button onClick={() => router.push('/order')} className="flex items-center text-sm font-semibold text-blue-600 hover:underline mb-4">
                     <ChevronLeft className="w-4 h-4 mr-1" /> View orders
                 </button>
 
                 {/* Header Section */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
-                    <h1 className="text-3xl font-extrabold">Order {params.id || "10535700"} (Static + Dynamic Data)</h1>
+                    <h1 className="text-3xl font-extrabold">Order {order.id || "10535700"} {isStaticOrder ? "(Static Data)" : "(Dynamic Data)"}</h1>
 
                     <div className="flex items-center gap-4 w-full lg:w-auto">
                         <button className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#D1D5DB] text-gray-700 rounded-full font-bold text-sm hover:bg-gray-300 transition-colors flex-1 lg:flex-none">
@@ -130,12 +206,12 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
                                 <span className="px-3 py-1 bg-[#F3F4F6] text-gray-600 rounded-full text-xs font-bold italic">
                                     {order.shippingMethod || 'Standard Delivery'}
                                 </span>
-                                <div className="text-xs text-gray-500 italic mt-1">STATIC: Not available</div>
+                                <div className="text-xs text-gray-500 italic mt-1">{isStaticOrder ? 'STATIC: Not available' : 'DB: Available'}</div>
                             </div>
                             <div>
                                 <p className="text-[11px] text-gray-400 font-bold uppercase mb-2">Date submitted:</p>
                                 <p className="text-sm font-bold">{formatDate(order.createdAt)}</p>
-                                <p className="text-xs text-gray-500 italic">STATIC: Monday, December 8</p>
+                                <p className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample date' : 'DB: Actual date'}</p>
                             </div>
                             <div className="md:col-span-2">
                                 <p className="text-[11px] text-gray-400 font-bold uppercase mb-2">Delivery address:</p>
@@ -143,7 +219,7 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
                                 <p className="text-sm text-gray-600 font-medium">
                                     {order.shippingAddress.address1}, {order.shippingAddress.city}, {order.shippingAddress.zip}, {order.shippingAddress.country}
                                 </p>
-                                <p className="text-xs text-gray-500 italic mt-1">STATIC: Halo Health, Part Ground Floor, Drayton Court, Drayton Road, Solihull, B90 4NG, United Kingdom</p>
+                                <p className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample address' : 'DB: Actual address'}</p>
                             </div>
                         </div>
                     </div>
@@ -158,18 +234,18 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
                             <div className="space-y-3 text-sm border-b pb-6">
                                 <div className="flex justify-between text-gray-700 font-medium">
                                     <span className="max-w-37.5">Products (see breakdown below)</span>
-                                    <span className="font-bold">£{order.subTotal.toFixed(2)}</span>
+                                    <span className="font-bold">£{Number(order.subTotal || 0).toFixed(2)}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-700 font-medium">
                                     <span>VAT:</span>
                                     <span className="font-bold">£{calculateVAT(order.subTotal)}</span>
                                 </div>
-                                <div className="text-xs text-gray-500 italic">STATIC: Products: £39.40, VAT: £7.88</div>
+                                <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample calculation' : 'DB: Actual calculation'}</div>
                             </div>
                         </div>
                         <div className="flex justify-between items-center pt-6">
                             <span className="text-xl font-black">Total:</span>
-                            <span className="text-2xl font-black">£{order.total.toFixed(2)}</span>
+                            <span className="text-2xl font-black">£{Number(order.total || 0).toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -202,29 +278,29 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
                                         <td className="px-6 py-6">
                                             <p className="font-bold text-sm text-[#1A1A1A]">{product.productName}</p>
                                             <p className="text-xs text-gray-500 font-semibold italic">30 mg/10 ml</p>
-                                            <div className="text-xs text-gray-500 italic">STATIC: zinc aspartate</div>
+                                            <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample data' : 'DB: Actual data'}</div>
                                         </td>
                                         <td className="px-6 py-6 text-sm text-gray-600 font-medium">
                                             Solution for Injection<br />5 x 10 ml
-                                            <div className="text-xs text-gray-500 italic">STATIC: Solution for Injection</div>
+                                            <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample data' : 'DB: Actual data'}</div>
                                         </td>
                                         <td className="px-6 py-6">
                                             <span className="px-4 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-full text-[11px] font-bold border border-green-100">
                                                 {order.status}
                                             </span>
-                                            <div className="text-xs text-gray-500 italic">STATIC: Processing</div>
+                                            <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample status' : 'DB: Actual status'}</div>
                                         </td>
                                         <td className="px-6 py-6 text-sm font-bold text-gray-600">
-                                            £{product.unitPrice.toFixed(2)}
-                                            <div className="text-xs text-gray-500 italic">STATIC: £19.70</div>
+                                            £{Number(product.unitPrice || 0).toFixed(2)}
+                                            <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample price' : 'DB: Actual price'}</div>
                                         </td>
                                         <td className="px-6 py-6 text-sm font-bold text-gray-600">
                                             {product.quantity}
-                                            <div className="text-xs text-gray-500 italic">STATIC: 2</div>
+                                            <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample quantity' : 'DB: Actual quantity'}</div>
                                         </td>
                                         <td className="px-6 py-6 text-sm font-black">
-                                            £{product.lineTotal.toFixed(2)}
-                                            <div className="text-xs text-gray-500 italic">STATIC: £39.40</div>
+                                            £{Number(product.lineTotal || 0).toFixed(2)}
+                                            <div className="text-xs text-gray-500 italic">{isStaticOrder ? 'STATIC: Sample total' : 'DB: Actual total'}</div>
                                         </td>
                                         <td className="px-6 py-6">
                                             <div className="flex items-center gap-4">

@@ -2,49 +2,69 @@
 import { SearchInput } from '@/components/ui/SearchInput';
 import { ArrowRight, Globe, Pill, ShieldCheck, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
-import React from 'react'
+import React, { useState } from 'react'
 import { FeatureCard } from '@/components/ui/FeaturedCard';
+import { useRouter } from 'next/navigation';
 
  export const Home = () => {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    if (value.trim()) {
+      router.push(`/products?q=${encodeURIComponent(value)}`);
+    }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/products?q=${encodeURIComponent(searchTerm)}`);
+    }
+  };
+
  return (
     <div className="min-h-screen bg-white font-sans text-slate-900">
 
       <main className="pt-32 pb-20 px-6">
         <section className="max-w-4xl mx-auto text-center space-y-8">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight"
           >
-            Accessing medicines <br /> 
+            Accessing medicines <br />
             <span className="text-gradient-primary">globally, simplified.</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="text-lg text-gray-600 max-w-2xl mx-auto"
           >
-            A dedicated platform for healthcare professionals to source unlicensed, 
+            A dedicated platform for healthcare professionals to source unlicensed,
             shortage, or specialty medicines securely and efficiently.
           </motion.p>
 
-          <SearchInput />
+          <form onSubmit={handleSearchSubmit}>
+            <SearchInput value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onSearch={handleSearch} />
+          </form>
         </section>
 
         <section className="max-w-7xl mx-auto mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <FeatureCard 
+          <FeatureCard
             icon={<Pill className="w-6 h-6 text-blue-600" />}
             title="Product Directory"
             desc="Browse our extensive list of specialty medicines and documentation."
           />
-          <FeatureCard 
+          <FeatureCard
             icon={<Globe className="w-6 h-6 text-blue-600" />}
             title="Global Logistics"
             desc="Temperature-controlled supply chain delivering to over 100 countries."
           />
-          <FeatureCard 
+          <FeatureCard
             icon={<ShieldCheck className="w-6 h-6 text-blue-600" />}
             title="Compliance"
             desc="Fully regulated and verified processes ensuring patient safety first."

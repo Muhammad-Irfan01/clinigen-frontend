@@ -1,6 +1,7 @@
 import { authAPI } from '@/lib/authAPI';
 import { cookie } from '@/lib/cookies';
 import useToast from '@/lib/useToast';
+import { useRouter } from 'next/navigation';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -52,35 +53,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     isLoading: false,
     error: null,
 
-    login: async (email: string, password: string) => {
+    login: async (email, password) => {
         set({ isLoading: true, error: null });
         const toast = useToast();
 
         try {
-            const response = await authAPI.login({ email, password });
+            // Backend sets cookies, no token handling needed
+            const res = await authAPI.login({ email, password });
 
-            // Store tokens in cookies - handle both naming conventions
-            const accessToken = response.accessToken || response.access_token;
-            const refreshToken = response.refreshToken || response.refresh_token;
+            // Fetch user profile after login
+            // const user = await authAPI.getProfile();
 
-            if (!accessToken) {
-                throw new Error('Access token not received from server');
-            }
-
-            if (!refreshToken) {
-                throw new Error('Refresh token not received from server');
-            }
-
-            // Store tokens in cookies
-            cookie.set('accessToken', accessToken);
-            cookie.set('refreshToken', refreshToken);
-
-            set({
-                user: response.user,
-                isAuthenticated: true,
-                isLoading: false
-            });
-
+            set({ user: res.user, isAuthenticated: true, isLoading: false });
             toast.success('Login successful!');
         } catch (error: any) {
             set({ error: error.message, isLoading: false });
@@ -94,57 +78,33 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const toast = useToast();
 
         try {
-            const signupData = {
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                password: data.password,
-                phone: data.phone,
-                jobRole: data.jobRole,
-                licenseNumber: data.licenseNumber,
-                extension: data.extension,
-                instituteName: data.instituteName,
-                addressLine1: data.addressLine1,
-                townCity: data.townCity,
-                country: data.country,
-                medicineSearch: data.medicineSearch
-            };
-
-            const response = await authAPI.register(signupData);
-
-            // Store tokens in cookies
-            cookie.set('accessToken', response.accessToken);
-            cookie.set('refreshToken', response.refreshToken);
+            const res = await authAPI.register(data);
 
             set({
-                user: response.user,
-                isAuthenticated: true,
+                user: null,
+                isAuthenticated: false,
                 isLoading: false
             });
 
-            toast.success('Registration successful!');
+            toast.success('Registration successful! Please check your email to activate your account.');
         } catch (error: any) {
             set({ error: error.message, isLoading: false });
             toast.error(error.message || 'Registration failed');
             throw error;
-        } finally {
-            set({isLoading: false})
         }
     },
 
-    logout: () => {
-        // Remove tokens from cookies
-        cookie.remove('accessToken');
-        cookie.remove('refreshToken');
-
-        set({
-            user: null,
-            isAuthenticated: false,
-            error: null
-        });
-
+    logout: async () => {
         const toast = useToast();
-        toast.info('Logged out successfully');
+
+        try {
+            await authAPI.logout(); // Backend clears cookies
+            set({ user: null, isAuthenticated: false, error: null });
+            toast.info('Logged out successfully');
+        } catch (error: any) {
+            toast.error(error.message || 'Logout failed');
+            throw error;
+        }
     },
 
     refreshToken: async () => {
@@ -168,26 +128,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     fetchProfile: async () => {
         try {
-            const response = await authAPI.getProfile();
-            set({
-                user: response,
-                isAuthenticated: true
-            });
-        } catch (error: any) {
-            // If profile fetch fails, try to refresh token
-            try {
-                await get().refreshToken();
-                const response = await authAPI.getProfile();
-                set({
-                    user: response,
-                    isAuthenticated: true
-                });
-            } catch (refreshError) {
-                // If refresh also fails, logout
-                get().logout();
-            }
+            const user = await authAPI.getProfile();
+            set({ user, isAuthenticated: true });
+        } catch (error) {
+            set({ user: null, isAuthenticated: false });
         }
     },
+
 
     changePassword: async (currentPassword: string, newPassword: string) => {
         const toast = useToast();
@@ -233,28 +180,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         try {
             const response = await authAPI.verifyEmail({ code });
 
-            // Store tokens in cookies if they are returned
-            if (response.access_token && response.refresh_token) {
-                cookie.set('accessToken', response.access_token);
-                cookie.set('refreshToken', response.refresh_token);
-
-                // Transform the response user to match the User interface
-                const transformedUser = response.user ? {
-                    ...response.user,
-                    name: `${response.user.firstName} ${response.user.lastName}`
-                } : null;
-
-                set({
-                    user: transformedUser,
-                    isAuthenticated: true,
-                    isLoading: false
-                });
-            } else {
-                set({
-                    isLoading: false
-                });
+            if (response.user) {
+                // Redirect to sign in page after successful verification
+                window.location.href = "/signin";
             }
-
             toast.success('Email verified successfully!');
         } catch (error: any) {
             set({ error: error.message, isLoading: false });

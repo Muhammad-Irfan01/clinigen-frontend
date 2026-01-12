@@ -59,7 +59,7 @@ export default function Orders() {
     };
 
     const getTotalCost = (order: Order) => {
-        return `£${order.total.toFixed(2)}`;
+        return `£${Number(order.total || 0).toFixed(2)}`;
     };
 
     return (
@@ -140,7 +140,7 @@ export default function Orders() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {order.cost}
-                                                <div className="text-xs text-gray-500 italic">DB: {orders[index] ? `£${orders[index].total.toFixed(2)}` : 'N/A'}</div>
+                                                <div className="text-xs text-gray-500 italic">DB: {orders[index] ? `£${Number(orders[index].total || 0).toFixed(2)}` : 'N/A'}</div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 {order.date}

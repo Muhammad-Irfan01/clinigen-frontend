@@ -35,4 +35,15 @@ export const accessProgramAPI = {
       method: 'POST',
       data,
     }),
+
+  updatePatient: (id: number, data: Partial<CreatePatientRequest>) =>
+    api<Patient>(`/access-program/patients/${id}`, {
+      method: 'PATCH',
+      data,
+    }),
+
+  deletePatient: (id: number) =>
+    api<void>(`/access-program/patients/${id}`, {
+      method: 'DELETE',
+    }),
 };

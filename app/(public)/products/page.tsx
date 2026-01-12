@@ -6,9 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Pagination from '@/components/ui/Pagination';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
-import { Product } from '@/types/product';
+import { Product, SearchProductsParams } from '@/types/product';
 
 const THERAPEUTIC_AREAS = [
   "Alimentary Tract and Metabolism", "Antiinfectives for Systemic Use",
@@ -18,6 +18,7 @@ const THERAPEUTIC_AREAS = [
 
 const ProductCatalogue = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedAreas, setSelectedAreas] = useState<string[]>([]);
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -27,15 +28,63 @@ const ProductCatalogue = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
+  const [selectedAvailability, setSelectedAvailability] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // Fetch products from backend
+  // Initialize from URL params
+  useEffect(() => {
+    const query = searchParams.get('q') || '';
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '5');
+
+    setSearchTerm(query);
+    setCurrentPage(page);
+    setResultPerPage(limit);
+  }, [searchParams]);
+
+  // Fetch products based on filters
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await productAPI.getAllProducts();
-        setProducts(response);
-        setTotalPages(Math.ceil(response.length / resultsPerPage));
+
+        // If there's a search term, use search API, otherwise get all products
+        let response;
+        if (searchTerm.trim()) {
+          // Build search parameters
+          const searchParams: SearchProductsParams = {
+            q: searchTerm || undefined,
+            page: currentPage,
+            limit: resultsPerPage,
+          };
+
+          // Add price range if applicable
+          if (priceRange[0] > 0) searchParams.minPrice = priceRange[0];
+          if (priceRange[1] < 10000) searchParams.maxPrice = priceRange[1];
+
+          // Add category filter if selected
+          if (selectedCategories.length > 0) {
+            // For simplicity, we'll use the first selected category
+            // In a real implementation, you might want to handle multiple categories differently
+            searchParams.category = selectedCategories[0];
+          }
+
+          response = await productAPI.searchProducts(searchParams);
+          setProducts(response.data);
+          setTotalPages(response.meta.pages);
+        } else {
+          // Get all products when no search term
+          const allProducts = await productAPI.getAllProducts();
+
+          // Apply pagination manually to all products
+          const startIndex = (currentPage - 1) * resultsPerPage;
+          const endIndex = startIndex + resultsPerPage;
+          const paginatedProducts = allProducts.slice(startIndex, endIndex);
+
+          setProducts(paginatedProducts);
+          setTotalPages(Math.ceil(allProducts.length / resultsPerPage));
+        }
       } catch (error) {
         console.error('Error fetching products:', error);
       } finally {
@@ -44,67 +93,31 @@ const ProductCatalogue = () => {
     };
 
     fetchProducts();
-  }, []);
-
-  // Handle search
-  useEffect(() => {
-    const fetchSearchedProducts = async () => {
-      if (searchTerm.trim() === '') {
-        const response = await productAPI.getAllProducts();
-        setProducts(response);
-        setTotalPages(Math.ceil(response.length / resultsPerPage));
-        return;
-      }
-
-      try {
-        setLoading(true);
-        const response = await productAPI.searchProducts({
-          q: searchTerm,
-          page: currentPage,
-          limit: resultsPerPage
-        });
-
-        setProducts(response.data);
-        setTotalPages(response.meta.pages);
-      } catch (error) {
-        console.error('Error searching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSearchedProducts();
-  }, [searchTerm]);
-
-  // Handle pagination
-  useEffect(() => {
-    const fetchPaginatedProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await productAPI.searchProducts({
-          q: searchTerm,
-          page: currentPage,
-          limit: resultsPerPage
-        });
-
-        setProducts(response.data);
-        setTotalPages(response.meta.pages);
-      } catch (error) {
-        console.error('Error fetching paginated products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (searchTerm) {
-      fetchPaginatedProducts();
-    }
-  }, [currentPage, resultsPerPage, searchTerm]);
+  }, [searchTerm, currentPage, resultsPerPage, selectedAreas, priceRange, selectedAvailability, selectedCategories]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1); // Reset to first page when search term changes
   };
+
+  const applyFilters = () => {
+    // Build URL with current filters
+    const params = new URLSearchParams();
+    if (searchTerm) params.set('q', searchTerm);
+    if (searchTerm && currentPage > 1) params.set('page', currentPage.toString()); // Only add page when searching
+    if (searchTerm && resultsPerPage !== 5) params.set('limit', resultsPerPage.toString()); // Only add limit when searching
+
+    router.push(`/products?${params.toString()}`);
+  };
+
+  // Apply filters when they change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      applyFilters();
+    }, 300); // Debounce to avoid too many API calls
+
+    return () => clearTimeout(timer);
+  }, [searchTerm, currentPage, resultsPerPage, JSON.stringify(selectedAreas), priceRange[0], priceRange[1], JSON.stringify(selectedAvailability), JSON.stringify(selectedCategories)]);
 
   const getProductName = (product: Product) => {
     return product.product_translations && product.product_translations.length > 0
@@ -126,6 +139,38 @@ const ProductCatalogue = () => {
     return 'N/A';
   };
 
+  const toggleTherapeuticArea = (area: string) => {
+    if (selectedAreas.includes(area)) {
+      setSelectedAreas(selectedAreas.filter(a => a !== area));
+    } else {
+      setSelectedAreas([...selectedAreas, area]);
+    }
+  };
+
+  const toggleAvailability = (availability: string) => {
+    if (selectedAvailability.includes(availability)) {
+      setSelectedAvailability(selectedAvailability.filter(a => a !== availability));
+    } else {
+      setSelectedAvailability([...selectedAvailability, availability]);
+    }
+  };
+
+  const toggleCategory = (category: string) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter(c => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
+  const clearAllFilters = () => {
+    setSelectedAreas([]);
+    setSelectedAvailability([]);
+    setSelectedCategories([]);
+    setPriceRange([0, 10000]);
+    setIsExpanded(false);
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans text-[#431d60]">
       <div className="max-w-7xl mx-auto py-12 px-4">
@@ -135,7 +180,7 @@ const ProductCatalogue = () => {
           animate={{ opacity: 1, x: 0 }}
           className="text-4xl md:text-5xl font-bold mb-10"
         >
-          Product catalogue (Static + Dynamic Data)
+          Product catalogue (Dynamic Data)
         </motion.h1>
 
         {/* --- Filter Section --- */}
@@ -167,17 +212,19 @@ const ProductCatalogue = () => {
                     <h3 className="text-[11px] font-bold tracking-widest uppercase">Advanced Filtering</h3>
                     <button
                       className="text-[#706FE4] text-sm font-bold"
-                      onClick={() => {
-                        setSelectedAreas([]);
-                        setIsExpanded(false);
-                      }}
+                      onClick={clearAllFilters}
                     >
                       Clear all
                     </button>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["Access Program", "Available", "Available On Request"].map(f => (
-                      <FilterChip key={f} label={f} active={f === "Available"} />
+                      <FilterChip
+                        key={f}
+                        label={f}
+                        active={selectedAvailability.includes(f)}
+                        onClick={() => toggleAvailability(f)}
+                      />
                     ))}
                   </div>
                 </div>
@@ -193,13 +240,7 @@ const ProductCatalogue = () => {
                         key={area}
                         label={area}
                         active={selectedAreas.includes(area)}
-                        onClick={() => {
-                          if (selectedAreas.includes(area)) {
-                            setSelectedAreas(selectedAreas.filter(a => a !== area));
-                          } else {
-                            setSelectedAreas([...selectedAreas, area]);
-                          }
-                        }}
+                        onClick={() => toggleTherapeuticArea(area)}
                       />
                     ))}
                   </motion.div>
@@ -209,6 +250,36 @@ const ProductCatalogue = () => {
                   >
                     {isExpanded ? 'See less' : 'See more'} <ChevronDown size={16} className={clsx("ml-1 transition-transform", isExpanded && "rotate-180")} />
                   </button>
+                </div>
+
+                <div>
+                  <h3 className="text-[11px] font-bold tracking-widest uppercase mb-4">Price Range</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>Min: £{priceRange[0]}</span>
+                        <span>Max: £{priceRange[1]}</span>
+                      </div>
+                      <div className="flex gap-4">
+                        <input
+                          type="range"
+                          min="0"
+                          max="10000"
+                          value={priceRange[0]}
+                          onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
+                          className="w-full"
+                        />
+                        <input
+                          type="range"
+                          min="0"
+                          max="10000"
+                          value={priceRange[1]}
+                          onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -233,7 +304,7 @@ const ProductCatalogue = () => {
                     <p className="mt-2">Loading products...</p>
                   </td>
                 </tr>
-              ) : (
+              ) : products.length > 0 ? (
                 <AnimatePresence>
                   {products.map((product, idx) => (
                     <motion.tr
@@ -259,7 +330,7 @@ const ProductCatalogue = () => {
                         <div className="text-xs text-gray-600 mt-1">DB: {product.is_active ? "Available" : "Inactive"}</div>
                       </td>
                       <td className="py-6 px-4 text-sm text-gray-600">
-                        Antiinfectives for Systemic Use
+                        {getProductCategory(product)}
                         <div className="text-xs text-gray-600 mt-1">DB: {getProductCategory(product)}</div>
                       </td>
                       <td className="py-6 px-4 text-right">
@@ -270,13 +341,19 @@ const ProductCatalogue = () => {
                     </motion.tr>
                   ))}
                 </AnimatePresence>
+              ) : (
+                <tr>
+                  <td colSpan={4} className="py-12 text-center">
+                    <p className="text-gray-500">No products found</p>
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
 
         {/* --- Pagination --- */}
-        {!loading && (
+        {!loading && products.length > 0 && (
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

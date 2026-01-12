@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
+import useToast from "@/lib/useToast";
 
 // --- Types ---
 type SignupStep = 1 | 2 | 3;
@@ -18,6 +19,7 @@ export default function ClinigenSignupFlow() {
   const [selectedMedicines, setSelectedMedicines] = useState<string[]>([]);
   const {signup, isLoading} = useAuthStore();
   const router = useRouter();
+  const { error: showError } = useToast();
 
   const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
     defaultValues: {
@@ -35,15 +37,12 @@ export default function ClinigenSignupFlow() {
   const prevStep = () => setCurrentStep((prev) => (prev as number) - 1 as SignupStep);
 
   const onSubmit = async (data: any) => {
-    // e.preventDefault();
-    // console.log("Final Registration Data:", { ...data, selectedMedicines });
+
     try {
       await signup({ ...data, medicineSearch: selectedMedicines.join(', ') });
-      // Redirect to email verification page after successful signup
       router.push('/verify-email');
-    } catch (error) {
-      console.error("Signup failed:", error);
-      // The error is already handled in the auth store
+    } catch (error: any) {
+      showError(error.message || "Signup failed. Please try again.");
     }
   };
 
