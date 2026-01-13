@@ -13,9 +13,11 @@ export default function PatientDetailPage() {
     const [patient, setPatient] = useState<Patient | null>(null);
 
     useEffect(() => {
-        const patientId = Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id);
-        if (patientId) {
-            fetchPatientById(patientId);
+        if (params.id !== undefined) {
+            const patientId = Array.isArray(params.id) ? parseInt(params.id[0]) : parseInt(params.id);
+            if (!isNaN(patientId)) {
+                fetchPatientById(patientId);
+            }
         }
     }, [params.id]);
 

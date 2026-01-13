@@ -12,10 +12,10 @@ interface AuthFormProps {
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: 'spring', stiffness: 100, damping: 10, delay: 0.2 }
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.3, delay: 0.2 }
   },
 };
 

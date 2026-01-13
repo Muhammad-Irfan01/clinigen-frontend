@@ -1,14 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/components/AuthProvider';
+import { useAuthStore } from '@/store/auth.store';
 import { useToast } from '@/lib/useToast';
 
 const AuthDemoPage = () => {
-  const { user, isAuthenticated, isLoading, login, register, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, login, signup, logout } = useAuthStore();
   const { success, error } = useToast();
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
-  const [registerForm, setRegisterForm] = useState({ name: '', email: '', password: '' });
+  const [registerForm, setRegisterForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    phone: '',
+    jobRole: '',
+    licenseNumber: '',
+    extension: '',
+    instituteName: '',
+    addressLine1: '',
+    townCity: '',
+    country: '',
+    medicineSearch: ''
+  });
   const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -24,7 +38,20 @@ const AuthDemoPage = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await register(registerForm.name, registerForm.email, registerForm.password);
+      await signup({
+        ...registerForm,
+        firstName: registerForm.firstName || 'John',
+        lastName: registerForm.lastName || 'Doe',
+        phone: registerForm.phone || '1234567890',
+        jobRole: registerForm.jobRole || 'Doctor',
+        licenseNumber: registerForm.licenseNumber || 'N/A',
+        extension: registerForm.extension || '',
+        instituteName: registerForm.instituteName || 'Generic Institute',
+        addressLine1: registerForm.addressLine1 || 'N/A',
+        townCity: registerForm.townCity || 'N/A',
+        country: registerForm.country || 'N/A',
+        medicineSearch: registerForm.medicineSearch || 'N/A'
+      });
       success('Registration successful!');
       setActiveTab('login'); // Switch to login tab after successful registration
     } catch (err: any) {
@@ -121,15 +148,28 @@ const AuthDemoPage = () => {
           ) : (
             <form onSubmit={handleRegister}>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                  Name
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
+                  First Name
                 </label>
                 <input
                   type="text"
-                  id="name"
+                  id="firstName"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={registerForm.name}
-                  onChange={(e) => setRegisterForm({ ...registerForm, name: e.target.value })}
+                  value={registerForm.firstName}
+                  onChange={(e) => setRegisterForm({ ...registerForm, firstName: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  id="lastName"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={registerForm.lastName}
+                  onChange={(e) => setRegisterForm({ ...registerForm, lastName: e.target.value })}
                   required
                 />
               </div>

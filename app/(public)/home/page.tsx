@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 import { FeatureCard } from '@/components/ui/FeaturedCard';
 import { useRouter } from 'next/navigation';
 
- export const Home = () => {
+export default function Home() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -88,4 +88,3 @@ import { useRouter } from 'next/navigation';
     </div>
   );
 }
-// export default home;
