@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { SearchInput } from '@/components/ui/SearchInput';
+import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { useAccessProgramStore } from '@/store/accessProgram.store';
 
@@ -53,7 +54,8 @@ export default function Patients() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f9f8f4] font-sans selection:bg-purple-100">
+    // <ProtectedRoute>
+      <div className="min-h-screen bg-[#f9f8f4] font-sans selection:bg-purple-100">
         <header className="w-full bg-white p-6 flex flex-col md:flex-row items-center justify-evenly gap-6 mb-12">
           <div className="flex items-center gap-8 w-full md:w-auto">
             <h1 className="text-2xl font-bold text-[#2d1a47]">Patients</h1>
@@ -71,9 +73,9 @@ export default function Patients() {
             </div>
           </div>
 
-          <button onClick={() => router.push('/create-patient')} className="border border-[#706FE4] text-[#706FE4] hover:text-white px-8 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-[#706FE4] transition-all whitespace-nowrap">
+          <Button onClick={() => router.push('/create-patient')} className="border border-[#706FE4] text-[#706FE4] hover:text-white px-8 py-2.5 rounded-full font-bold text-sm shadow-md hover:bg-[#706FE4] transition-all whitespace-nowrap">
             Create new patient
-          </button>
+          </Button>
         </header>
       <div className="max-w-5xl mx-auto px-6 py-8">
 
@@ -149,12 +151,13 @@ export default function Patients() {
                 {!searchTerm && (
                   <>
                     {" "}
-                    <button
+                    <Button
                       onClick={() => router.push('/create-patient')}
+                      varient="secondary"
                       className="text-[#7c3aed] underline hover:text-[#6d28d9] transition-colors"
                     >
                       Create your first patient
-                    </button>{" "}
+                    </Button>{" "}
                     and begin placing orders.
                   </>
                 )}

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FieldError, UseFormRegisterReturn } from 'react-hook-form'
+import { FieldError, FieldErrorsImpl, Merge, UseFormRegisterReturn } from 'react-hook-form'
 
 interface inputField {
     label?: string,
@@ -7,7 +7,7 @@ interface inputField {
     placeholder: string,
     registration: UseFormRegisterReturn,
     className: string,
-    error?: FieldError
+    error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>
 }
 export const Input = ({
     label,
@@ -28,7 +28,7 @@ export const Input = ({
        {...registration} 
        />
 
-       {error && (
+       {error && typeof error.message === 'string' && error.message && (
         <span className='text-sm text-red-500'>{error.message}</span>
        )}
     </div>

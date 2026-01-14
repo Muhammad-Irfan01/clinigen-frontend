@@ -6,6 +6,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Pagination from '@/components/ui/Pagination';
 import { SearchInput } from '@/components/ui/SearchInput';
+import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { useAccessProgramStore } from '@/store/accessProgram.store';
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Info, MessageCircle } from 'lucide-react';
 import { PageLoader } from '@/components/ui/PageLoader';
+import { Button } from '@/components/ui/Button';
 
 export default function PreferencesPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -47,12 +48,12 @@ export default function PreferencesPage() {
             </div>
 
             <div className="flex gap-4 pt-4">
-              <button className="px-10 py-2.5 border border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
+              <Button className="px-10 py-2.5 border border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
                 Save
-              </button>
-              <button className="px-10 py-2.5 border border-[#7C3AED] text-[#706FE4] rounded-full font-bold text-sm hover:bg-purple-50 transition-colors">
+              </Button>
+              <Button varient="secondary" className="px-10 py-2.5 border border-[#7C3AED] text-[#706FE4] rounded-full font-bold text-sm hover:bg-purple-50 transition-colors">
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -70,7 +71,7 @@ export default function PreferencesPage() {
                 <h3 className="text-sm font-bold text-[#1D0E62]">Manage marketing subscriptions</h3>
                 <p className="text-xs text-[#1D0E62] leading-relaxed">
                   To manage your marketing subscriptions click{' '}
-                  <button className="text-[#7C3AED] font-bold underline hover:text-[#5B21B6]">here</button>.
+                  <Button varient="secondary" className="text-[#7C3AED] font-bold underline hover:text-[#5B21B6]">here</Button>.
                 </p>
               </div>
             </div>

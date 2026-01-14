@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Pagination from '@/components/ui/Pagination';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { Product, SearchProductsParams } from '@/types/product';
@@ -210,12 +212,13 @@ const ProductCatalogue = () => {
                 <div>
                   <div className="flex justify-between mb-4">
                     <h3 className="text-[11px] font-bold tracking-widest uppercase">Advanced Filtering</h3>
-                    <button
+                    <Button
+                      varient="secondary"
                       className="text-[#706FE4] text-sm font-bold"
                       onClick={clearAllFilters}
                     >
                       Clear all
-                    </button>
+                    </Button>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {["Access Program", "Available", "Available On Request"].map(f => (
@@ -334,9 +337,12 @@ const ProductCatalogue = () => {
                         <div className="text-xs text-gray-600 mt-1">DB: {getProductCategory(product)}</div>
                       </td>
                       <td className="py-6 px-4 text-right">
-                        <button className="inline-flex items-center text-[#706FE4] font-bold text-sm hover:underline">
+                        <Button
+                          varient="secondary"
+                          className="inline-flex items-center text-[#706FE4] font-bold text-sm hover:underline"
+                        >
                           REQUEST <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </Button>
                       </td>
                     </motion.tr>
                   ))}

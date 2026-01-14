@@ -6,20 +6,26 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/store/auth.store";
 import useToast from "@/lib/useToast";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { useForm } from "react-hook-form";
+
+interface VerifyEmailFormData {
+  verificationCode: string;
+}
 
 export default function VerifyEmailPage() {
-  const [verificationCode, setVerificationCode] = useState("");
+  const { register, handleSubmit, formState: { errors } } = useForm<VerifyEmailFormData>();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { verifyEmail } = useAuthStore();
   const toast = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: VerifyEmailFormData) => {
     setIsLoading(true);
 
     try {
-      await verifyEmail(verificationCode);
+      await verifyEmail(data.verificationCode);
       toast.success("Email verified successfully!");
       // After verification, redirect to sign in page
       setTimeout(() => {
@@ -49,48 +55,42 @@ export default function VerifyEmailPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-semibold text-slate-600 mb-2">
-              Verification Code
-            </label>
-            <input
-              type="text"
-              value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value)}
-              placeholder="Enter 6-digit code"
-              className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4] text-center text-xl tracking-widest"
-              maxLength={6}
-              required
-            />
-            <p className="text-xs text-slate-400 mt-2 text-center">
-              Enter the 6-digit code sent to your email
-            </p>
-          </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <Input
+            label="Verification Code"
+            type="text"
+            placeholder="Enter 6-digit code"
+            className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4] text-center text-xl tracking-widest"
+            registration={register("verificationCode", { required: "Verification code is required", minLength: { value: 6, message: "Code must be 6 digits" }, maxLength: { value: 6, message: "Code must be 6 digits" } })}
+            error={errors.verificationCode}
+          />
+          <p className="text-xs text-slate-400 mt-2 text-center">
+            Enter the 6-digit code sent to your email
+          </p>
 
-          <button
+          <Button
             type="submit"
             disabled={isLoading}
-            className={`w-full bg-[#7B3FE4] text-white px-4 py-3 rounded-full font-bold ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            isLoading={isLoading}
+            className="w-full bg-[#7B3FE4] text-white px-4 py-3 rounded-full font-bold"
           >
             {isLoading ? "Verifying..." : "Verify Email"}
-          </button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-slate-500">
             Didn't receive the code?{" "}
-            <button 
-              className="text-[#7B3FE4] font-semibold hover:underline"
+            <Button
+              varient="secondary"
               onClick={() => {
                 // Resend verification code logic would go here
                 toast.info("Resend verification functionality would go here");
               }}
+              className="text-[#7B3FE4] font-semibold hover:underline"
             >
               Resend Code
-            </button>
+            </Button>
           </p>
         </div>
 

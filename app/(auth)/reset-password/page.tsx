@@ -5,6 +5,14 @@ import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import useToast from '@/lib/useToast';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { useForm } from 'react-hook-form';
+
+interface ResetPasswordFormData {
+  password: string;
+  confirmPassword: string;
+}
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -12,16 +20,12 @@ export default function ResetPasswordPage() {
   const { resetPassword } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<ResetPasswordFormData>();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: ResetPasswordFormData) => {
     setIsLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const password = formData.get('password') as string;
-    const confirmPassword = formData.get('confirm-password') as string;
-
-    if (password !== confirmPassword) {
+    if (data.password !== data.confirmPassword) {
       toast.error('Passwords do not match');
       setIsLoading(false);
       return;
@@ -37,7 +41,7 @@ export default function ResetPasswordPage() {
     }
 
     try {
-      await resetPassword(code, password);
+      await resetPassword(code, data.password);
       toast.success('Password reset successful. You can now login with your new password.');
 
       // Redirect to sign in after successful reset
@@ -71,49 +75,33 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-slate-600 ml-1">
-              New Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              />
-            </div>
-          </div>
+        <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+          <Input
+            label="New Password"
+            type="password"
+            placeholder="Enter new password"
+            className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+            registration={register("password", { required: "Password is required" })}
+            error={errors.password}
+          />
 
-          <div>
-            <label htmlFor="confirm-password" className="block text-sm font-semibold text-slate-600 ml-1">
-              Confirm New Password
-            </label>
-            <div className="mt-1">
-              <input
-                id="confirm-password"
-                name="confirm-password"
-                type="password"
-                required
-                className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              />
-            </div>
-          </div>
+          <Input
+            label="Confirm New Password"
+            type="password"
+            placeholder="Confirm new password"
+            className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+            registration={register("confirmPassword", { required: "Please confirm your password" })}
+            error={errors.confirmPassword}
+          />
 
-          <motion.button
+          <Button
             type="submit"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
             disabled={isLoading}
-            className={`w-full py-3.5 rounded-full transition-all text-sm font-bold
-              ${isLoading
-                ? "bg-gray-400 cursor-not-allowed text-white"
-                : "bg-[#7B3FE4] hover:bg-[#6832ca] text-white"}`}
+            isLoading={isLoading}
+            className="w-full py-3.5 rounded-full transition-all text-sm font-bold"
           >
             {isLoading ? 'Updating...' : 'Update Password'}
-          </motion.button>
+          </Button>
         </form>
 
         <div className="mt-6 text-center">

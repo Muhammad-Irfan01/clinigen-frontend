@@ -10,6 +10,8 @@ import {
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
 import useToast from "@/lib/useToast";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 // --- Types ---
 type SignupStep = 1 | 2 | 3;
@@ -92,13 +94,48 @@ export default function ClinigenSignupFlow() {
               <motion.div key="s1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="max-w-xl mx-auto w-full">
                 <h2 className="text-2xl font-bold mb-8">Please provide your details</h2>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  <Input label="First name" {...register("firstName")} />
-                  <Input label="Last name" {...register("lastName")} />
+                  <Input
+                    label="First name"
+                    type="text"
+                    placeholder="First name"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    registration={register("firstName")}
+                    error={errors.firstName}
+                  />
+                  <Input
+                    label="Last name"
+                    type="text"
+                    placeholder="Last name"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    registration={register("lastName")}
+                    error={errors.lastName}
+                  />
                 </div>
-                <Input label="Your work email address" sub="Individual email rather than shared department" {...register("email")} />
+                <Input
+                  label="Your work email address"
+                  type="email"
+                  placeholder="work@email.com"
+                  className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                  registration={register("email")}
+                  error={errors.email}
+                />
                 <div className="grid grid-cols-2 gap-4 my-4">
-                  <Input label="Work phone" placeholder="+44" {...register("phone")} />
-                  <Input label="Extension (opt)" {...register("extension")} />
+                  <Input
+                    label="Work phone"
+                    type="tel"
+                    placeholder="+44"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    registration={register("phone")}
+                    error={errors.phone}
+                  />
+                  <Input
+                    label="Extension (opt)"
+                    type="text"
+                    placeholder="Extension"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    registration={register("extension")}
+                    error={errors.extension}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="space-y-1">
@@ -111,12 +148,34 @@ export default function ClinigenSignupFlow() {
                   </div>
                   {watchJob === "Physician" && (
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
-                      <Input label="License number" placeholder="admj9725732" {...register("licenseNumber")} />
+                      <Input
+                        label="License number"
+                        type="text"
+                        placeholder="admj9725732"
+                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                        registration={register("licenseNumber")}
+                        error={errors.licenseNumber}
+                      />
                     </motion.div>
                   )}
                 </div>
-                <Input label="Password" type="password" {...register("password")} />
-                <button type="button" onClick={nextStep} className="w-full md:w-auto self-end float-right bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold">Next</button>
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="Password"
+                  className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                  registration={register("password")}
+                  error={errors.password}
+                />
+                <div className="flex justify-end mt-6">
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    className="w-full md:w-auto self-end float-right bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold"
+                  >
+                    Next
+                  </Button>
+                </div>
               </motion.div>
             )}
 
@@ -132,10 +191,31 @@ export default function ClinigenSignupFlow() {
                 <AnimatePresence>
                   {watchInstituteSearch.length > 0 && (
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} className="space-y-4 overflow-hidden">
-                      <Input label="Institute name" {...register("instituteName")} />
-                      <Input label="Address line 1" {...register("addressLine1")} />
+                      <Input
+                        label="Institute name"
+                        type="text"
+                        placeholder="Institute name"
+                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                        registration={register("instituteName")}
+                        error={errors.instituteName}
+                      />
+                      <Input
+                        label="Address line 1"
+                        type="text"
+                        placeholder="Address line 1"
+                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                        registration={register("addressLine1")}
+                        error={errors.addressLine1}
+                      />
                       <div className="grid grid-cols-2 gap-4">
-                        <Input label="Town or city" {...register("townCity")} />
+                        <Input
+                          label="Town or city"
+                          type="text"
+                          placeholder="Town or city"
+                          className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                          registration={register("townCity")}
+                          error={errors.townCity}
+                        />
                         <div className="space-y-1">
                           <label className="text-sm font-semibold text-slate-600">Country</label>
                           <select {...register("country")} className="w-full border border-slate-300 rounded-lg p-3 bg-white outline-none">
@@ -148,8 +228,21 @@ export default function ClinigenSignupFlow() {
                   )}
                 </AnimatePresence>
                 <div className="flex justify-between mt-10">
-                  <button type="button" onClick={prevStep} className="border-2 border-[#7B3FE4] text-[#7B3FE4] px-10 py-2.5 rounded-full font-bold">Previous</button>
-                  <button type="button" onClick={nextStep} className="bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold">Next</button>
+                  <Button
+                    type="button"
+                    onClick={prevStep}
+                    varient="secondary"
+                    className="border-2 border-[#7B3FE4] text-[#7B3FE4] px-10 py-2.5 rounded-full font-bold"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={nextStep}
+                    className="bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold"
+                  >
+                    Next
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -181,10 +274,22 @@ export default function ClinigenSignupFlow() {
                   ))}
                 </div>
                 <div className="flex justify-between">
-                  <button type="button" onClick={prevStep} className="border-2 border-[#7B3FE4] text-[#7B3FE4] px-10 py-2.5 rounded-full font-bold">Previous</button>
-                  <button type="submit" disabled={isLoading} className={`bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <Button
+                    type="button"
+                    onClick={prevStep}
+                    varient="secondary"
+                    className="border-2 border-[#7B3FE4] text-[#7B3FE4] px-10 py-2.5 rounded-full font-bold"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    isLoading={isLoading}
+                    className={`bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold`}
+                  >
                     {isLoading ? 'Signing up...' : 'Sign Up'}
-                  </button>
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -194,22 +299,16 @@ export default function ClinigenSignupFlow() {
       </motion.div>
 
       {/* Persistent Help Button */}
-      <button className="fixed bottom-6 right-6 bg-[#E9E4F5] text-[#63499E] px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm">
+      <Button
+        className="fixed bottom-6 right-6 bg-[#E9E4F5] text-[#63499E] px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm"
+      >
         👋 Need help?
-      </button>
+      </Button>
     </div>
   );
 }
 
 // --- Helper UI Components ---
-const Input = React.forwardRef(({ label, sub, type = "text", ...props }: any, ref) => (
-  <div className="flex-1 space-y-1">
-    <label className="text-sm font-semibold text-slate-600 block">{label}</label>
-    <input type={type} ref={ref as any} {...props} className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]" />
-    {sub && <p className="text-[10px] text-slate-400">{sub}</p>}
-  </div>
-));
-
 const StepIndicator = ({ step, current, title, desc }: any) => {
   const isDone = current === "final" || (typeof current === "number" && current > step);
   const isActive = current === step;

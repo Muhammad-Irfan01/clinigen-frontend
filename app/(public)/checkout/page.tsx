@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { Cart, CartItem } from '@/types/product';
 import useToast from '@/lib/useToast';
+import { Button } from '@/components/ui/Button';
 
 interface CheckoutFormData {
   paymentMethod: string;

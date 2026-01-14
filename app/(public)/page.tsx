@@ -4,6 +4,7 @@ import { ArrowRight, Globe, Pill, ShieldCheck, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import React from 'react'
 import { FeatureCard } from '@/components/ui/FeaturedCard';
+import { Button } from '@/components/ui/Button';
 
  const home = () => {
  return (
@@ -58,11 +59,11 @@ import { FeatureCard } from '@/components/ui/FeaturedCard';
             <h2 className="text-3xl font-bold">New to Clinigen Direct?</h2>
             <p className="text-gray-600">Create an account to start ordering and tracking medicines online.</p>
           </div>
-          <button className="flex items-center gap-2 bg-white border border-gray-200 px-8 py-4 rounded-xl font-bold hover:shadow-md transition-all">
+          <Button className="flex items-center gap-2 border border-gray-200 px-8 py-4 rounded-xl font-bold hover:shadow-md transition-all">
             <UserPlus className="w-5 h-5" />
             Register Account
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       </section>
     </div>

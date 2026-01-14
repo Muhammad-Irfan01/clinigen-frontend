@@ -7,23 +7,23 @@ export default function AdverseEvent() {
   return (
     <div className="min-h-screen bg-[#f9f8f4] text-[#2d1a47] font-sans selection:bg-purple-100">
       <div className="max-w-5xl mx-auto px-6 py-12 md:py-20">
-        
+
         {/* --- Header Section --- */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold mb-8">Report an adverse event</h1>
-          
+
           <div className="space-y-6 text-[15px] leading-relaxed text-gray-700 font-medium max-w-4xl">
             <p>
               If your report is related to an <span className="text-[#7c3aed] font-bold">Access Program</span>:
             </p>
-            
+
             <p>
-              Please first check if a program-specific adverse event form is available. You can 
+              Please first check if a program-specific adverse event form is available. You can
               download it from the <span className="font-bold text-[#2d1a47]">Documents</span> tab on the relevant program page.
             </p>
-            
+
             <p>
-              If no specific form is available, or if your report is unrelated to an Access Program, 
+              If no specific form is available, or if your report is unrelated to an Access Program,
               please complete the form below and submit it via email.
             </p>
           </div>

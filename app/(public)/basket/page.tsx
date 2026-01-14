@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { CartItem, Cart } from '@/types/product';
 import useToast from '@/lib/useToast';
+import { Button } from '@/components/ui/Button';
 import { div } from 'framer-motion/client';
 
 // --- Main Basket Page ---
@@ -193,15 +194,16 @@ export default function BasketPage() {
               </p>
             </div>
 
-            <button
+            <Button
               onClick={() => router.push('/checkout')}
               className="w-full py-4 border border-[#706FE4] hover:text-white font-bold text-sm rounded-full shadow-lg hover:bg-[#706FE4] transition-colors"
             >
               Proceed to checkout
-            </button>
+            </Button>
 
             {/* Button to clear corrupted cart data */}
-            <button
+            <Button
+              varient="danger"
               onClick={async () => {
                 if (window.confirm('Are you sure you want to clear your cart? This will remove all items.')) {
                   try {
@@ -217,7 +219,7 @@ export default function BasketPage() {
               className="w-full py-2 mt-2 text-sm text-red-600 hover:text-white font-bold rounded-full border border-red-600 hover:bg-red-600 transition-colors"
             >
               Clear Cart (if having issues)
-            </button>
+            </Button>
           </div>
         </div>
       </div>

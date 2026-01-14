@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
 import useToast from "@/lib/useToast";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 export default function RecoverPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -57,32 +59,32 @@ export default function RecoverPasswordPage() {
           </header>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-sm mx-auto">
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-600 ml-1">Email</label>
-              <input
-                {...register("email", { required: "Email is required" })}
-                placeholder="info@haloishere.com"
-                className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              />
-              {errors.email && <span className="text-xs text-red-500 ml-1">{errors.email.message as string}</span>}
-            </div>
+            <Input
+              label="Email"
+              type="email"
+              placeholder="info@haloishere.com"
+              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+              registration={register("email", { required: "Email is required" })}
+              error={errors.email}
+            />
 
-            <motion.button
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
+            <Button
               type="submit"
               disabled={isLoading}
-              className={`w-full font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm
-                ${isLoading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#7B3FE4] hover:bg-[#6832ca] text-white"}`}
+              isLoading={isLoading}
+              className="w-full font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm"
             >
               {isLoading ? "Sending..." : "Email me a recovery link"}
-            </motion.button>
+            </Button>
 
             <div className="text-center mt-6">
-              <Link href="/signin" className="w-full inline-block border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#F3F2FF] font-bold py-2.5 rounded-full transition-all text-sm">
-                Back to login
+              <Link href="/signin">
+                <Button
+                  varient="secondary"
+                  className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#F3F2FF] font-bold py-2.5 rounded-full transition-all text-sm"
+                >
+                  Back to login
+                </Button>
               </Link>
             </div>
           </form>
@@ -117,9 +119,12 @@ export default function RecoverPasswordPage() {
           </div>
 
           <Link href="/signup" className="w-full max-w-50">
-            <button className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#7B3FE4] hover:text-white font-bold py-2.5 rounded-full transition-all text-sm">
+            <Button
+              varient="secondary"
+              className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#7B3FE4] hover:text-white font-bold py-2.5 rounded-full transition-all text-sm"
+            >
               Sign up
-            </button>
+            </Button>
           </Link>
         </div>
       </motion.div>

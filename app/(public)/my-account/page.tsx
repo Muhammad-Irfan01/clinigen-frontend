@@ -2,13 +2,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  RefreshCw, 
-  Info, 
-  MessageCircle, 
-  ChevronRight, 
-  MapPin 
+import {
+  RefreshCw,
+  Info,
+  MessageCircle,
+  ChevronRight,
+  MapPin
 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 // --- Components ---
 
@@ -26,7 +27,7 @@ const Field = ({ label, value, isEditable = false }: { label: string; value: str
       <p className="text-sm font-bold text-gray-800">{value}</p>
     </div>
     {isEditable && (
-      <button className="text-[#706FE4] text-xs font-bold hover:underline">Edit</button>
+      <Button varient="secondary" className="text-[#706FE4] text-xs font-bold hover:underline">Edit</Button>
     )}
   </div>
 );
@@ -73,18 +74,18 @@ export default function AccountDetailPage() {
             <p className="text-[11px] font-bold text-gray-400 uppercase">Account number: 222029</p>
             <p className="text-md font-bold text-[#1A1A1A]">Halo Health Technologies</p>
           </div>
-          <button className="flex items-center gap-2 text-[#706FE4] font-bold text-sm hover:underline">
+          <Button varient="secondary" className="flex items-center gap-2 text-[#706FE4] font-bold text-sm hover:underline">
             <RefreshCw size={16} /> Change institute
-          </button>
+          </Button>
         </section>
 
         {/* 3. Shipping Addresses */}
         <section className="space-y-4">
           <div className="flex justify-between items-center px-2">
             <h2 className="font-bold">Shipping addresses</h2>
-            <button className="px-8 py-2 border-2 border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
+            <Button varient="secondary" className="px-8 py-2 border-2 border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
               Request new address
-            </button>
+            </Button>
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-lg">

@@ -7,6 +7,8 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
 import useToast from "@/lib/useToast";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 
 type LoginFormInputs = {
   email: string;
@@ -58,38 +60,32 @@ export default function LoginPage() {
           </header>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-sm mx-auto">
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-600 ml-1">Email</label>
-              {/* Using your custom Input component */}
-              <input
-                {...register("email", { required: "Email is required" })}
-                placeholder="info@haloishere.com"
-                className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              />
-            </div>
+            <Input
+              label="Email"
+              type="email"
+              placeholder="info@haloishere.com"
+              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+              registration={register("email", { required: "Email is required" })}
+              error={errors.email}
+            />
 
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-600 ml-1">Password</label>
-              <input
-                type="password"
-                {...register("password", { required: "Password is required" })}
-                placeholder="password123"
-                className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              />
-            </div>
+            <Input
+              label="Password"
+              type="password"
+              placeholder="password123"
+              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+              registration={register("password", { required: "Password is required" })}
+              error={errors.password}
+            />
 
-            <motion.button
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
+            <Button
               type="submit"
               disabled={isLoading}
-              className={`w-full font-bold py-3.5 rounded-full mt-4 transition-all
-    ${isLoading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#7B3FE4] hover:bg-[#6832ca] text-white shadow-lg shadow-indigo-100"}
-  `}            >
+              isLoading={isLoading}
+              className="w-full font-bold py-3.5 rounded-full mt-4 transition-all"
+            >
               {isLoading ? "Logging in..." : "Login"}
-            </motion.button>
+            </Button>
 
             <div className="text-center mt-6">
               <Link href="/forget-password" className="text-[#4A90E2] hover:underline font-medium text-sm">
@@ -124,9 +120,12 @@ export default function LoginPage() {
           </div>
 
           <Link href="/signup" className="w-full max-w-40">
-            <button className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#7B3FE4] hover:text-white font-bold py-2.5 rounded-full transition-all">
+            <Button
+              varient="secondary"
+              className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#7B3FE4] hover:text-white font-bold py-2.5 rounded-full transition-all"
+            >
               Sign up
-            </button>
+            </Button>
           </Link>
         </div>
       </motion.div>
