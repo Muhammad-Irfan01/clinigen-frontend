@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useAuthStore } from "@/store/auth.store";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import Header from "@/components/themeforest/Header";
+import Footer from "@/components/themeforest/Footer";
 
 export default function ProtectedLayout({children}: {children: React.ReactNode}) {
     const {isAuthenticated, isLoading} = useAuthStore();

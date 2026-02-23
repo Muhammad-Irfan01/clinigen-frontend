@@ -21,17 +21,24 @@ export const productAPI = {
     api<Product>(`/products/${id}`),
 
   searchProducts: (params: SearchProductsParams) => {
-    const query = new URLSearchParams(
-      Object.entries(params)
-        .filter(([, v]) => v !== undefined && v !== "")
-        .map(([k, v]) => [k, String(v)])
-    );
+    const queryParams: Record<string, string> = {};
 
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        if (typeof value === 'number') {
+          queryParams[key] = value.toString();
+        } else {
+          queryParams[key] = value;
+        }
+      }
+    });
+
+    const query = new URLSearchParams(queryParams).toString();
     return api<ProductApiResponse>(`/products/search?${query}`);
   },
 
   // ---------- CART ----------
- getCart: () => authApi<Cart>("/products/cart"),
+  getCart: () => authApi<Cart>("/products/cart"),
 
   addToCart: (data: AddToCartRequest) =>
     authApi<Cart>("/products/cart/add", { method: "POST", data }),
@@ -60,5 +67,5 @@ export const productAPI = {
     authApi<Wishlist>("/products/bookmarks"),
 
   isBookmarked: (productId: number) =>
-    authApi<boolean>(`/products/${productId}/is-bookmarked`)
+    authApi<boolean>(`/products/${productId}/is-bookmarked`),
 };

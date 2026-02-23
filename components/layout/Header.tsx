@@ -27,11 +27,12 @@ const navItems: NavItem[] = [
     { label: "Home", href: "/" },
     { label: "Order", href: "/order", message: 'View all the order placed at your institute', requiresAuth: true },
     { label: "Products", href: "/products", message: 'View a complete catalogue of all our medicine' },
-    { label: "Access Programs", href: "/access-program", message: 'View managed access program you are enrolled ', requiresAuth: true },
-    { label: "Patients", href: "/patients", message: 'View all patients enrolled in managed access program', requiresAuth: true },
-    { label: "Physicians", href: "/physicians", message: 'View all physician you are associated to at you institute' },
+    // { label: "Access Programs", href: "/access-program", message: 'View managed access program you are enrolled ', requiresAuth: true },
+    // { label: "Patients", href: "/patients", message: 'View all patients enrolled in managed access program', requiresAuth: true },
+    // { label: "Physicians", href: "/physicians", message: 'View all physician you are associated to at you institute' },
     { label: "Shortage", href: "/shortage", message: 'View drug shortage in your country' },
-    { label: "Contact", href: "/support", message: 'Find frequent asked question and other support materials' },
+    { label: "About us", href: "/about", message: 'Learn more about Clinigen and our mission' },
+    { label: "Contact", href: "/contact", message: 'Get in touch with our global team' },
     { label: "Report Adverse Event", href: "/report-event", message: 'Click here to report adverse event your patient may have experience', requiresAuth: true },
 ];
 const Header = () => {

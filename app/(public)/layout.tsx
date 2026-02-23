@@ -1,13 +1,12 @@
-import Footer from "@/components/layout/Footer"
-import Header from "@/components/layout/Header"
-// import "../globsls.css"
+import Footer from "@/components/themeforest/Footer"
+import Header from "@/components/themeforest/Header"
 
 export default function PublicLayout({children}: {children: React.ReactNode}) {
     return (
         <>
-        <Header />
+        <Header theme="light" />
         <main>{children}</main>
-        <Footer />
+        <Footer theme="light" />
         </>
     )
 }
