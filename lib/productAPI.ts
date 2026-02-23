@@ -20,6 +20,9 @@ export const productAPI = {
   getProductById: (id: number) =>
     api<Product>(`/products/${id}`),
 
+  getProductBySlug: (slug: string) =>
+    api<Product>(`/products/${slug}`),
+
   searchProducts: (params: SearchProductsParams) => {
     const queryParams: Record<string, string> = {};
 

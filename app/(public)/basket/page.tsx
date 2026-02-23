@@ -240,6 +240,7 @@ function BasketProductCard({
 }) {
   const [quantity, setQuantity] = useState(item.quantity);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const router = useRouter();
 
   // Update local state when item.quantity changes
   useEffect(() => {
@@ -248,10 +249,21 @@ function BasketProductCard({
 
   const calculatedAmount = (quantity * (item.subtotal / item.quantity)).toFixed(2);
 
+  const productName = item.product?.product_translations?.[0]?.name || `Product ${item.productId}`;
+  const productDescription = item.product?.product_translations?.[0]?.description || 'Product details not available';
+  const productSku = item.product?.sku || 'N/A';
+  const productInStock = item.product?.in_stock ?? false;
+
   const handleQuantityUpdate = (newQuantity: number) => {
     if (newQuantity !== quantity) {
       setQuantity(newQuantity);
       onQuantityChange(item.productId, newQuantity);
+    }
+  };
+
+  const handleViewProduct = () => {
+    if (item.product?.slug) {
+      router.push(`/products/${item.product.slug}`);
     }
   };
 
@@ -260,18 +272,24 @@ function BasketProductCard({
 
       {/* Product Header Row */}
       <div className="flex justify-between items-start">
-        <div>
+        <div className="flex-1">
           <h3 className="text-lg font-black text-[#1D0E62]">
-            {item.product?.product_translations?.[0]?.name || `Product ${item.productId}`} ({item.product?.product_translations?.[0]?.name || 'N/A'})
+            {productName}
           </h3>
-          <p className="text-sm font-semibold text-gray-500">Number of packs</p>
+          <p className="text-sm text-gray-500 mt-1">{productDescription}</p>
+          <div className="flex items-center gap-4 mt-2">
+            <span className="text-xs font-semibold text-gray-400">SKU: {productSku}</span>
+            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${productInStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              {productInStock ? 'In Stock' : 'Out of Stock'}
+            </span>
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <span className="text-lg font-bold text-[#7C3AED]">£{calculatedAmount}</span>
           <button
             onClick={() => onRemove(item.productId)}
             className="text-gray-400 hover:text-red-500 transition-colors"
-            aria-label={`Delete ${item.product?.product_translations?.[0]?.name || 'item'} from basket`}
+            aria-label={`Delete ${productName} from basket`}
           >
             <Trash2 size={20} />
           </button>
@@ -312,10 +330,79 @@ function BasketProductCard({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden text-sm text-gray-600 border-t pt-4"
+            className="overflow-hidden text-sm text-gray-600 border-t pt-4 space-y-4"
           >
-            {item.product?.product_translations?.[0]?.description || 'Product details not available'} {/* Placeholder for full spec data */}
-            <p className="mt-2 text-[#7C3AED] font-semibold hover:underline cursor-pointer">View full details page</p>
+            {/* Product Information Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase">Brand ID</p>
+                <p className="text-sm font-semibold text-gray-700">{item.product?.brand_id || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase">Tax Class</p>
+                <p className="text-sm font-semibold text-gray-700">{item.product?.tax_class_id ? `Tax Class ${item.product.tax_class_id}` : 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase">Price</p>
+                <p className="text-sm font-semibold text-gray-700">£{item.product?.price || '0.00'}</p>
+              </div>
+              <div>
+                <p className="text-xs font-bold text-gray-400 uppercase">Virtual Product</p>
+                <p className="text-sm font-semibold text-gray-700">{item.product?.is_virtual ? 'Yes' : 'No'}</p>
+              </div>
+            </div>
+
+            {/* Shortage Information Section */}
+            <div className="border-t pt-4">
+              <p className="text-xs font-bold text-gray-400 uppercase mb-3">Shortage Information</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs font-bold text-gray-400 uppercase">Shortage Status</p>
+                  <p className="text-sm font-bold">
+                    {item.product?.shortage ? (
+                      <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-black">In Shortage</span>
+                    ) : (
+                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-black">Available</span>
+                    )}
+                  </p>
+                </div>
+                {item.product?.shortage_reason && (
+                  <div className="col-span-2">
+                    <p className="text-xs font-bold text-gray-400 uppercase">Shortage Reason</p>
+                    <p className="text-sm text-gray-700">{item.product.shortage_reason}</p>
+                  </div>
+                )}
+                {item.product?.shortage_start && (
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase">Shortage Start Date</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {new Date(item.product.shortage_start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  </div>
+                )}
+                {item.product?.shortage_end && (
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase">Expected End Date</p>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {new Date(item.product.shortage_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </p>
+                  </div>
+                )}
+                {item.product?.alternate && (
+                  <div>
+                    <p className="text-xs font-bold text-gray-400 uppercase">Alternate Product</p>
+                    <p className="text-sm font-semibold text-[#7C3AED]">{item.product.alternate}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={handleViewProduct}
+              className="text-[#7C3AED] font-semibold hover:underline cursor-pointer text-sm mt-2"
+            >
+              View full product page →
+            </button>
           </motion.div>
         )}
       </AnimatePresence>

@@ -7,22 +7,19 @@ import {
   ChevronDown,
   ChevronUp,
   ShoppingCart,
-  Heart,
-  Info,
-  Beaker,
-  Globe,
-  ClipboardCheck,
-  Thermometer,
+  Bookmark,
   Loader2
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { Product } from '@/types/product';
 import useToast from '@/lib/useToast';
+import { useAuth } from '@/lib/useAuth';
 
-export default function SingleProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function SingleProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = use(params);
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [isExpanded, setIsExpanded] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,90 +27,65 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
   const [isBookmarkLoading, setIsBookmarkLoading] = useState<boolean>(false);
   const { success: showSuccess, error: showError } = useToast();
 
-  // Fetch product details from backend
+  // Fetch product details from backend using slug
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-    let cancelled = false; // Flag to track if component unmounted
+    let cancelled = false;
 
     const fetchProduct = async () => {
       try {
-        console.log('Fetching product with ID:', id);
+        console.log('Fetching product with slug:', slug);
 
-        // Validate the ID parameter
-        const productId = parseInt(id);
-        if (isNaN(productId)) {
-          console.error('Invalid product ID:', id);
-          if (!cancelled) {
-            setLoading(false);
-          }
+        if (!slug || slug.trim() === '') {
+          console.error('Invalid product slug:', slug);
+          if (!cancelled) setLoading(false);
           return;
         }
 
         setLoading(true);
 
-        // Set a timeout to prevent hanging
         timeoutId = setTimeout(() => {
           console.log('Product fetch timed out');
-          if (!cancelled) {
-            setLoading(false);
-          }
-        }, 10000); // 10 seconds timeout
+          if (!cancelled) setLoading(false);
+        }, 10000);
 
-        // Fetch product data
-        const productData = await productAPI.getProductById(productId);
+        // Fetch product data by slug
+        const productData = await productAPI.getProductBySlug(slug);
         console.log('Product data received:', productData);
 
-        // Clear the timeout since we got the data
         clearTimeout(timeoutId);
 
         if (!cancelled) {
           setProduct(productData);
 
-          // Check if product is bookmarked (this requires auth)
+          // Check if product is bookmarked
           try {
-            const bookmarked = await productAPI.isBookmarked(productId);
+            const bookmarked = await productAPI.isBookmarked(productData.id);
             if (!cancelled) setIsBookmarked(bookmarked);
           } catch (error: any) {
-            // Check if it's an unauthorized error (401) - meaning user is not logged in or token is invalid
-            if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
-              console.log('User not authenticated or token invalid, setting bookmark to false:', error?.response?.data?.message || 'Unauthorized');
-              if (!cancelled) setIsBookmarked(false);
-            } else {
-              console.error('Error checking bookmark status:', error);
+            if (error?.response?.status === 401) {
               if (!cancelled) setIsBookmarked(false);
             }
           }
         }
       } catch (error: any) {
         console.error('Error fetching product:', error);
-        // Clear the timeout in case of error
         if (timeoutId) clearTimeout(timeoutId);
-
-        // Check if it's an unauthorized error (401) and handle appropriately
-        if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
-          console.log('Authentication required to view product details:', error?.response?.data?.message || 'Unauthorized');
-        } else {
-          console.error('Non-auth error occurred:', error);
-        }
       } finally {
-        // Ensure loading is set to false in all cases (unless component was unmounted)
         if (timeoutId) clearTimeout(timeoutId);
-        if (!cancelled) {
-          setLoading(false);
-        }
+        if (!cancelled) setLoading(false);
       }
     };
 
-    if (id) {
+    if (slug) {
       fetchProduct();
     }
 
-    // Cleanup function to clear timeout if component unmounts
     return () => {
       cancelled = true;
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [id]); // Only re-run if id changes
+  }, [slug]);
 
   const handleAddToCart = async () => {
     if (!product) return;
@@ -126,13 +98,10 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
       showSuccess('Product added to cart successfully!');
     } catch (error: any) {
       console.error('Error adding to cart:', error);
-      // Check if it's an unauthorized error (401) and handle appropriately
-      if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
+      if (error?.response?.status === 401) {
         showError('Please sign in to add products to your cart');
-        // Redirect to sign in page
         router.push('/signin');
       } else {
-        // For other errors (not auth-related), show the specific error
         const errorMessage = error?.response?.data?.message || error?.message || 'Failed to add product to cart';
         showError(errorMessage);
       }
@@ -151,17 +120,12 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
         await productAPI.addBookmark(product.id);
         setIsBookmarked(true);
       }
-      // Show success message
       showSuccess(isBookmarked ? 'Bookmark removed successfully!' : 'Added to bookmarks successfully!');
     } catch (error: any) {
       console.error('Error toggling bookmark:', error);
-      // Check if it's an unauthorized error (401) and handle appropriately
-      if (error?.response?.status === 401 || (error?.response?.data?.statusCode === 401)) {
+      if (error?.response?.status === 401) {
         showError('Please sign in to bookmark products');
-        // Optionally redirect to sign in page
-        // router.push('/signin');
       } else {
-        // For other errors (not auth-related), show the specific error
         const errorMessage = error?.response?.data?.message || error?.message || (isBookmarked ? 'Failed to remove bookmark' : 'Failed to add bookmark');
         showError(errorMessage);
       }
@@ -172,7 +136,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
 
   const getProductName = () => {
     if (!product || !product.product_translations || product.product_translations.length === 0) {
-      return `Product ${id}`;
+      return slug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     }
     return product.product_translations[0].name;
   };
@@ -198,6 +162,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-500">Product not found</h2>
+          <p className="text-gray-500 mt-2">The product &quot;{slug}&quot; does not exist.</p>
           <button
             onClick={() => router.push('/products')}
             className="mt-4 bg-[#706FE4] hover:bg-[#D89AFE] text-white px-6 py-2 rounded-full font-bold"
@@ -223,32 +188,39 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
           <div className="p-6 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h1 className="text-2xl font-black text-[#1D0E62]">{getProductName()}</h1>
-              <p className="text-sm text-gray-500">Product ID: {product.id} | Static ID: {id}</p>
+              <p className="text-sm text-gray-500">Product Slug: {product.slug}</p>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={handleBookmarkToggle}
-                disabled={isBookmarkLoading}
-                className={`p-3 rounded-full border ${
-                  isBookmarked
-                    ? 'bg-red-50 border-red-200 text-red-500'
-                    : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'
-                }`}
-              >
-                {isBookmarkLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Heart className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
-                )}
-              </button>
-              <button
-                onClick={handleAddToCart}
-                className="bg-[#706FE4] hover:bg-[#D89AFE] text-white px-8 py-3 rounded-full font-bold text-sm transition-all flex items-center gap-2"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Add to Cart
-              </button>
-            </div>
+            {isAuthenticated ? (
+              <div className="flex gap-3">
+                <button
+                  onClick={handleBookmarkToggle}
+                  disabled={isBookmarkLoading}
+                  className={`p-3 rounded-full border ${
+                    isBookmarked
+                      ? 'bg-red-50 border-red-200 text-red-500'
+                      : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  {isBookmarkLoading ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Bookmark className={`h-5 w-5 ${isBookmarked ? 'fill-current' : ''}`} />
+                  )}
+                </button>
+                <button
+                  onClick={handleAddToCart}
+                  className="bg-[#706FE4] hover:bg-[#D89AFE] text-white px-8 py-3 rounded-full font-bold text-sm transition-all flex items-center gap-2"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  Add to Cart
+                </button>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500 italic flex items-center gap-2">
+                <Bookmark className="h-4 w-4" />
+                Sign in to add to cart or bookmark
+              </p>
+            )}
           </div>
 
           {/* Main Product Row */}
@@ -287,12 +259,19 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
                   <td className="px-6 py-8 text-sm font-bold">£39.40</td>
                   <td className="px-6 py-8">
                     <div className="flex items-center gap-4">
-                      <button
-                        onClick={handleAddToCart}
-                        className="border text-[#706FE4] px-4 py-1.5 rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white hover:border-none transition-colors"
-                      >
-                        Add to Cart
-                      </button>
+                      {isAuthenticated ? (
+                        <button
+                          onClick={handleAddToCart}
+                          className="border text-[#706FE4] px-4 py-1.5 rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white hover:border-none transition-colors"
+                        >
+                          Add to Cart
+                        </button>
+                      ) : (
+                        <span className="text-xs text-gray-400 italic flex items-center gap-1">
+                          <Bookmark className="h-3 w-3" />
+                          Sign in to purchase
+                        </span>
+                      )}
                       <button
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="text-gray-400 hover:text-[#7C3AED] transition-colors"
@@ -315,7 +294,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
                 exit={{ height: 0, opacity: 0 }}
                 className="bg-[#FDFDFF] border-t overflow-hidden"
               >
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 p-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
                   {/* Column 1: Static Product Info */}
                   <div className="space-y-6">
                     <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Static Product Information</h4>
@@ -402,6 +381,51 @@ export default function SingleProductPage({ params }: { params: Promise<{ id: st
                           15-25 °C
                         </span>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Column 4: Shortage Information */}
+                  <div className="space-y-6">
+                    <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Shortage Information</h4>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[11px] font-bold text-gray-400 uppercase">Shortage Status</p>
+                        <p className="text-sm font-bold text-gray-800">
+                          {product.shortage ? (
+                            <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-black">Currently in Shortage</span>
+                          ) : (
+                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-black">No Shortage</span>
+                          )}
+                        </p>
+                      </div>
+                      {product.shortage_reason && (
+                        <div>
+                          <p className="text-[11px] font-bold text-gray-400 uppercase">Shortage Reason</p>
+                          <p className="text-sm text-gray-700">{product.shortage_reason}</p>
+                        </div>
+                      )}
+                      {product.shortage_start && (
+                        <div>
+                          <p className="text-[11px] font-bold text-gray-400 uppercase">Shortage Start Date</p>
+                          <p className="text-sm font-semibold text-gray-800">
+                            {new Date(product.shortage_start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+                      )}
+                      {product.shortage_end && (
+                        <div>
+                          <p className="text-[11px] font-bold text-gray-400 uppercase">Expected End Date</p>
+                          <p className="text-sm font-semibold text-gray-800">
+                            {new Date(product.shortage_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                          </p>
+                        </div>
+                      )}
+                      {product.alternate && (
+                        <div>
+                          <p className="text-[11px] font-bold text-gray-400 uppercase">Alternate Product</p>
+                          <p className="text-sm font-semibold text-[#7C3AED]">{product.alternate}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

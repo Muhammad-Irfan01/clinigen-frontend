@@ -52,6 +52,11 @@ export interface Product {
   created_at?: string; // Date string
   updated_at?: string; // Date string
   is_virtual: boolean;
+  shortage: boolean;
+  shortage_reason?: string;
+  shortage_start?: string; // Date string
+  shortage_end?: string; // Date string
+  alternate?: string;
   product_translations: ProductTranslation[];
   product_categories: ProductCategory[];
   // Add other related fields as needed

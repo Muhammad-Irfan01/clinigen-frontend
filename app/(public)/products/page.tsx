@@ -316,7 +316,7 @@ const ProductCatalogue = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
                       className="border-b border-gray-100 hover:bg-gray-50 transition-colors group cursor-pointer"
-                      onClick={() => router.push(`/products/${product.id}`)}
+                      onClick={() => router.push(`/products/${product.slug}`)}
                     >
                       <td className="py-6 px-4">
                         <div className="font-bold text-lg">{getProductName(product)}</div>

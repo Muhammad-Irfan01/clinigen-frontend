@@ -2,7 +2,7 @@
 import { Search, Loader2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { Product } from "@/types/product";
+import { Product, ProductApiResponse } from "@/types/product";
 import { productAPI } from "@/lib/productAPI";
 import { useRouter } from "next/navigation";
 
@@ -21,10 +21,12 @@ interface ProductSearchResult {
   description: string;
   slug: string;
   price?: number;
+  sku?: string;
+  in_stock?: boolean;
 }
 
 export const SearchInput = ({
-  placeholder = "Search for a product...",
+  placeholder = "Search for medicines...",
   button,
   onSearch,
   value,
@@ -39,7 +41,7 @@ export const SearchInput = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Debounced search
+  // Debounced search - wait 300ms after user stops typing
   useEffect(() => {
     const timer = setTimeout(() => {
       const searchTerm = value?.trim();
@@ -73,24 +75,30 @@ export const SearchInput = ({
   const fetchSuggestions = async (query: string) => {
     setIsLoading(true);
     try {
-      const response = await productAPI.searchProducts({
+      // Call backend API: GET /products/search?q={query}&limit=5&page=1
+      const response: ProductApiResponse = await productAPI.searchProducts({
         q: query,
         limit: 5,
         page: 1,
       });
 
-      const results: ProductSearchResult[] = response.data.map((product) => ({
-        id: product.id,
-        name:
-          product.product_translations[0]?.name ||
-          product.product_translations[0]?.description?.substring(0, 50) ||
-          "Untitled Product",
-        description:
-          product.product_translations[0]?.description?.substring(0, 80) ||
-          "",
-        slug: product.slug,
-        price: product.price || product.selling_price,
-      }));
+      // Transform backend response to search results
+      // Backend returns: { data: Product[], meta: { page, limit, total, pages } }
+      // Each Product has: product_translations[] with name, description
+      const results: ProductSearchResult[] = response.data
+        .filter((product) => product.is_active) // Only show active products
+        .map((product) => {
+          const translation = product.product_translations[0];
+          return {
+            id: product.id,
+            name: translation?.name || "Untitled Product",
+            description: translation?.description?.replace(/<[^>]*>/g, '').substring(0, 80) || "",
+            slug: product.slug,
+            price: product.price ? Number(product.price) : undefined,
+            sku: product.sku,
+            in_stock: product.in_stock,
+          };
+        });
 
       setSuggestions(results);
       setIsOpen(results.length > 0);
@@ -140,6 +148,7 @@ export const SearchInput = ({
   };
 
   const handleProductSelect = (product: ProductSearchResult) => {
+    // Navigate to product detail page using slug
     router.push(`/products/${product.slug}`);
     setIsOpen(false);
     setSuggestions([]);
@@ -159,6 +168,7 @@ export const SearchInput = ({
     e.preventDefault();
     const searchTerm = value?.trim();
     if (searchTerm) {
+      // Navigate to products page with search query
       router.push(`/products?q=${encodeURIComponent(searchTerm)}`);
       setIsOpen(false);
       setSuggestions([]);
@@ -232,28 +242,41 @@ export const SearchInput = ({
                   <li
                     key={product.id}
                     onClick={() => handleProductSelect(product)}
-                    className={`px-4 py-3 cursor-pointer transition-colors border-b border-gray-50 last:border-b-0 ${
+                    className={`px-4 py-4 flex justify-between cursor-pointer transition-colors border-b border-gray-50 last:border-b-0 ${
                       index === highlightedIndex
                         ? "bg-blue-50"
                         : "hover:bg-gray-50"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-gray-900 truncate">
-                          {product.name}
-                        </p>
+                    <div className="w-full flex gap-4">
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold text-gray-900 truncate">
+                            {product.name}
+                          </p>
+                          {product.in_stock !== undefined && (
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${product.in_stock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                              {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                            </span>
+                          )}
+                        </div>
                         {product.description && (
                           <p className="text-sm text-gray-500 truncate mt-0.5">
                             {product.description}
                           </p>
                         )}
+                        {product.sku && (
+                          <p className="text-xs text-gray-400 mt-1">SKU: {product.sku}</p>
+                        )}
                       </div>
-                      {product.price && (
-                        <p className="text-blue-600 font-semibold whitespace-nowrap">
-                          £{product.price.toFixed(2)}
-                        </p>
-                      )}
+                      <div className="flex flex-col items-end gap-1">
+                        {product.price && (
+                          <p className="text-blue-600 font-bold text-lg whitespace-nowrap">
+                            £{product.price.toFixed(2)}
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-400">Click to view</p>
+                      </div>
                     </div>
                   </li>
                 ))}

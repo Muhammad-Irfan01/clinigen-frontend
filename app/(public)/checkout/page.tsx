@@ -90,7 +90,7 @@ export default function CheckoutPage() {
       const checkoutData = {
         paymentMethod: formData.paymentMethod,
         shippingAddress: `${formData.shippingAddress}, ${formData.shippingCity}, ${formData.shippingState}, ${formData.shippingZip}, ${formData.shippingCountry}`,
-        billingAddress: formData.sameAsShipping 
+        billingAddress: formData.sameAsShipping
           ? `${formData.shippingAddress}, ${formData.shippingCity}, ${formData.shippingState}, ${formData.shippingZip}, ${formData.shippingCountry}`
           : `${formData.billingAddress}, ${formData.billingCity}, ${formData.billingState}, ${formData.billingZip}, ${formData.billingCountry}`,
         notes: formData.notes,
@@ -99,18 +99,22 @@ export default function CheckoutPage() {
 
       // Call checkout API
       const response = await productAPI.checkout(checkoutData);
-      
-      showSuccess(response.message || 'Order placed successfully!');
-      
-      // Redirect to order confirmation page
+
+      // Show success message
+      showSuccess('Order placed successfully! Redirecting to confirmation...');
+
+      // Clear cart and redirect to order confirmation page
       setTimeout(() => {
         router.push(`/order/${response.orderId}`);
-      }, 1500);
+      }, 2000);
     } catch (error: any) {
       console.error('Checkout error:', error);
       showError(error.message || 'Failed to place order. Please try again.');
     } finally {
-      setSubmitting(false);
+      // Keep submitting true during redirect to prevent form resubmission
+      if (!cart?.items || cart.items.length === 0) {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -140,7 +144,40 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-[#FDFDFF] p-6 md:p-12 font-sans text-[#1A1A1A]">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-black text-[#1D0E62] mb-6">Checkout</h1>
-        
+
+        {/* Loading Overlay - Shows when order is being placed */}
+        <AnimatePresence>
+          {submitting && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white rounded-2xl shadow-2xl p-8 max-w-md mx-4 text-center"
+              >
+                <div className="mb-6 flex justify-center">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="rounded-full h-16 w-16 border-4 border-[#7C3AED] border-t-transparent"
+                  />
+                </div>
+                <h2 className="text-2xl font-black text-[#1D0E62] mb-2">Processing Your Order</h2>
+                <p className="text-gray-600 mb-4">Please wait while we secure your order...</p>
+                <div className="flex items-center justify-center gap-2 text-sm text-[#7C3AED] font-semibold">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  This won't take long
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column: Shipping & Billing Info */}
