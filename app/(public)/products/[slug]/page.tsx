@@ -391,7 +391,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Shortage Status</p>
                         <p className="text-sm font-bold text-gray-800">
-                          {product.shortage ? (
+                          {product.is_shortage ? (
                             <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-black">Currently in Shortage</span>
                           ) : (
                             <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-black">No Shortage</span>
@@ -404,26 +404,43 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                           <p className="text-sm text-gray-700">{product.shortage_reason}</p>
                         </div>
                       )}
-                      {product.shortage_start && (
+                      {product.shortage_start_date && (
                         <div>
                           <p className="text-[11px] font-bold text-gray-400 uppercase">Shortage Start Date</p>
                           <p className="text-sm font-semibold text-gray-800">
-                            {new Date(product.shortage_start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            {new Date(product.shortage_start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </p>
                         </div>
                       )}
-                      {product.shortage_end && (
+                      {product.shortage_end_date && (
                         <div>
                           <p className="text-[11px] font-bold text-gray-400 uppercase">Expected End Date</p>
                           <p className="text-sm font-semibold text-gray-800">
-                            {new Date(product.shortage_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            {new Date(product.shortage_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </p>
                         </div>
                       )}
-                      {product.alternate && (
+                      {product.shortage_alternatives_shortage_alternatives_product_idToproducts &&
+                       product.shortage_alternatives_shortage_alternatives_product_idToproducts.length > 0 && (
                         <div>
-                          <p className="text-[11px] font-bold text-gray-400 uppercase">Alternate Product</p>
-                          <p className="text-sm font-semibold text-[#7C3AED]">{product.alternate}</p>
+                          <p className="text-[11px] font-bold text-gray-400 uppercase">Alternate Products</p>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {product.shortage_alternatives_shortage_alternatives_product_idToproducts
+                              .filter(alt => alt.products_shortage_alternatives_alternative_product_idToproducts?.slug)
+                              .map((alt, index) => {
+                                const altProduct = alt.products_shortage_alternatives_alternative_product_idToproducts;
+                                const altProductName = altProduct?.product_translations[0]?.name || `Product ${altProduct?.id}`;
+                                return (
+                                  <button
+                                    key={altProduct?.id || index}
+                                    onClick={() => router.push(`/products/${altProduct?.slug}`)}
+                                    className="text-sm font-semibold text-[#7C3AED] hover:text-[#5B21B6] hover:underline transition-colors"
+                                  >
+                                    {altProductName}
+                                  </button>
+                                );
+                              })}
+                          </div>
                         </div>
                       )}
                     </div>

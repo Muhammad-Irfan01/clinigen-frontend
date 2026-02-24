@@ -359,7 +359,7 @@ function BasketProductCard({
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase">Shortage Status</p>
                   <p className="text-sm font-bold">
-                    {item.product?.shortage ? (
+                    {item.product?.is_shortage ? (
                       <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-black">In Shortage</span>
                     ) : (
                       <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-black">Available</span>
@@ -372,26 +372,32 @@ function BasketProductCard({
                     <p className="text-sm text-gray-700">{item.product.shortage_reason}</p>
                   </div>
                 )}
-                {item.product?.shortage_start && (
+                {item.product?.shortage_start_date && (
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase">Shortage Start Date</p>
                     <p className="text-sm font-semibold text-gray-800">
-                      {new Date(item.product.shortage_start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(item.product.shortage_start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
                 )}
-                {item.product?.shortage_end && (
+                {item.product?.shortage_end_date && (
                   <div>
                     <p className="text-xs font-bold text-gray-400 uppercase">Expected End Date</p>
                     <p className="text-sm font-semibold text-gray-800">
-                      {new Date(item.product.shortage_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {new Date(item.product.shortage_end_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                   </div>
                 )}
-                {item.product?.alternate && (
+                {item.product?.shortage_alternatives_shortage_alternatives_product_idToproducts && 
+                 item.product.shortage_alternatives_shortage_alternatives_product_idToproducts.length > 0 && (
                   <div>
-                    <p className="text-xs font-bold text-gray-400 uppercase">Alternate Product</p>
-                    <p className="text-sm font-semibold text-[#7C3AED]">{item.product.alternate}</p>
+                    <p className="text-xs font-bold text-gray-400 uppercase">Alternate Products</p>
+                    <p className="text-sm font-semibold text-[#7C3AED]">
+                      {item.product.shortage_alternatives_shortage_alternatives_product_idToproducts
+                        .map(alt => alt.products_shortage_alternatives_alternative_product_idToproducts?.product_translations[0]?.name)
+                        .filter(Boolean)
+                        .join(', ')}
+                    </p>
                   </div>
                 )}
               </div>
