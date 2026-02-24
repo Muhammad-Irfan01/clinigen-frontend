@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -41,10 +41,6 @@ const navItems = [
     title: "Support",
     to: "/support",
   },
-  {
-    title: "Contact",
-    to: "/contact",
-  },
 ];
 
 interface HeaderProps {
@@ -57,229 +53,324 @@ export default function Header({ theme = "light" }: HeaderProps) {
   const [showMobileNav, setShowMobileNav] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [isHeaderFixed, setIsHeaderFixed] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
+  
+  const headerRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<number>(0);
 
   const isLight = theme === "light";
 
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const headerHeight = headerRef.current?.offsetHeight || 0;
+    if (scrollRef.current >= headerHeight) {
+      setIsHeaderFixed(true);
+    } else {
+      setIsHeaderFixed(false);
+    }
+  }, [scrollRef.current]);
+
+  const handleScroll = () => {
+    scrollRef.current = window.scrollY;
+    // Force re-render for the scroll effect
+    setIsHeaderFixed((prev) => {
+      const headerHeight = headerRef.current?.offsetHeight || 0;
+      return scrollRef.current >= headerHeight;
+    });
+  };
+
   return (
     <>
-      <header
-        className={`sticky top-0 z-50 bg-white border-b border-gray-200 ${
-          isLight ? "" : "bg-[#270072] border-transparent"
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <Link href="/" className="shrink-0">
-              <Image
-                src={
-                  isLight
-                    ? "/images/Halo-Direct.png"
-                    : "/images/Halo-Direct-Light.png"
-                }
-                alt="Clinigen"
-                width={148}
-                height={40}
-                priority
-              />
-            </Link>
+      <div ref={headerRef} className={`header ${isHeaderFixed ? "fixed" : ""}`}>
+        <header className="menu -style-1 bg-white border-b border-gray-200">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="menu__wrapper flex items-center justify-between h-[74px]">
+              {/* Logo */}
+              <h1 className="shrink-0">
+                <Link href="/" className="menu__wrapper__logo block">
+                  <Image
+                    src={
+                      isLight
+                        ? "/images/Halo-Direct.png"
+                        : "/images/Halo-Direct-Light.png"
+                    }
+                    alt="Clinigen"
+                    width={148}
+                    height={40}
+                    priority
+                    className="h-10 w-auto"
+                  />
+                </Link>
+              </h1>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
-              {navItems.map((item) => (
-                <div
-                  key={item.title}
-                  className="relative"
-                  onMouseEnter={() => item.subMenu && setOpenSubMenu(item.title)}
-                  onMouseLeave={() => item.subMenu && setOpenSubMenu(null)}
-                >
-                  <Link
-                    href={item.to}
-                    className={`text-sm font-medium transition-colors ${
-                      pathname === item.to
-                        ? "text-[#706FE4] underline underline-offset-8 decoration-2"
-                        : isLight
-                        ? "text-gray-700 hover:text-[#706FE4]"
-                        : "text-white hover:text-purple-200"
-                    }`}
-                  >
-                    {item.title}
-                  </Link>
-
-                  {/* Dropdown Menu */}
-                  {item.subMenu && (
-                    <AnimatePresence>
-                      {openSubMenu === item.title && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2"
+              {/* Desktop Navigation */}
+              <nav className="hidden lg:block">
+                <ul className="navigator list-none p-0 m-0 text-0">
+                  {navItems.map((item, index) => {
+                    const isActive = pathname === item.to || (item.to !== "/" && pathname.includes(item.to));
+                    
+                    if (item.subMenu) {
+                      return (
+                        <li
+                          key={item.title}
+                          className={`inline-block mx-3 relative group ${isActive ? "active" : ""}`}
+                          onMouseEnter={() => setOpenSubMenu(item.title)}
+                          onMouseLeave={() => setOpenSubMenu(null)}
                         >
-                          {item.subMenu.map((subItem) => (
-                            <Link
-                              key={subItem.title}
-                              href={subItem.to}
-                              className={`block px-4 py-2 text-sm ${
-                                pathname === subItem.to
-                                  ? "bg-[#F7F4F1] text-[#706FE4]"
-                                  : "text-gray-700 hover:bg-[#F7F4F1]"
-                              }`}
-                            >
-                              {subItem.title}
-                            </Link>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  )}
+                          <Link
+                            href={item.to}
+                            className={`text-[14px] font-bold text-black hover:text-black relative block transition-all duration-300 ${
+                              isActive ? "text-[#706FE4]" : ""
+                            }`}
+                          >
+                            <span className="relative z-10">{item.title}</span>
+                            <span className="absolute bottom-[-2px] left-0 h-[2px] w-0 bg-[#706FE4] transition-all duration-300 group-hover:w-full" />
+                          </Link>
+
+                          {/* Dropdown Menu */}
+                          <AnimatePresence>
+                            {openSubMenu === item.title && (
+                              <motion.ul
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 10 }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                                className="dropdown-menu absolute top-[49px] left-[-40px] bg-white px-5 py-[18px] rounded-b-[16px] shadow-[-2px_2px_81px_-27px_rgba(0,0,0,0.3)] min-w-[200px] z-50"
+                              >
+                                {item.subMenu.map((subItem) => {
+                                  const isSubActive = pathname === subItem.to;
+                                  return (
+                                    <li
+                                      key={subItem.title}
+                                      className={`list-none rounded-[8px] ${isSubActive ? "active" : ""}`}
+                                    >
+                                      <Link
+                                        href={subItem.to}
+                                        className={`relative inline-flex text-[16px] font-semibold text-black transition-all duration-300 px-5 py-[17px] ${
+                                          isSubActive ? "text-black" : ""
+                                        }`}
+                                      >
+                                        <span className="relative z-10">{subItem.title}</span>
+                                        <span className="absolute bottom-[17px] left-[20px] h-[1px] w-0 bg-black transition-all duration-300 group-hover:w-[calc(100%-40px)]" />
+                                      </Link>
+                                    </li>
+                                  );
+                                })}
+                              </motion.ul>
+                            )}
+                          </AnimatePresence>
+                        </li>
+                      );
+                    }
+
+                    return (
+                      <li
+                        key={item.title}
+                        className={`inline-block mx-3 relative group ${isActive ? "active" : ""}`}
+                      >
+                        <Link
+                          href={item.to}
+                          className={`text-[14px] font-bold text-black hover:text-black relative block transition-all duration-300 ${
+                            isActive ? "text-[#706FE4]" : ""
+                          }`}
+                        >
+                          <span className="relative z-10">{item.title}</span>
+                          <span className="absolute bottom-[-2px] left-0 h-[2px] w-0 bg-[#706FE4] transition-all duration-300 group-hover:w-full" />
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+
+              {/* Right Side Functions */}
+              <div className="menu__wrapper__functions flex items-center gap-4">
+                {/* Contact Link */}
+                <div className="list__button flex items-center gap-4 pr-4 max-lg:hidden">
+                  <Link
+                    href="/contact"
+                    className="button-main text-button-sm bg-[#706FE4] hover:bg-[#5a5bd4] text-white px-5 py-2.5 rounded-full font-bold text-sm transition-all"
+                  >
+                    Contact
+                  </Link>
                 </div>
-              ))}
-            </nav>
 
-            {/* Right Side Actions */}
-            <div className="hidden lg:flex items-center gap-4">
-              {/* <Link
-                href="/contact"
-                className={`text-sm font-medium ${
-                  isLight ? "text-gray-700 hover:text-[#706FE4]" : "text-white hover:text-purple-200"
-                }`}
-              >
-                Contact
-              </Link> */}
-
-              {isAuthenticated ? (
-                <div className="flex items-center gap-3">
-                  {/* Bookmark */}
-                  <button
-                    onClick={() => router.push("/bookmark")}
-                    className={`relative p-2 rounded-lg transition-colors ${
-                      isLight ? "hover:bg-gray-100" : "hover:bg-white/10"
-                    }`}
-                    title="Bookmark"
-                  >
-                    <Icon.Bookmark className={`text-xl ${isLight ? "text-gray-700" : "text-white"}`} />
-                  </button>
-
-                  {/* Cart */}
-                  <button
-                    onClick={() => router.push("/basket")}
-                    className={`relative p-2 rounded-lg transition-colors ${
-                      isLight ? "hover:bg-gray-100" : "hover:bg-white/10"
-                    }`}
-                    title="Basket"
-                  >
-                    <Icon.ShoppingCart className={`text-xl ${isLight ? "text-gray-700" : "text-white"}`} />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-[#706FE4] rounded-full"></span>
-                  </button>
-
-                  {/* User Menu */}
-                  <div className="relative">
+                {/* Icons */}
+                <div className="list__icons flex items-center">
+                  {/* Search Icon - Only show when logged in */}
+                  {isAuthenticated && (
                     <button
-                      onClick={() => setShowUserMenu(!showUserMenu)}
-                      className={`flex items-center gap-2 p-2 rounded-lg transition-colors ${
-                        isLight ? "hover:bg-gray-100" : "hover:bg-white/10"
-                      }`}
+                      className="menu-icon -search flex-shrink-0 mr-6 hover:opacity-70 transition-opacity"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowSearch(true);
+                      }}
+                      aria-label="Search"
                     >
-                      <div className="w-8 h-8 bg-[#706FE4] rounded-full flex items-center justify-center text-white text-sm font-bold">
-                        {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
-                      </div>
-                      <Icon.CaretDown className={`text-sm ${isLight ? "text-gray-700" : "text-white"}`} />
+                      <Icon.MagnifyingGlass className="text-2xl text-gray-700" />
                     </button>
+                  )}
 
-                    {/* User Dropdown */}
-                    <AnimatePresence>
-                      {showUserMenu && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-                        >
-                          <div className="px-4 py-2 border-b border-gray-200">
-                            <p className="text-sm font-medium text-gray-900">{user?.name || "User"}</p>
-                            <p className="text-xs text-gray-500 truncate">{user?.email}</p>
-                          </div>
-                          <Link
-                            href="/my-account"
-                            onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
+                  {/* Cart Icon - Only show when logged in */}
+                  {isAuthenticated && (
+                    <button
+                      className="menu-icon -cart flex-shrink-0 mr-6 relative hover:opacity-70 transition-opacity"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        router.push("/basket");
+                      }}
+                      aria-label="Cart"
+                    >
+                      <Icon.Handbag className="text-2xl text-gray-700" />
+                      <span className="cart__quantity absolute top-[-4px] right-[-5px] h-4 w-4 bg-[#706FE4] text-white text-[10px] font-normal rounded-full flex items-center justify-center">
+                        0
+                      </span>
+                    </button>
+                  )}
+
+                  {/* User Menu / Auth Buttons */}
+                  {isAuthenticated ? (
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowUserMenu(!showUserMenu)}
+                        className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="w-8 h-8 bg-[#706FE4] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                          {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
+                        </div>
+                        <Icon.CaretDown className="text-sm text-gray-700" />
+                      </button>
+
+                      {/* User Dropdown */}
+                      <AnimatePresence>
+                        {showUserMenu && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
                           >
-                            <Icon.User className="text-lg" />
-                            My Account
-                          </Link>
-                          <Link
-                            href="/preference"
-                            onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
-                          >
-                            <Icon.Gear className="text-lg" />
-                            Preferences
-                          </Link>
-                          {/* <Link
-                            href="/basket"
-                            onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
-                          >
-                            <Icon.ShoppingCart className="text-lg" />
-                            My Basket
-                          </Link>
-                          <Link
-                            href="/bookmark"
-                            onClick={() => setShowUserMenu(false)}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
-                          >
-                            <Icon.Bookmark className="text-lg" />
-                            Bookmarks
-                          </Link> */}
-                          <button
-                            onClick={() => {
-                              logout();
-                              setShowUserMenu(false);
-                              router.push("/");
-                            }}
-                            className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-[#F7F4F1]"
-                          >
-                            <Icon.SignOut className="text-lg" />
-                            Logout
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <Link
-                    href="/signin"
-                    className="px-5 py-2.5 bg-[#706FE4] text-white text-sm font-bold rounded-lg hover:bg-[#5a5bd4] transition-colors"
+                            <div className="px-4 py-2 border-b border-gray-200">
+                              <p className="text-sm font-medium text-gray-900">{user?.name || "User"}</p>
+                              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                            </div>
+                            <Link
+                              href="/my-account"
+                              onClick={() => setShowUserMenu(false)}
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
+                            >
+                              <Icon.User className="text-lg" />
+                              My Account
+                            </Link>
+                            <Link
+                              href="/preference"
+                              onClick={() => setShowUserMenu(false)}
+                              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
+                            >
+                              <Icon.Gear className="text-lg" />
+                              Preferences
+                            </Link>
+                            <button
+                              onClick={() => {
+                                logout();
+                                setShowUserMenu(false);
+                                router.push("/");
+                              }}
+                              className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-[#F7F4F1]"
+                            >
+                              <Icon.SignOut className="text-lg" />
+                              Logout
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 max-lg:hidden">
+                      <Link
+                        href="/signin"
+                        className="px-5 py-2.5 bg-[#706FE4] text-white text-sm font-bold rounded-full hover:bg-[#5a5bd4] transition-all"
+                      >
+                        Sign In
+                      </Link>
+                      <Link
+                        href="/signup"
+                        className="px-5 py-2.5 border border-[#706FE4] text-[#706FE4] text-sm font-bold rounded-full hover:bg-[#F7F4F1] transition-colors"
+                      >
+                        Sign Up
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Mobile Menu Button */}
+                  <button
+                    className="menu-icon -navbar lg:hidden ml-4"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowMobileNav(true);
+                    }}
+                    aria-label="Open menu"
                   >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="px-5 py-2.5 border border-[#706FE4] text-[#706FE4] text-sm font-bold rounded-lg hover:bg-[#F7F4F1] transition-colors"
-                  >
-                    Sign Up
-                  </Link>
+                    <Icon.List className="text-3xl text-gray-700" />
+                  </button>
                 </div>
-              )}
+              </div>
             </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden p-2"
-              onClick={() => setShowMobileNav(true)}
-              aria-label="Open menu"
-            >
-              <Icon.List className={`text-2xl ${isLight ? "text-gray-700" : "text-white"}`} />
-            </button>
           </div>
-        </div>
-      </header>
+
+          {/* Search Box Overlay */}
+          <AnimatePresence>
+            {showSearch && (
+              <>
+                {/* Overlay */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/50 z-[51]"
+                  onClick={() => setShowSearch(false)}
+                />
+
+                {/* Search Box */}
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute top-full right-0 w-[500px] max-lg:w-[90%] max-lg:mx-auto max-lg:left-1/2 max-lg:-translate-x-1/2 z-[52] mt-2"
+                >
+                  <div className="search-box relative">
+                    <form className="relative z-10">
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        className="w-full px-4 py-3 pr-12 border-0 shadow-[1px_1px_9px_#00000024] rounded-lg focus:ring-2 focus:ring-[#706FE4] outline-none"
+                        autoFocus
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSearch(false)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 border-0 bg-transparent cursor-pointer"
+                      >
+                        <Icon.X className="text-xl text-gray-500" />
+                      </button>
+                    </form>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </header>
+      </div>
 
       {/* Mobile Navigation Sidebar */}
       <AnimatePresence>
@@ -290,7 +381,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 z-50"
+              className="fixed inset-0 bg-black/50 z-[51]"
               onClick={() => setShowMobileNav(false)}
             />
 
@@ -300,125 +391,112 @@ export default function Header({ theme = "light" }: HeaderProps) {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.3 }}
-              className="fixed top-0 right-0 h-full w-80 bg-white z-50 shadow-xl overflow-y-auto"
+              className="fixed top-0 right-0 h-full w-[360px] max-w-[90vw] bg-white z-[52] shadow-xl overflow-y-auto px-10 py-10"
             >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <Image
-                    src="/images/Halo-Direct.png"
-                    alt="Clinigen"
-                    width={120}
-                    height={32}
-                  />
-                  <button
-                    onClick={() => setShowMobileNav(false)}
-                    className="p-2 hover:bg-gray-100 rounded-lg"
-                    aria-label="Close menu"
-                  >
-                    <Icon.X className="text-xl text-gray-700" />
-                  </button>
+              {/* Search Box - Only show when logged in */}
+              {isAuthenticated && (
+                <div className="search-box mb-[30px]">
+                  <form className="relative">
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="w-full px-4 py-3 pr-12 border-0 shadow-[1px_1px_9px_#00000024] rounded-lg focus:ring-2 focus:ring-[#706FE4] outline-none"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 border-0 bg-transparent"
+                    >
+                      <Icon.MagnifyingGlass className="text-xl text-gray-500" />
+                    </button>
+                  </form>
                 </div>
+              )}
 
-                <nav className="space-y-2">
+              {/* Mobile Navigation */}
+              <nav className="navigator-mobile mb-[80px]">
+                <ul className="list-none">
                   {navItems.map((item) => (
-                    <div key={item.title}>
+                    <li key={item.title}>
                       <Link
                         href={item.to}
                         onClick={() => !item.subMenu && setShowMobileNav(false)}
-                        className={`block py-3 px-4 rounded-lg text-base font-medium ${
-                          pathname === item.to
-                            ? "bg-[#F7F4F1] text-[#706FE4]"
-                            : "text-gray-700 hover:bg-[#F7F4F1]"
-                        }`}
+                        className="text-[16px] font-semibold text-gray-900 block py-[9px]"
                       >
                         {item.title}
                       </Link>
-
                       {item.subMenu && (
-                        <div className="pl-4 mt-1 space-y-1">
+                        <ul className="dropdown-menu pl-[15px] pb-[15px]">
                           {item.subMenu.map((subItem) => (
-                            <Link
-                              key={subItem.title}
-                              href={subItem.to}
-                              onClick={() => setShowMobileNav(false)}
-                              className={`block py-2 px-4 rounded-lg text-sm ${
-                                pathname === subItem.to
-                                  ? "bg-[#F7F4F1] text-[#706FE4]"
-                                  : "text-gray-600 hover:bg-[#F7F4F1]"
-                              }`}
-                            >
-                              {subItem.title}
-                            </Link>
+                            <li key={subItem.title}>
+                              <Link
+                                href={subItem.to}
+                                onClick={() => setShowMobileNav(false)}
+                                className="text-[14px] font-medium text-gray-600 block py-[11px] hover:text-[#706FE4] transition-colors"
+                              >
+                                {subItem.title}
+                              </Link>
+                            </li>
                           ))}
-                        </div>
+                        </ul>
                       )}
-                    </div>
+                    </li>
                   ))}
-                </nav>
+                </ul>
+              </nav>
 
-                {/* Authenticated User Actions */}
-                {isAuthenticated && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <p className="text-sm font-medium text-gray-900 mb-3">Quick Actions</p>
-                    <div className="space-y-2">
-                      <Link
-                        href="/basket"
-                        onClick={() => setShowMobileNav(false)}
-                        className="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-[#F7F4F1] rounded-lg"
-                      >
-                        <Icon.ShoppingCart className="text-lg" />
-                        My Basket
-                      </Link>
-                      <Link
-                        href="/bookmark"
-                        onClick={() => setShowMobileNav(false)}
-                        className="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-[#F7F4F1] rounded-lg"
-                      >
-                        <Icon.Bookmark className="text-lg" />
-                        Bookmarks
-                      </Link>
-                      <Link
-                        href="/my-account"
-                        onClick={() => setShowMobileNav(false)}
-                        className="flex items-center gap-3 py-2 px-4 text-gray-700 hover:bg-[#F7F4F1] rounded-lg"
-                      >
-                        <Icon.User className="text-lg" />
-                        My Account
-                      </Link>
+              {/* Footer */}
+              <div className="navigation-sidebar__footer mt-auto">
+                {isAuthenticated ? (
+                  <>
+                    <div className="mb-[50px]">
+                      <p className="text-[16px] font-medium text-gray-900 mb-3">Quick Actions</p>
+                      <div className="space-y-2">
+                        <Link
+                          href="/basket"
+                          onClick={() => setShowMobileNav(false)}
+                          className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#706FE4] transition-colors"
+                        >
+                          <Icon.Handbag className="text-lg" />
+                          My Basket
+                        </Link>
+                        <Link
+                          href="/my-account"
+                          onClick={() => setShowMobileNav(false)}
+                          className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#706FE4] transition-colors"
+                        >
+                          <Icon.User className="text-lg" />
+                          My Account
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                )}
-
-                <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
-                  {isAuthenticated ? (
                     <button
                       onClick={() => {
                         logout();
                         setShowMobileNav(false);
                       }}
-                      className="block w-full py-3 px-4 bg-red-600 text-white text-center font-bold rounded-lg hover:bg-red-700"
+                      className="w-full py-3 px-4 bg-red-600 text-white text-center font-bold rounded-full hover:bg-red-700 transition-colors"
                     >
                       Logout
                     </button>
-                  ) : (
-                    <>
-                      <Link
-                        href="/signin"
-                        onClick={() => setShowMobileNav(false)}
-                        className="block w-full py-3 px-4 bg-[#706FE4] text-white text-center font-bold rounded-lg hover:bg-[#5a5bd4]"
-                      >
-                        Sign In
-                      </Link>
-                      <Link
-                        href="/signup"
-                        onClick={() => setShowMobileNav(false)}
-                        className="block w-full py-3 px-4 border border-[#706FE4] text-[#706FE4] text-center font-bold rounded-lg hover:bg-[#F7F4F1]"
-                      >
-                        Sign Up
-                      </Link>
-                    </>
-                  )}
-                </div>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href="/signin"
+                      onClick={() => setShowMobileNav(false)}
+                      className="block w-full py-3 px-4 bg-[#706FE4] text-white text-center font-bold rounded-full hover:bg-[#5a5bd4] transition-colors mb-3"
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setShowMobileNav(false)}
+                      className="block w-full py-3 px-4 border border-[#706FE4] text-[#706FE4] text-center font-bold rounded-full hover:bg-[#F7F4F1] transition-colors"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </motion.div>
           </>
