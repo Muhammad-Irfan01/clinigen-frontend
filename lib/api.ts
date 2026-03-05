@@ -7,6 +7,7 @@ export async function api<T>(
 ): Promise<T> {
   const response = await axiosInstance({
     url: endpoint,
+    withCredentials: true,
     ...options,
   });
 

@@ -1,0 +1,66 @@
+
+> clinigen-frontend@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   ▲ Next.js 16.0.10 (Turbopack)
+   - Environments: .env.local
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled successfully in 37.3s
+   Running TypeScript ...
+   Collecting page data using 3 workers ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   Generating static pages using 3 workers (0/29) ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+   Generating static pages using 3 workers (7/29) 
+   Generating static pages using 3 workers (14/29) 
+   Generating static pages using 3 workers (21/29) 
+ ✓ Generating static pages using 3 workers (29/29) in 1807.1ms
+   Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /access-program
+├ ƒ /access-program/[id]
+├ ○ /auth-demo
+├ ○ /basket
+├ ○ /bookmark
+├ ○ /checkout
+├ ○ /contact
+├ ○ /create-patient
+├ ○ /forget-password
+├ ○ /home
+├ ○ /my-account
+├ ○ /order
+├ ƒ /order/[id]
+├ ○ /patients
+├ ƒ /patients/[id]
+├ ○ /physicians
+├ ○ /preference
+├ ○ /privacy-policy
+├ ○ /products
+├ ƒ /products/[slug]
+├ ○ /report-event
+├ ○ /reset-password
+├ ○ /shortage
+├ ○ /signin
+├ ○ /signup
+├ ○ /support
+├ ○ /terms-of-use
+├ ○ /toast-demo
+└ ○ /verify-email
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
