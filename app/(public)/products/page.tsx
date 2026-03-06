@@ -1,16 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, X, ChevronDown, ArrowRight, ExternalLink, Loader2 } from 'lucide-react';
+import { Search, ChevronDown, ArrowRight, Loader2, Check, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Pagination from '@/components/ui/Pagination';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { Product, SearchProductsParams } from '@/types/product';
+import Image from 'next/image';
 
 const THERAPEUTIC_AREAS = [
   "Alimentary Tract and Metabolism", "Antiinfectives for Systemic Use",
@@ -51,24 +50,18 @@ const ProductCatalogue = () => {
       try {
         setLoading(true);
 
-        // If there's a search term, use search API, otherwise get all products
         let response;
         if (searchTerm.trim()) {
-          // Build search parameters
           const searchParams: SearchProductsParams = {
             q: searchTerm || undefined,
             page: currentPage,
             limit: resultsPerPage,
           };
 
-          // Add price range if applicable
           if (priceRange[0] > 0) searchParams.minPrice = priceRange[0];
           if (priceRange[1] < 10000) searchParams.maxPrice = priceRange[1];
 
-          // Add category filter if selected
           if (selectedCategories.length > 0) {
-            // For simplicity, we'll use the first selected category
-            // In a real implementation, you might want to handle multiple categories differently
             searchParams.category = selectedCategories[0];
           }
 
@@ -76,10 +69,7 @@ const ProductCatalogue = () => {
           setProducts(response.data);
           setTotalPages(response.meta.pages);
         } else {
-          // Get all products when no search term
           const allProducts = await productAPI.getAllProducts();
-
-          // Apply pagination manually to all products
           const startIndex = (currentPage - 1) * resultsPerPage;
           const endIndex = startIndex + resultsPerPage;
           const paginatedProducts = allProducts.slice(startIndex, endIndex);
@@ -99,24 +89,22 @@ const ProductCatalogue = () => {
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
-    setCurrentPage(1); // Reset to first page when search term changes
+    setCurrentPage(1);
   };
 
   const applyFilters = () => {
-    // Build URL with current filters
     const params = new URLSearchParams();
     if (searchTerm) params.set('q', searchTerm);
-    if (searchTerm && currentPage > 1) params.set('page', currentPage.toString()); // Only add page when searching
-    if (searchTerm && resultsPerPage !== 5) params.set('limit', resultsPerPage.toString()); // Only add limit when searching
+    if (searchTerm && currentPage > 1) params.set('page', currentPage.toString());
+    if (searchTerm && resultsPerPage !== 5) params.set('limit', resultsPerPage.toString());
 
     router.push(`/products?${params.toString()}`);
   };
 
-  // Apply filters when they change
   useEffect(() => {
     const timer = setTimeout(() => {
       applyFilters();
-    }, 300); // Debounce to avoid too many API calls
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [searchTerm, currentPage, resultsPerPage, JSON.stringify(selectedAreas), priceRange[0], priceRange[1], JSON.stringify(selectedAvailability), JSON.stringify(selectedCategories)]);
@@ -174,92 +162,103 @@ const ProductCatalogue = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans text-[#431d60]">
-      <div className="max-w-7xl mx-auto py-12 px-4">
-
-        <motion.h1
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="text-4xl md:text-5xl font-bold mb-10"
-        >
-          Product catalogue (Dynamic Data)
-        </motion.h1>
+    <div className="min-h-screen bg-[#F8F9FA] font-sans">
+      <div className="max-w-7xl mx-auto py-12 px-6">
 
         {/* --- Filter Section --- */}
-        <div className="border border-gray-200 bg-[#f9f8f3] rounded-sm shadow-sm mb-8">
-          <div className="flex flex-col md:flex-row border-b border-gray-200">
-            <div onClick={() => setShowFilter(!showFilter)} className="px-6 py-5 flex items-center text-[#706FE4] hover:bg-[#706FE4] hover:text-white cursor-pointer border-r border-gray-200 md:w-64">
-              <span className=" font-bold text-xs tracking-widest flex items-center">
-                 ADVANCED FILTERING
-              </span>
-            </div>
-            <div className="flex-1 p-4 flex items-center gap-4">
-              <span className="font-bold text-xs tracking-widest uppercase">Search</span>
-              <div className="relative flex-1">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 overflow-hidden">
+          <div className="flex flex-col md:flex-row">
+            {/* Advanced Filter Dropdown Button */}
+            <button
+              onClick={() => setShowFilter(!showFilter)}
+              className="flex items-center gap-2 px-4 py-3 bg-[#706FE4] text-white font-medium text-sm hover:bg-[#5F5ED4] transition-colors"
+            >
+              Advanced Filter
+              <ChevronDown size={16} className={clsx("transition-transform", showFilter && "rotate-180")} />
+            </button>
+
+            {/* Search Bar */}
+            <div className="flex-1 p-3 flex items-center">
+              <div className="relative flex-1 flex items-center">
+                <div className="absolute left-3 text-[#706FE4]">
+                  <Search size={18} />
+                </div>
                 <input
                   type="text"
-                  placeholder="By program, generic name or brand name"
-                  className="w-full bg-white border border-gray-300 rounded px-4 py-2 italic text-sm focus:outline-none"
+                  placeholder="Search by generic or brand name"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#706FE4] focus:ring-1 focus:ring-[#706FE4]"
                   value={searchTerm}
                   onChange={handleSearch}
                 />
-                <Search className="absolute right-3 top-2.5 text-gray-400" size={16} />
+                <button className="absolute right-1 bg-[#706FE4] hover:bg-[#5F5ED4] text-white p-1.5 rounded-md transition-colors">
+                  <Search size={16} />
+                </button>
               </div>
             </div>
           </div>
+
+          {/* Expandable Filter Panel */}
+          <AnimatePresence>
             {showFilter && (
-              <div className="p-8 space-y-8">
-                <div>
-                  <div className="flex justify-between mb-4">
-                    <h3 className="text-[11px] font-bold tracking-widest uppercase">Advanced Filtering</h3>
-                    <Button
-                      varient="secondary"
-                      className="text-[#706FE4] text-sm font-bold"
-                      onClick={clearAllFilters}
-                    >
-                      Clear all
-                    </Button>
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="p-6 space-y-6 bg-gray-50 border-t">
+                  <div>
+                    <div className="flex justify-between mb-4">
+                      <h3 className="text-xs font-bold tracking-widest uppercase text-gray-700">Availability</h3>
+                      <button
+                        onClick={clearAllFilters}
+                        className="text-[#706FE4] text-sm font-medium hover:underline"
+                      >
+                        Clear all
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {["Access Program", "Available", "Available On Request"].map(f => (
+                        <button
+                          key={f}
+                          onClick={() => toggleAvailability(f)}
+                          className={clsx(
+                            "px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
+                            selectedAvailability.includes(f)
+                              ? "bg-[#706FE4] text-white border-[#706FE4]"
+                              : "bg-white text-gray-600 border-gray-300 hover:border-[#706FE4]"
+                          )}
+                        >
+                          {f}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {["Access Program", "Available", "Available On Request"].map(f => (
-                      <FilterChip
-                        key={f}
-                        label={f}
-                        active={selectedAvailability.includes(f)}
-                        onClick={() => toggleAvailability(f)}
-                      />
-                    ))}
+
+                  <div>
+                    <h3 className="text-xs font-bold tracking-widest uppercase text-gray-700 mb-4">Therapeutic Area</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {THERAPEUTIC_AREAS.map(area => (
+                        <button
+                          key={area}
+                          onClick={() => toggleTherapeuticArea(area)}
+                          className={clsx(
+                            "px-3 py-1.5 rounded-full text-xs font-medium transition-all border",
+                            selectedAreas.includes(area)
+                              ? "bg-[#706FE4] text-white border-[#706FE4]"
+                              : "bg-white text-gray-600 border-gray-300 hover:border-[#706FE4]"
+                          )}
+                        >
+                          {area}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                <div>
-                  <h3 className="text-[11px] font-bold tracking-widest uppercase mb-4">Therapeutic Area</h3>
-                  <motion.div
-                    animate={{ height: isExpanded ? 'auto' : '85px' }}
-                    className="flex flex-wrap gap-2 overflow-hidden"
-                  >
-                    {THERAPEUTIC_AREAS.map(area => (
-                      <FilterChip
-                        key={area}
-                        label={area}
-                        active={selectedAreas.includes(area)}
-                        onClick={() => toggleTherapeuticArea(area)}
-                      />
-                    ))}
-                  </motion.div>
-                  <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="mt-4 flex items-center text-[#7c3aed] font-bold text-sm"
-                  >
-                    {isExpanded ? 'See less' : 'See more'} <ChevronDown size={16} className={clsx("ml-1 transition-transform", isExpanded && "rotate-180")} />
-                  </button>
-                </div>
-
-                <div>
-                  <h3 className="text-[11px] font-bold tracking-widest uppercase mb-4">Price Range</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-xs mb-1">
+                  <div>
+                    <h3 className="text-xs font-bold tracking-widest uppercase text-gray-700 mb-4">Price Range</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-xs text-gray-600">
                         <span>Min: £{priceRange[0]}</span>
                         <span>Max: £{priceRange[1]}</span>
                       </div>
@@ -270,7 +269,7 @@ const ProductCatalogue = () => {
                           max="10000"
                           value={priceRange[0]}
                           onChange={(e) => setPriceRange([parseInt(e.target.value), priceRange[1]])}
-                          className="w-full"
+                          className="w-full accent-[#706FE4]"
                         />
                         <input
                           type="range"
@@ -278,116 +277,191 @@ const ProductCatalogue = () => {
                           max="10000"
                           value={priceRange[1]}
                           onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
-                          className="w-full"
+                          className="w-full accent-[#706FE4]"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
+          </AnimatePresence>
         </div>
 
-        {/* --- Product Table/List Section --- */}
-        <div className="mt-12 overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="border-b-2 border-[#431d60] text-left text-[11px] font-bold tracking-widest uppercase">
-                <th className="pb-4 px-4 w-1/3">Product Name</th>
-                <th className="pb-4 px-4 w-1/4">Program</th>
-                <th className="pb-4 px-4">Therapeutic Area</th>
-                <th className="pb-4 px-4 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan={4} className="py-12 text-center">
-                    <Loader2 className="mx-auto h-8 w-8 animate-spin" />
-                    <p className="mt-2">Loading products...</p>
-                  </td>
-                </tr>
-              ) : products.length > 0 ? (
-                <AnimatePresence>
-                  {products.map((product, idx) => (
-                    <motion.tr
-                      key={product.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.05 }}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors group cursor-pointer"
-                      onClick={() => router.push(`/products/${product.slug}`)}
-                    >
-                      <td className="py-6 px-4">
-                        <div className="font-bold text-lg">{getProductName(product)}</div>
-                        <div className="text-sm text-gray-500 italic">{getProductDescription(product)}</div>
-                        <div className="text-xs text-gray-600 mt-1">DB: {getProductName(product)}</div>
-                      </td>
-                      <td className="py-6 px-4">
-                        <span className={clsx(
-                          "text-xs font-bold px-2 py-1 rounded border",
-                          "border-purple-200 text-[#D89AFE] bg-purple-50"
-                        )}>
-                          Access Program
-                        </span>
-                        <div className="text-xs text-gray-600 mt-1">DB: {product.is_active ? "Available" : "Inactive"}</div>
-                      </td>
-                      <td className="py-6 px-4 text-sm text-gray-600">
-                        {getProductCategory(product)}
-                        <div className="text-xs text-gray-600 mt-1">DB: {getProductCategory(product)}</div>
-                      </td>
-                      <td className="py-6 px-4 text-right">
-                        <Button
-                          varient="secondary"
-                          className="inline-flex items-center text-[#706FE4] font-bold text-sm hover:underline"
-                        >
-                          REQUEST <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              ) : (
-                <tr>
-                  <td colSpan={4} className="py-12 text-center">
-                    <p className="text-gray-500">No products found</p>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* --- Product List Section --- */}
+        <div className="mt-8">
+          {/* Table Headers */}
+          <div className="grid grid-cols-12 gap-4 px-4 py-3 text-xs font-bold tracking-widest uppercase text-gray-500">
+            <div className="col-span-5">Product Name</div>
+            <div className="col-span-2">Program</div>
+            <div className="col-span-3">Therapeutic Area</div>
+            <div className="col-span-2 text-right">Action</div>
+          </div>
+
+          {/* Product Rows */}
+          <div className="space-y-3">
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-[#706FE4]" />
+                <span className="ml-3 text-gray-600">Loading products...</span>
+              </div>
+            ) : products.length > 0 ? (
+              <AnimatePresence>
+                {products.map((product, idx) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                    className="grid grid-cols-12 gap-4 px-4 py-5 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => router.push(`/products/${product.slug}`)}
+                  >
+                    {/* Product Name Column */}
+                    <div className="col-span-5">
+                      <div className="font-bold text-gray-800 text-base">{getProductName(product)}</div>
+                      {getProductDescription(product) && (
+                        <div className="text-sm text-gray-500 mt-1">{getProductDescription(product)}</div>
+                      )}
+                    </div>
+
+                    {/* Program Column */}
+                    <div className="col-span-2 flex items-center">
+                      <span className="inline-flex px-3 py-1 bg-[#E8E0FF] text-[#706FE4] rounded-full text-xs font-medium">
+                        Access Program
+                      </span>
+                    </div>
+
+                    {/* Therapeutic Area Column */}
+                    <div className="col-span-3 flex items-center">
+                      <span className="text-sm text-gray-600">{getProductCategory(product)}</span>
+                    </div>
+
+                    {/* Action Column */}
+                    <div className="col-span-2 flex items-center justify-end">
+                      <button
+                        className="inline-flex items-center gap-2 bg-gradient-to-r from-[#706FE4] to-[#8575E9] text-white px-5 py-2 rounded-full text-xs font-bold hover:from-[#5F5ED4] hover:to-[#706FE4] transition-all shadow-sm hover:shadow-md"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/products/${product.slug}`);
+                        }}
+                      >
+                        REQUEST
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            ) : (
+              <div className="text-center py-12 text-gray-500">
+                No products found
+              </div>
+            )}
+          </div>
         </div>
 
         {/* --- Pagination --- */}
         {!loading && products.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            resultsPerPage={resultsPerPage}
-            onPageChange={(page) => setCurrentPage(page)}
-            onResultsPerPageChange={(count) => {
-              setResultPerPage(count);
-              setCurrentPage(1);
-            }}
-          />
+          <div className="mt-8">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              resultsPerPage={resultsPerPage}
+              onPageChange={(page) => setCurrentPage(page)}
+              onResultsPerPageChange={(count) => {
+                setResultPerPage(count);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
         )}
       </div>
+       <section className="max-w-7xl mx-auto px-6 py-16">
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                    {/* Left Content */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                        className="space-y-6"
+                    >
+                        <h2 className="text-3xl lg:text-4xl font-bold text-[#0F2544] leading-tight">
+                            Stay Updated with<br />
+                            <span className="text-[#706FE4]">Real-Time Shortage Information</span>
+                        </h2>
+                        
+                        <p className="text-[#5B6B7A] leading-relaxed text-lg">
+                            Our platform provides healthcare professionals across the UK with 
+                            up-to-date information on medicine shortages, ensuring you can make 
+                            informed decisions for your patients.
+                        </p>
+
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-3">
+                                <div className="w-6 h-6 rounded-full bg-[#706FE4] flex items-center justify-center flex-shrink-0 mt-1">
+                                    <Check className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-[#1A1A3F]">Daily Updates</h3>
+                                    <p className="text-sm text-gray-600">Shortage data updated daily from official sources</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <div className="w-6 h-6 rounded-full bg-[#706FE4] flex items-center justify-center flex-shrink-0 mt-1">
+                                    <Check className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-[#1A1A3F]">Verified Alternatives</h3>
+                                    <p className="text-sm text-gray-600">Clinically assessed alternative medicines</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-3">
+                                <div className="w-6 h-6 rounded-full bg-[#706FE4] flex items-center justify-center flex-shrink-0 mt-1">
+                                    <Check className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-[#1A1A3F]">Nationwide Coverage</h3>
+                                    <p className="text-sm text-gray-600">Complete coverage across all UK regions</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button className="mt-4 bg-[#706FE4] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#5a5bd4] transition-colors inline-flex items-center gap-2">
+                            Learn More
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
+                    </motion.div>
+
+                    {/* Right Image */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="relative"
+                    >
+                        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                            <Image
+                                src="/images/shortage.jpg"
+                                alt="Healthcare professional checking medicine shortage information"
+                                width={600}
+                                height={500}
+                                className="w-full h-auto object-cover"
+                            />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
+                        </div>
+                        
+                        {/* Decorative Elements */}
+                        <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#706FE4]/10 rounded-full blur-2xl"></div>
+                        <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#F5F2EE] rounded-full blur-2xl"></div>
+                    </motion.div>
+                </div>
+            </section>
     </div>
   );
 };
-
-const FilterChip = ({ label, active, onClick }: { label: string, active?: boolean, onClick?: () => void }) => (
-  <button
-    className={clsx(
-      "px-4 py-2 border rounded text-sm font-medium transition-all",
-      active
-        ? "bg-[#706FE4] text-white border-[#706FE4]"
-        : "bg-white text-[#706FE4] border-gray-300 hover:border-[#706FE4] hover:bg-[#706FE4] hover:text-white"
-    )}
-    onClick={onClick}
-  >
-    {label}
-  </button>
-);
 
 export default ProductCatalogue;

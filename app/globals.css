@@ -2,9 +2,13 @@
 
 /* Font Family CSS Variables */
 :root {
+  --font-sans: 'Manrope', sans-serif;
   --font-manrope: 'Manrope', sans-serif;
-  --font-orbitron: 'Orbitron', sans-serif;
-  --font-poppins: 'Poppins', sans-serif;
+}
+
+/* Default Body Font */
+body {
+  font-family: var(--font-manrope);
 }
 
 /* Poppins Font Classes - All Weights */

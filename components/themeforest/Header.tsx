@@ -18,7 +18,7 @@ const navItems = [
     title: "Products",
     to: "/products",
     subMenu: [
-      { title: "All Products", to: "/products" },
+      // { title: "All Products", to: "/products" },
       { title: "Specialty Medicines", to: "/products?category=specialty" },
       { title: "Shortage Medicines", to: "/shortage" },
     ],

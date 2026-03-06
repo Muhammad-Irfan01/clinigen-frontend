@@ -5,12 +5,13 @@ import { AppTooltip } from "../ui/Tooltip"
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../ui/Input";
 import { useForm } from "react-hook-form";
 import HaloHealthModal from "../ui/HaloHealthModal";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import { useProductStore } from "@/store/product.store";
 
 interface NavItem {
     label: string,
@@ -42,6 +43,16 @@ const Header = () => {
     const [showMenuItems, setShowMenuItems] = useState<boolean>(false);
     const [haloHealthModalOpen, setHaloHealthModalOpen] = useState<boolean>(false)
     const { logout, isAuthenticated } = useAuthStore();
+    const { cart, fetchCart } = useProductStore();
+
+    // Fetch cart on mount and when authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchCart();
+        }
+    }, [isAuthenticated]);
+
+    const cartCount = cart?.count || 0;
 
     const handleLogout = () => {
         logout();
@@ -113,9 +124,14 @@ const Header = () => {
                                 </div>
                             </div>
 
-                            <div onClick={() => router.push('/basket')} className="flex items-center gap-1 text-sm hover:underline hover:text-[#007aff] cursor-pointer">
+                            <div onClick={() => router.push('/basket')} className="flex items-center gap-1 text-sm hover:underline hover:text-[#007aff] cursor-pointer relative">
                                 <ShoppingCart strokeWidth={1.5} />
                                 <span>Basket</span>
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-[#706FE4] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                        {cartCount}
+                                    </span>
+                                )}
                             </div>
                         </>
                     ) : (
@@ -145,11 +161,14 @@ const Header = () => {
                         return null;
                     }
 
+                    // Check if current path matches the item href or starts with it (for nested routes)
+                    const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
                     return (
                         <AppTooltip key={item.href} content={item.message}>
                             <Link href={item.href} className={clsx('hover:text-black hover:underline decoration-2 underline-offset-8',
                                 {
-                                    'text-black underline': pathname === item.href
+                                    'text-black underline': isActive
                                 })}>
                                 {item.label}
                             </Link>
@@ -183,11 +202,14 @@ const Header = () => {
                                     return null;
                                 }
 
+                                // Check if current path matches the item href or starts with it (for nested routes)
+                                const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
                                 return (
                                     <AppTooltip key={item.href} content={item.message} side="right">
                                         <Link href={item.href} className={clsx('hover:text-[#7239FF] hover:underline decoration-2 underline-offset-8',
                                             {
-                                                'text-white underline': pathname === item.href
+                                                'text-white underline': isActive
                                             })}>
                                             {item.label}
                                         </Link>
@@ -199,9 +221,14 @@ const Header = () => {
                     <div className="bg-white flex items-center justify-evenly py-6 text-[#20025B]">
                         {isAuthenticated ? (
                             <>
-                                <div onClick={() => router.push('/basket')} className="flex flex-col items-center cursor-pointer">
+                                <div onClick={() => router.push('/basket')} className="flex flex-col items-center cursor-pointer relative">
                                     <ShoppingCart strokeWidth={1.5} />
                                     <span className="text-xs mt-1">Basket</span>
+                                    {cartCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-[#706FE4] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                            {cartCount}
+                                        </span>
+                                    )}
                                 </div>
                                 <div onClick={() => router.push('/bookmark')} className="flex flex-col items-center cursor-pointer">
                                     <Bookmark strokeWidth={1.4} />

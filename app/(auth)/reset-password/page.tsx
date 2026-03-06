@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
@@ -14,16 +14,44 @@ interface ResetPasswordFormData {
   confirmPassword: string;
 }
 
+// Validation helper
+const validatePassword = (password: string) => {
+  if (!password) return "Password is required";
+  if (password.length < 8) return "Password must be at least 8 characters";
+  if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
+  if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
+  if (!/[0-9]/.test(password)) return "Password must contain at least one number";
+  return true;
+};
+
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { resetPassword } = useAuthStore();
+  const { resetPassword, resetEmail, setResetEmail } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const { register, handleSubmit, formState: { errors }, watch } = useForm<ResetPasswordFormData>();
 
+  const password = watch('password');
+
+  // Get email from URL or store
+  useEffect(() => {
+    const emailFromUrl = searchParams.get('email');
+    if (emailFromUrl && !resetEmail) {
+      setResetEmail(emailFromUrl);
+    }
+  }, []);
+
   const onSubmit = async (data: ResetPasswordFormData) => {
     setIsLoading(true);
+
+    // Validate password strength
+    const passwordValidation = validatePassword(data.password);
+    if (passwordValidation !== true) {
+      toast.error(passwordValidation);
+      setIsLoading(false);
+      return;
+    }
 
     if (data.password !== data.confirmPassword) {
       toast.error('Passwords do not match');
@@ -32,11 +60,12 @@ export default function ResetPasswordPage() {
     }
 
     // Get the code from URL parameters
-    const code = searchParams.get('code') || '';
+    const code = searchParams.get('code');
 
     if (!code) {
-      toast.error('Reset code is required');
+      toast.error('Reset code is required. Please request a new reset code.');
       setIsLoading(false);
+      router.push('/forget-password');
       return;
     }
 
@@ -76,21 +105,39 @@ export default function ResetPasswordPage() {
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
-          <Input
-            label="New Password"
-            type="password"
-            placeholder="Enter new password"
-            className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-            registration={register("password", { required: "Password is required" })}
-            error={errors.password}
-          />
+          <div>
+            <Input
+              label="New Password"
+              type="password"
+              placeholder="Enter new password"
+              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+              registration={register("password", { 
+                required: "Password is required",
+                validate: (v) => validatePassword(v)
+              })}
+              error={errors.password}
+            />
+            {errors.password && (
+              <div className="mt-2 text-xs text-slate-500 space-y-1">
+                <ul className="list-disc list-inside space-y-0.5">
+                  <li>At least 8 characters</li>
+                  <li>One uppercase letter</li>
+                  <li>One lowercase letter</li>
+                  <li>One number</li>
+                </ul>
+              </div>
+            )}
+          </div>
 
           <Input
             label="Confirm New Password"
             type="password"
             placeholder="Confirm new password"
             className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-            registration={register("confirmPassword", { required: "Please confirm your password" })}
+            registration={register("confirmPassword", { 
+              required: "Please confirm your password",
+              validate: (v) => v === password ? true : "Passwords do not match"
+            })}
             error={errors.confirmPassword}
           />
 

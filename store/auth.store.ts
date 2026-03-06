@@ -33,6 +33,8 @@ interface AuthState {
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
+    userEmail: string | null; // Store email for resend activation
+    resetEmail: string | null; // Store email for password reset
 
     // Auth methods
     login: (email: string, password: string) => Promise<void>;
@@ -42,8 +44,12 @@ interface AuthState {
     fetchProfile: () => Promise<void>;
     changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
     forgotPassword: (email: string) => Promise<void>;
-    resetPassword: (token: string, newPassword: string) => Promise<void>;
+    verifyResetEmail: (email: string, code: string) => Promise<void>;
+    resetPassword: (code: string, newPassword: string) => Promise<void>;
     verifyEmail: (code: string) => Promise<void>;
+    resendActivationCode: (email: string) => Promise<void>;
+    setUserEmail: (email: string) => void; // Set email after signup
+    setResetEmail: (email: string) => void; // Set email for password reset
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -52,6 +58,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     isAuthenticated: false,
     isLoading: false,
     error: null,
+    userEmail: null,
+    resetEmail: null,
 
     login: async (email, password) => {
         set({ isLoading: true, error: null });
@@ -80,7 +88,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         try {
             const res = await authAPI.register(data);
 
+            // Store the user email for resend activation
             set({
+                userEmail: data.email,
                 user: null,
                 isAuthenticated: false,
                 isLoading: false
@@ -153,10 +163,28 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         try {
             await authAPI.forgotPassword({ email });
-            toast.success('Password reset link sent to your email');
+            // Store the email for password reset verification
+            set({ resetEmail: email });
+            toast.success('Password reset code sent to your email');
         } catch (error: any) {
             toast.error(error.message || 'Failed to send reset link');
             throw error;
+        }
+    },
+
+    verifyResetEmail: async (email: string, code: string) => {
+        set({ isLoading: true, error: null });
+        const toast = useToast();
+
+        try {
+            await authAPI.verifyResetEmail({ email, code });
+            toast.success('Email verified successfully! You can now reset your password.');
+        } catch (error: any) {
+            set({ error: error.message, isLoading: false });
+            toast.error(error.message || 'Failed to verify email');
+            throw error;
+        } finally {
+            set({ isLoading: false });
         }
     },
 
@@ -190,6 +218,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             toast.error(error.message || 'Failed to verify email');
             throw error;
         }
+    },
+
+    resendActivationCode: async (email: string) => {
+        set({ isLoading: true, error: null });
+        const toast = useToast();
+
+        try {
+            const response = await authAPI.resendActivationCode(email);
+            toast.success(response.message || 'Activation code resent successfully! Please check your email.');
+        } catch (error: any) {
+            set({ error: error.message, isLoading: false });
+            toast.error(error.message || 'Failed to resend activation code');
+            throw error;
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+
+    setUserEmail: (email: string) => {
+        set({ userEmail: email });
+    },
+
+    setResetEmail: (email: string) => {
+        set({ resetEmail: email });
     },
 }))
 

@@ -37,6 +37,17 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
+export interface VerifyResetEmailRequest {
+  email: string;
+  code: string;
+}
+
+export interface VerifyResetEmailResponse {
+  message: string;
+  email: string;
+  userId: number;
+}
+
 export interface ResetPasswordRequest {
   code: string;
   password: string;

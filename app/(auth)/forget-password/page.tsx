@@ -10,6 +10,14 @@ import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
+// Validation helper
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email) return "Email is required";
+  if (!emailRegex.test(email)) return "Please enter a valid email address";
+  return true;
+};
+
 export default function RecoverPasswordPage() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const { forgotPassword } = useAuthStore();
@@ -21,10 +29,10 @@ export default function RecoverPasswordPage() {
     setIsLoading(true);
     try {
       await forgotPassword(data.email);
-      toast.success("Password reset link sent to your email");
-      // Redirect to sign in after successful request
+      toast.success("6 digit code is send to your email");
+      // Redirect to verify email for reset page with email parameter
       setTimeout(() => {
-        router.push("/signin");
+        router.push(`/verify-email-reset?email=${encodeURIComponent(data.email)}`);
       }, 2000);
     } catch (error: any) {
       toast.error(error.message || "Failed to send reset link");
@@ -64,7 +72,10 @@ export default function RecoverPasswordPage() {
               type="email"
               placeholder="info@haloishere.com"
               className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              registration={register("email", { required: "Email is required" })}
+              registration={register("email", { 
+                required: "Email is required",
+                validate: (v) => validateEmail(v)
+              })}
               error={errors.email}
             />
 
@@ -74,7 +85,7 @@ export default function RecoverPasswordPage() {
               isLoading={isLoading}
               className="w-full font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm"
             >
-              {isLoading ? "Sending..." : "Email me a recovery link"}
+              {isLoading ? "Sending..." : "Email me a verification code"}
             </Button>
 
             <div className="text-center mt-6">

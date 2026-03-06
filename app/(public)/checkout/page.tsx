@@ -464,7 +464,7 @@ export default function CheckoutPage() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-4 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-bold text-sm rounded-full shadow-lg flex items-center justify-center disabled:opacity-50"
+                className="w-full py-4 bg-[#706FE4] hover:bg-[#5a5bd4] text-white font-bold text-sm rounded-full shadow-lg flex items-center justify-center disabled:opacity-50"
               >
                 {submitting ? (
                   <>

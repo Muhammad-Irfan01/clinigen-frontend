@@ -15,6 +15,14 @@ type LoginFormInputs = {
   password: string;
 };
 
+// Validation helpers
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email) return "Email is required";
+  if (!emailRegex.test(email)) return "Please enter a valid email address";
+  return true;
+};
+
 export default function LoginPage() {
   const { register, handleSubmit, formState: {errors}} = useForm<LoginFormInputs>();
   const { isLoading, login } = useAuthStore();
@@ -23,7 +31,6 @@ export default function LoginPage() {
 
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    // console.log("Login Data:", data);
     try {
       await login(data.email, data.password);
       router.push('/')
@@ -65,7 +72,10 @@ export default function LoginPage() {
               type="email"
               placeholder="info@haloishere.com"
               className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              registration={register("email", { required: "Email is required" })}
+              registration={register("email", { 
+                required: "Email is required",
+                validate: (v) => validateEmail(v)
+              })}
               error={errors.email}
             />
 
@@ -74,7 +84,13 @@ export default function LoginPage() {
               type="password"
               placeholder="password123"
               className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              registration={register("password", { required: "Password is required" })}
+              registration={register("password", { 
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters"
+                }
+              })}
               error={errors.password}
             />
 

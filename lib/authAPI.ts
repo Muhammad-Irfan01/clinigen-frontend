@@ -1,5 +1,5 @@
 import { api } from './api';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ForgotPasswordRequest, ResetPasswordRequest, ChangePasswordRequest, UserProfile, VerifyEmailResponse, VerifyEmailRequest } from '@/types/auth';
+import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, ForgotPasswordRequest, ResetPasswordRequest, ChangePasswordRequest, UserProfile, VerifyEmailResponse, VerifyEmailRequest, VerifyResetEmailRequest, VerifyResetEmailResponse } from '@/types/auth';
 
 // Auth API functions
 export const authAPI = {
@@ -26,6 +26,13 @@ export const authAPI = {
   // Forgot Password
   forgotPassword: (data: ForgotPasswordRequest) =>
     api('/auth/forgot-password', {
+      method: 'POST',
+      data,
+    }),
+
+  // Verify Reset Email
+  verifyResetEmail: (data: VerifyResetEmailRequest) =>
+    api<VerifyResetEmailResponse>('/auth/verify-reset-email', {
       method: 'POST',
       data,
     }),
@@ -68,5 +75,12 @@ export const authAPI = {
     api<VerifyEmailResponse>('/auth/activate-account', {
       method: 'POST',
       data,
+    }),
+
+  // Resend Activation Code
+  resendActivationCode: (email: string) =>
+    api('/auth/resend-activation-code', {
+      method: 'POST',
+      data: { email },
     }),
 };

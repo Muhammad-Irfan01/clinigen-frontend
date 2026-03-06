@@ -13,8 +13,54 @@ import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
+// --- Validation Helpers ---
+const validateEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email) return "Email is required";
+  if (!emailRegex.test(email)) return "Please enter a valid email address";
+  return true;
+};
+
+const validatePhone = (phone: string) => {
+  const phoneRegex = /^[\d\s+\-()]{10,}$/;
+  if (!phone) return "Phone number is required";
+  if (!phoneRegex.test(phone)) return "Please enter a valid phone number";
+  return true;
+};
+
+const validatePassword = (password: string) => {
+  if (!password) return "Password is required";
+  if (password.length < 8) return "Password must be at least 8 characters";
+  if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter";
+  if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter";
+  if (!/[0-9]/.test(password)) return "Password must contain at least one number";
+  return true;
+};
+
+const validateRequired = (value: string, fieldName: string) => {
+  if (!value?.trim()) return `${fieldName} is required`;
+  return true;
+};
+
 // --- Types ---
 type SignupStep = 1 | 2 | 3;
+
+interface SignupFormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  jobRole: string;
+  licenseNumber: string;
+  extension: string;
+  instituteSearch: string;
+  instituteName: string;
+  addressLine1: string;
+  townCity: string;
+  country: string;
+  medicineSearch: string;
+  password: string;
+}
 
 export default function ClinigenSignupFlow() {
   const [currentStep, setCurrentStep] = useState<SignupStep>(1);
@@ -23,7 +69,7 @@ export default function ClinigenSignupFlow() {
   const router = useRouter();
   const { error: showError } = useToast();
 
-  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, control, setValue, trigger, formState: { errors } } = useForm<SignupFormData>({
     defaultValues: {
       firstName: "", lastName: "", email: "", phone: "", jobRole: "", licenseNumber: "", extension: "",
       instituteSearch: "", instituteName: "", addressLine1: "", townCity: "", country: "United Kingdom",
@@ -35,14 +81,31 @@ export default function ClinigenSignupFlow() {
   const watchJob = useWatch({ control, name: "jobRole" });
   const watchInstituteSearch = useWatch({ control, name: "instituteSearch" });
 
-  const nextStep = () => setCurrentStep((prev) => (prev as number) + 1 as SignupStep);
+  const nextStep = async () => {
+    let fieldsToValidate: (keyof SignupFormData)[] = [];
+    
+    if (currentStep === 1) {
+      fieldsToValidate = ["firstName", "lastName", "email", "phone", "password"];
+      if (watchJob === "Physician") {
+        fieldsToValidate.push("licenseNumber");
+      }
+    } else if (currentStep === 2) {
+      fieldsToValidate = ["instituteName", "addressLine1", "townCity"];
+    }
+
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid) {
+      setCurrentStep((prev) => (prev as number) + 1 as SignupStep);
+    }
+  };
+  
   const prevStep = () => setCurrentStep((prev) => (prev as number) - 1 as SignupStep);
 
-  const onSubmit = async (data: any) => {
-
+  const onSubmit = async (data: SignupFormData) => {
     try {
       await signup({ ...data, medicineSearch: selectedMedicines.join(', ') });
-      router.push('/verify-email');
+      // Redirect to verify-email page with email parameter
+      router.push(`/verify-email?email=${encodeURIComponent(data.email)}`);
     } catch (error: any) {
       showError(error.message || "Signup failed. Please try again.");
     }
@@ -99,7 +162,10 @@ export default function ClinigenSignupFlow() {
                     type="text"
                     placeholder="First name"
                     className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                    registration={register("firstName")}
+                    registration={register("firstName", { 
+                      required: "First name is required",
+                      validate: (v) => validateRequired(v, "First name")
+                    })}
                     error={errors.firstName}
                   />
                   <Input
@@ -107,7 +173,10 @@ export default function ClinigenSignupFlow() {
                     type="text"
                     placeholder="Last name"
                     className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                    registration={register("lastName")}
+                    registration={register("lastName", { 
+                      required: "Last name is required",
+                      validate: (v) => validateRequired(v, "Last name")
+                    })}
                     error={errors.lastName}
                   />
                 </div>
@@ -116,7 +185,10 @@ export default function ClinigenSignupFlow() {
                   type="email"
                   placeholder="work@email.com"
                   className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                  registration={register("email")}
+                  registration={register("email", { 
+                    required: "Email is required",
+                    validate: (v) => validateEmail(v)
+                  })}
                   error={errors.email}
                 />
                 <div className="grid grid-cols-2 gap-4 my-4">
@@ -125,7 +197,10 @@ export default function ClinigenSignupFlow() {
                     type="tel"
                     placeholder="+44"
                     className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                    registration={register("phone")}
+                    registration={register("phone", { 
+                      required: "Phone number is required",
+                      validate: (v) => validatePhone(v)
+                    })}
                     error={errors.phone}
                   />
                   <Input
@@ -140,11 +215,12 @@ export default function ClinigenSignupFlow() {
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-slate-600">Your job</label>
-                    <select {...register("jobRole")} className="w-full border border-slate-300 rounded-lg p-3 bg-white outline-none focus:ring-2 focus:ring-[#7B3FE4]">
+                    <select {...register("jobRole", { required: "Please select your job role" })} className="w-full border border-slate-300 rounded-lg p-3 bg-white outline-none focus:ring-2 focus:ring-[#7B3FE4]">
                       <option value="">Please select</option>
                       <option value="Physician">Physician</option>
                       <option value="Pharmacist">Pharmacist</option>
                     </select>
+                    {errors.jobRole && <p className="text-red-500 text-xs mt-1">{errors.jobRole.message}</p>}
                   </div>
                   {watchJob === "Physician" && (
                     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
@@ -153,7 +229,10 @@ export default function ClinigenSignupFlow() {
                         type="text"
                         placeholder="admj9725732"
                         className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                        registration={register("licenseNumber")}
+                        registration={register("licenseNumber", { 
+                          required: "License number is required for physicians",
+                          validate: (v) => validateRequired(v, "License number")
+                        })}
                         error={errors.licenseNumber}
                       />
                     </motion.div>
@@ -164,9 +243,25 @@ export default function ClinigenSignupFlow() {
                   type="password"
                   placeholder="Password"
                   className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                  registration={register("password")}
+                  registration={register("password", { 
+                    required: "Password is required",
+                    validate: (v) => validatePassword(v)
+                  })}
                   error={errors.password}
                 />
+                {errors.password && (
+                  <div className="mt-2 text-xs text-slate-500 space-y-1">
+                    <p className={`${errors.password?.message ? 'text-red-500' : ''}`}>
+                      {errors.password?.message || 'Password requirements:'}
+                    </p>
+                    <ul className="list-disc list-inside space-y-0.5">
+                      <li className={errors.password?.message ? 'text-slate-400' : 'text-slate-500'}>At least 8 characters</li>
+                      <li className={errors.password?.message ? 'text-slate-400' : 'text-slate-500'}>One uppercase letter</li>
+                      <li className={errors.password?.message ? 'text-slate-400' : 'text-slate-500'}>One lowercase letter</li>
+                      <li className={errors.password?.message ? 'text-slate-400' : 'text-slate-500'}>One number</li>
+                    </ul>
+                  </div>
+                )}
                 <div className="flex justify-end mt-6">
                   <Button
                     type="button"
@@ -196,7 +291,10 @@ export default function ClinigenSignupFlow() {
                         type="text"
                         placeholder="Institute name"
                         className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                        registration={register("instituteName")}
+                        registration={register("instituteName", { 
+                          required: "Institute name is required",
+                          validate: (v) => validateRequired(v, "Institute name")
+                        })}
                         error={errors.instituteName}
                       />
                       <Input
@@ -204,7 +302,10 @@ export default function ClinigenSignupFlow() {
                         type="text"
                         placeholder="Address line 1"
                         className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                        registration={register("addressLine1")}
+                        registration={register("addressLine1", { 
+                          required: "Address is required",
+                          validate: (v) => validateRequired(v, "Address line 1")
+                        })}
                         error={errors.addressLine1}
                       />
                       <div className="grid grid-cols-2 gap-4">
@@ -213,7 +314,10 @@ export default function ClinigenSignupFlow() {
                           type="text"
                           placeholder="Town or city"
                           className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
-                          registration={register("townCity")}
+                          registration={register("townCity", { 
+                            required: "Town or city is required",
+                            validate: (v) => validateRequired(v, "Town or city")
+                          })}
                           error={errors.townCity}
                         />
                         <div className="space-y-1">

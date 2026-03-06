@@ -2,15 +2,16 @@
 
 import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="slider-block lg:py-[60px] py-10">
+    <section className="slider-block lg:py-15 py-10">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex max-xl:flex-col-reverse gap-8">
-          <div className="xl:w-1/3 w-full xl:pr-[15px]">
+          <div className="xl:w-1/3 w-full xl:pr-3.75">
             <div className="text">
               <h2 className="text-4xl md:text-5xl font-bold text-[#1D0E62] leading-tight">
                 Healthcare solutions for small to mid-sized medical facilities
@@ -35,17 +36,28 @@ export default function HeroSection() {
               </Link>
             </div>
           </div>
-          <div className="xl:w-2/3 w-full xl:pl-[15px]">
-            <div className="bg-img w-full rounded-xl overflow-hidden max-sm:h-[300px]">
-              <Image 
-                width={5000} 
-                height={5000} 
-                className="w-full max-sm:h-full object-cover" 
-                src="/images/slider/slider1.png" 
-                alt="Healthcare solutions" 
-              />
-            </div>
-          </div>
+          <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="relative"
+                    >
+                        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                            <Image
+                                src="/images/shortage.jpg"
+                                alt="Healthcare professional checking medicine shortage information"
+                                width={600}
+                                height={500}
+                                className="w-full h-auto object-cover"
+                            />
+                            <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
+                        </div>
+                        
+                        {/* Decorative Elements */}
+                        <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#706FE4]/10 rounded-full blur-2xl"></div>
+                        <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#F5F2EE] rounded-full blur-2xl"></div>
+                    </motion.div>
         </div>
       </div>
     </section>
