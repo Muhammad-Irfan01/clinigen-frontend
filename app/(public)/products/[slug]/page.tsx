@@ -240,23 +240,33 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
               <tbody>
                 <tr className="border-b last:border-0">
                   <td className="px-6 py-8">
-                    <p className="font-bold text-base text-[#1D0E62]">zinc aspartate</p>
-                    <p className="text-sm text-gray-500">30 mg/10 ml</p>
-                    <div className="mt-2 text-xs text-gray-500 italic">DB: {product.product_translations && product.product_translations.length > 0 ? product.product_translations[0].name : 'N/A'}</div>
+                    <p className="font-bold text-base text-[#1D0E62]">{product.product_translations && product.product_translations.length > 0 ? product.product_translations[0].name : 'N/A'}</p>
+                    <p className="text-sm text-gray-500">{product.dosage_form_pack_size || 'N/A'}</p>
                   </td>
                   <td className="px-6 py-8 text-sm text-gray-600">
-                    Solution for Injection<br />5 x 10 ml
-                    <div className="mt-1 text-xs text-gray-500 italic">DB: {product.sku || 'N/A'}</div>
+                    {product.sku || 'N/A'}
                   </td>
                   <td className="px-6 py-8">
-                    <span className="px-4 py-1 bg-[#E8F5E9] text-[#2E7D32] rounded-full text-xs font-bold border border-green-100">
-                      Processing
+                    <span className={`px-4 py-1 rounded-full text-xs font-bold border ${
+                      product.in_stock 
+                        ? 'bg-[#E8F5E9] text-[#2E7D32] border-green-100' 
+                        : 'bg-red-50 text-red-700 border-red-100'
+                    }`}>
+                      {product.in_stock ? 'In Stock' : 'Out of Stock'}
                     </span>
-                    <div className="mt-1 text-xs text-gray-500 italic">DB: {product.in_stock ? 'In Stock' : 'Out of Stock'}</div>
                   </td>
-                  <td className="px-6 py-8 text-sm font-medium">£19.70</td>
-                  <td className="px-6 py-8 text-sm font-medium">2</td>
-                  <td className="px-6 py-8 text-sm font-bold">£39.40</td>
+                  <td className="px-6 py-8 text-sm font-medium">
+                    £{product.selling_price || product.price || '0'}
+                  </td>
+                  <td className="px-6 py-8 text-sm font-medium">
+                    {product.qty !== null && product.qty !== undefined ? product.qty : (product.manage_stock ? '0' : 'Unlimited')}
+                  </td>
+                  <td className="px-6 py-8 text-sm font-bold">
+                    {product.qty !== null && product.qty !== undefined 
+                      ? `£${(parseFloat(String(product.selling_price || product.price || '0')) * product.qty).toFixed(2)}`
+                      : `£${product.selling_price || product.price || '0'}`
+                    }
+                  </td>
                   <td className="px-6 py-8">
                     <div className="flex items-center gap-4">
                       {isAuthenticated ? (
@@ -294,39 +304,28 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                 exit={{ height: 0, opacity: 0 }}
                 className="bg-[#FDFDFF] border-t overflow-hidden"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 p-8">
-                  {/* Column 1: Static Product Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+                  {/* Column 1: Combined Product Information */}
                   <div className="space-y-6">
-                    <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Static Product Information</h4>
+                    <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Product Information</h4>
                     <div className="space-y-4">
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Brand</p>
-                        <p className="text-sm font-bold text-gray-800">Unizink</p>
+                        <p className="text-sm font-bold text-gray-800">
+                          {product.brands?.slug || product.brand_id ? `Brand ${product.brand_id}` : 'N/A'}
+                        </p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Over-labelled</p>
-                        <p className="text-sm font-bold text-gray-800">No</p>
+                        <p className="text-sm font-bold text-gray-800">{product.over_labelled ? 'Yes' : 'No'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Manufacturer</p>
-                        <p className="text-sm font-bold text-gray-800">Kohler</p>
+                        <p className="text-sm font-bold text-gray-800">{product.manufacturer || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Product code</p>
-                        <p className="text-sm font-bold text-gray-800">1001300</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Column 2: Dynamic Backend Data */}
-                  <div className="space-y-6">
-                    <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Backend Product Information</h4>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-[11px] font-bold text-gray-400 uppercase">Brand ID</p>
-                        <p className="text-sm font-bold text-gray-800">
-                          {product.brand_id ? `Brand ${product.brand_id}` : 'N/A'}
-                        </p>
+                        <p className="text-sm font-bold text-gray-800">{product.product_code || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Tax Class ID</p>
@@ -342,49 +341,44 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Virtual Product</p>
                         <p className="text-sm font-bold text-gray-800">{product.is_virtual ? 'Yes' : 'No'}</p>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* Column 3: Handling */}
-                  <div className="space-y-6">
-                    <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Licensing & Handling</h4>
-                    <div className="space-y-4">
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Country of license</p>
-                        <p className="text-sm font-bold text-gray-800">Germany</p>
+                        <p className="text-sm font-bold text-gray-800">{product.country_of_license || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">License holder</p>
-                        <p className="text-sm font-bold text-gray-800">Kohler</p>
+                        <p className="text-sm font-bold text-gray-800">{product.license_holder || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">License number</p>
-                        <p className="text-sm font-bold text-gray-800">6073335.00.00</p>
+                        <p className="text-sm font-bold text-gray-800">{product.license_number || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Controlled drug status</p>
-                        <p className="text-sm font-bold text-gray-800">
-                          {product.is_virtual ? 'Virtual Product' : 'Not Controlled'}
-                        </p>
+                        <p className="text-sm font-bold text-gray-800">{product.controlled_drug_status || 'Not Controlled'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Expiry date</p>
-                        <p className="text-sm font-bold text-gray-800 leading-tight">Greater than 6 months (excluding UK & Ireland specials)</p>
+                        <p className="text-sm font-bold text-gray-800 leading-tight">{product.expiry_date || 'N/A'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase">Cytotoxic</p>
-                        <p className="text-sm font-bold text-gray-800">No</p>
+                        <p className="text-sm font-bold text-gray-800">{product.cytotoxic ? 'Yes' : 'No'}</p>
                       </div>
                       <div>
                         <p className="text-[11px] font-bold text-gray-400 uppercase mb-1">Storage</p>
-                        <span className="inline-flex items-center px-2 py-1 bg-[#E8F5E9] text-[#2E7D32] text-[10px] font-black rounded border border-green-200">
-                          15-25 °C
-                        </span>
+                        {product.storage ? (
+                          <span className="inline-flex items-center px-2 py-1 bg-[#E8F5E9] text-[#2E7D32] text-[10px] font-black rounded border border-green-200">
+                            {product.storage}
+                          </span>
+                        ) : (
+                          <p className="text-sm font-bold text-gray-800">N/A</p>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Column 4: Shortage Information */}
+                  {/* Column 2: Shortage Information */}
                   <div className="space-y-6">
                     <h4 className="text-xs font-bold text-[#1D0E62] uppercase tracking-wider border-b pb-2">Shortage Information</h4>
                     <div className="space-y-4">

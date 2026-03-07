@@ -23,6 +23,23 @@ export const productAPI = {
   getProductBySlug: (slug: string) =>
     api<Product>(`/products/${slug}`),
 
+  getShortageProducts: (params: SearchProductsParams) => {
+    const queryParams: Record<string, string> = {};
+
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") {
+        if (typeof value === 'number') {
+          queryParams[key] = value.toString();
+        } else {
+          queryParams[key] = value;
+        }
+      }
+    });
+
+    const query = new URLSearchParams(queryParams).toString();
+    return api<ProductApiResponse>(`/products/shortage?${query}`);
+  },
+
   searchProducts: (params: SearchProductsParams) => {
     const queryParams: Record<string, string> = {};
 
