@@ -86,13 +86,13 @@ export default function ContactSection({ classname }: ContactSectionProps) {
               <Icon.MapPin className="text-xl" />
               <span className="pl-3 text-white">123 Healthcare Street, London, UK</span>
             </div>
-            <Link 
+            {/* <Link 
               href="https://maps.google.com" 
               target="_blank" 
               className="inline-block underline mt-2 text-white hover:text-white/80"
             >
               Open map
-            </Link>
+            </Link> */}
           </div>
           <div className="w-full xl:w-1/3 lg:w-[40%] max-lg:mt-10">
             <div className="form-block rounded-2xl bg-white py-6 px-7 flex flex-col gap-5 shadow-lg">

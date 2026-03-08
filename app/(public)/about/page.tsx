@@ -4,6 +4,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Globe, ShieldCheck, Heart, Users, Award, TrendingUp } from 'lucide-react';
 import JourneySection from '@/components/JourneySection';
+import HealthcareAccessSection from '@/components/themeforest/sections/HealthcareAccessSection';
+import PartnerAccessSection from '@/components/themeforest/sections/PartnerAccessSection';
 
 const VALUES = [
   {
@@ -39,28 +41,59 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-white text-[#2d1a47] font-sans">
       {/* Hero Section */}
-      <div className="bg-linear-to-r from-[#270072] to-[#706FE4] text-white py-24 px-6">
+      <section className="bg-[#E8E6F5] py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          <motion.h1
+          {/* Header */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold mb-6"
+            className="text-center mb-10"
           >
-            About Clinigen
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            <h1 className="text-4xl md:text-5xl font-bold text-[#1D0E62] mb-4">
+              About Us
+            </h1>
+            <p className="text-gray-600 text-base max-w-2xl mx-auto">
+              Discover our mission to help healthcare professionals access critical medicines quickly.
+            </p>
+          </motion.div>
+
+          {/* Main Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-purple-100 max-w-3xl"
+            className="bg-white rounded-3xl overflow-hidden shadow-sm"
           >
-            We are a global healthcare company dedicated to providing access to medicines for patients worldwide.
-          </motion.p>
+            <div className="grid lg:grid-cols-2">
+              {/* Left Content */}
+              <div className="p-10 lg:p-16 flex flex-col justify-center">
+                <span className="inline-block bg-[#E8E4F5] text-[#7A6FE4] text-xs font-semibold px-4 py-1.5 rounded-full mb-4 w-fit">
+                  ABOUT HALO DIRECT
+                </span>
+                <h2 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] leading-tight mb-6">
+                  Ensuring Patients Get the Medicines They Need
+                </h2>
+                <p className="text-gray-600 text-sm leading-relaxed max-w-md">
+                  Halo Direct helps healthcare professionals quickly find and request licensed, shortage, and specialty medicines through a secure digital platform and trusted global supply network.
+                </p>
+              </div>
+              {/* Right Image */}
+              <div className="relative min-h-[400px] lg:min-h-full lg:h-full">
+                <img
+                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop"
+                  alt="Healthcare professional in pharmacy"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </div>
+      </section>
+
+      <HealthcareAccessSection />
 
       {/* Mission Section */}
-      <section className="py-20 px-6">
+      {/* <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div
@@ -97,10 +130,10 @@ export default function AboutUs() {
             </motion.div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Values Section */}
-      <section className="py-20 px-6 bg-[#F7F4F1]">
+      {/* <section className="py-20 px-6 bg-[#F7F4F1]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -131,10 +164,10 @@ export default function AboutUs() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* What We Do Section */}
-      <section className="py-20 px-6">
+      {/* <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -197,13 +230,15 @@ export default function AboutUs() {
             </motion.div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Journey Section */}
       <JourneySection />
 
+      <PartnerAccessSection />
+
       {/* Global Presence Section */}
-      <section className="py-20 px-6 bg-[#270072] text-white">
+      {/* <section className="py-20 px-6 bg-[#270072] text-white">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -238,10 +273,10 @@ export default function AboutUs() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
-      <section className="py-20 px-6">
+      {/* <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -271,7 +306,7 @@ export default function AboutUs() {
             </a>
           </motion.div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }
