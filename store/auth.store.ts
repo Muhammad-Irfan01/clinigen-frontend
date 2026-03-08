@@ -225,7 +225,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const toast = useToast();
 
         try {
-            const response = await authAPI.resendActivationCode(email);
+            const response: any = await authAPI.resendActivationCode(email);
             toast.success(response.message || 'Activation code resent successfully! Please check your email.');
         } catch (error: any) {
             set({ error: error.message, isLoading: false });

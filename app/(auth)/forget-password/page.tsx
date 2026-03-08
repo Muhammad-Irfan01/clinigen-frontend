@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import Header from "@/components/layout/Header";
 
 // Validation helper
 const validateEmail = (email: string) => {
@@ -42,14 +43,18 @@ export default function RecoverPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] flex flex-col items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-[#F3F4F6] flex flex-col">
+      {/* Navbar */}
+      <Header />
 
-      {/* Main Card Container */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-4xl bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden"
-      >
+      <div className="flex-1 flex flex-col items-center justify-center p-4 font-sans">
+
+        {/* Main Card Container */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-4xl bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden"
+        >
 
         {/* Left Side: Recovery Form */}
         <div className="flex-[1.2] p-8 md:p-12">
@@ -147,6 +152,7 @@ export default function RecoverPasswordPage() {
         <Link href="#" className="text-[#4A90E2] hover:underline">Terms of Sale</Link> and our{" "}
         <Link href="#" className="text-[#4A90E2] hover:underline">Privacy Policy</Link>.
       </footer>
+      </div>
     </div>
   );
 }

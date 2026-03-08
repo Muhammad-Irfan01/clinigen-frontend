@@ -9,6 +9,7 @@ import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
+import Header from "@/components/layout/Header";
 
 interface VerifyEmailFormData {
   verificationCode: string;
@@ -66,12 +67,16 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 p-8"
-      >
+    <div className="min-h-screen bg-[#F8F9FB] flex flex-col">
+      {/* Navbar */}
+      <Header />
+
+      <div className="flex-1 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-200 p-8"
+        >
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-[#F3F2FF] rounded-full flex items-center justify-center mb-4">
             <span className="text-[#7B3FE4] text-2xl">✉️</span>
@@ -133,6 +138,7 @@ export default function VerifyEmailPage() {
           </p>
         </div>
       </motion.div>
+      </div>
     </div>
   );
 }

@@ -4,60 +4,44 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const REGIONS = [
+const LOCATIONS = [
   {
-    name: "Australia and New Zealand",
-    phone: "+61 1800 181 060",
-    fax: "+61 2 8401 9788",
-    email: "anz@clinigen.com",
-    address: "Level 5, 100 Miller Street, North Sydney NSW 2060",
+    city: "Washington DC",
+    address: "2972 Westheimer Rd. Santa Ana, Illinois 85486",
+    phone: "(252) 555-0126",
   },
   {
-    name: "Benelux",
-    phone: "+32 (0) 2 200 86 79",
-    fax: "+32 (0) 2 200 86 80",
-    email: "benelux@clinigen.com",
-    address: "Avenue Louise 65, 1050 Brussels, Belgium",
+    city: "New York",
+    address: "2118 Cir. Syracuse, Connecticut 35624",
+    phone: "(684) 555-0102",
   },
   {
-    name: "Eastern Europe",
-    phone: "+44 1932 824 123",
-    fax: "+44 1932 824 323",
-    email: "eeurope@clinigen.com",
-    address: "Clayton Road, Weybridge, Surrey KT13 0TY, UK",
+    city: "London",
+    address: "4517 Washington Ave, Kentucky 39495",
+    phone: "(629) 555-0129",
   },
   {
-    name: "France",
-    phone: "+33 (0) 1 5732 3223",
-    fax: "+33 (0) 1 5732 3935",
-    email: "france@clinigen.com",
-    address: "15 Rue de la Ville l'Évêque, 75008 Paris, France",
-  },
-  {
-    name: "Germany",
-    phone: "+49 (0) 89 1234 5678",
-    fax: "+49 (0) 89 1234 5679",
-    email: "germany@clinigen.com",
-    address: "Maximilianstraße 35, 80539 München, Germany",
-  },
-  {
-    name: "North America",
-    phone: "+1 800 555 0123",
-    fax: "+1 800 555 0124",
-    email: "namerica@clinigen.com",
-    address: "100 Park Avenue, New York, NY 10017, USA",
+    city: "Morocco",
+    address: "1901 Thornridge Cir. Shiloh, Hawaii 81063",
+    phone: "(480) 555-0103",
   },
 ];
 
-const CONTACT_FORM = {
-  name: "",
-  email: "",
-  subject: "",
-  message: ""
-};
+const SOCIAL_LINKS = [
+  { name: "Facebook", icon: "f" },
+  { name: "LinkedIn", icon: "in" },
+  { name: "Twitter", icon: "tw" },
+  { name: "YouTube", icon: "yt" },
+  { name: "Instagram", icon: "ig" },
+];
 
-export default function ContactUs() {
-  const [formData, setFormData] = useState(CONTACT_FORM);
+export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -68,261 +52,197 @@ export default function ContactUs() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsSubmitting(false);
     setSubmitted(true);
-    setFormData(CONTACT_FORM);
+    setFormData({ name: "", email: "", subject: "", message: "" });
     setTimeout(() => setSubmitted(false), 5000);
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#2d1a47] font-sans">
-      {/* Hero Section */}
-      <div className="bg-linear-to-r from-[#270072] to-[#706FE4] text-white py-20 px-6">
+    <div className="min-h-screen bg-white">
+      {/* Hero Section - Contact Form */}
+      <section className="bg-[#E8EAF8] py-16 px-6">
         <div className="max-w-6xl mx-auto">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl font-bold mb-6"
-          >
-            Contact Us
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg text-purple-100 max-w-3xl"
-          >
-            We exist to make sure a healthcare professional with a patient in need, anywhere in the world,
-            can always get the right medicine for their individual patient – quickly, easily and safely.
-          </motion.p>
-        </div>
-      </div>
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Left Side - Contact Info */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="inline-block bg-[#E8E4F5] text-[#7A6FE4] text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
+                CONTACT US
+              </span>
+              <h1 className="text-4xl lg:text-5xl font-bold text-[#1D0E62] mb-4">
+                We're here to help
+              </h1>
+              <p className="text-gray-600 text-sm leading-relaxed mb-8">
+                Halo Direct supports healthcare professionals in finding and accessing hard-to-source medicines through a reliable global supply network.
+              </p>
 
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6 bg-[#F7F4F1] p-8 rounded-xl">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Name *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#706FE4] focus:border-transparent outline-none transition-all"
-                  placeholder="Your full name"
-                />
+              {/* Social Icons */}
+              <div className="flex gap-3 mb-8">
+                {SOCIAL_LINKS.map((social) => (
+                  <a
+                    key={social.name}
+                    href="#"
+                    className="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:bg-[#7A6FE4] hover:text-white transition-colors shadow-sm"
+                    aria-label={social.name}
+                  >
+                    <span className="text-xs font-bold">{social.icon}</span>
+                  </a>
+                ))}
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#706FE4] focus:border-transparent outline-none transition-all"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                  Subject *
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#706FE4] focus:border-transparent outline-none transition-all"
-                  placeholder="How can we help?"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                  Message *
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#706FE4] focus:border-transparent outline-none transition-all resize-none"
-                  placeholder="Your questions or comments..."
-                />
-              </div>
-
-              {submitted && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
-                  Thank you! Your message has been sent successfully.
+              {/* Contact Details */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 bg-white/60 backdrop-blur-sm px-4 py-3 rounded-lg">
+                  <div className="w-10 h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-gray-700">123 456 7890</span>
                 </div>
-              )}
+                <div className="flex items-center gap-4 bg-white/60 backdrop-blur-sm px-4 py-3 rounded-lg">
+                  <div className="w-10 h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-gray-700">hi.avitex@gmail.com</span>
+                </div>
+                <div className="flex items-center gap-4 bg-white/60 backdrop-blur-sm px-4 py-3 rounded-lg">
+                  <div className="w-10 h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-gray-700">4140 Rd. Allentown, New Mexico 31134</span>
+                </div>
+              </div>
+            </motion.div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-[#706FE4] text-white py-3 px-6 rounded-lg font-bold hover:bg-[#5a5bd4] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <>Sending...</>
-                ) : (
-                  <>
-                    <Send size={18} />
-                    Send Message
-                  </>
+            {/* Right Side - Contact Form */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white rounded-3xl p-8 lg:p-10 shadow-sm"
+            >
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3.5 bg-[#F0F0F5] rounded-xl border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none text-gray-700 placeholder-gray-400"
+                      placeholder="Name"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-4 py-3.5 bg-[#F0F0F5] rounded-xl border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none text-gray-700 placeholder-gray-400"
+                      placeholder="Subject"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3.5 bg-[#F0F0F5] rounded-xl border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none text-gray-700 placeholder-gray-400"
+                    placeholder="Email"
+                  />
+                </div>
+                <div>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={5}
+                    className="w-full px-4 py-3.5 bg-[#F0F0F5] rounded-xl border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none text-gray-700 placeholder-gray-400 resize-none"
+                    placeholder="Your Questions..."
+                  />
+                </div>
+
+                {submitted && (
+                  <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                    Thank you! Your message has been sent successfully.
+                  </div>
                 )}
-              </button>
-            </form>
-          </motion.div>
 
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-          >
-            <h2 className="text-2xl font-bold mb-6">Get in touch</h2>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#706FE4] rounded-full flex items-center justify-center flex-shrink-0">
-                  <Phone className="text-white" size={20} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Phone</h3>
-                  <p className="text-gray-600">Call our global headquarters</p>
-                  <a href="tel:+442071234567" className="text-[#706FE4] font-bold hover:underline">
-                    +44 20 7123 4567
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#706FE4] rounded-full flex items-center justify-center flex-shrink-0">
-                  <Mail className="text-white" size={20} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Email</h3>
-                  <p className="text-gray-600">General inquiries</p>
-                  <a href="mailto:info@clinigen.com" className="text-[#706FE4] font-bold hover:underline">
-                    info@clinigen.com
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#706FE4] rounded-full flex items-center justify-center flex-shrink-0">
-                  <MapPin className="text-white" size={20} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-lg">Headquarters</h3>
-                  <p className="text-gray-600">
-                    Clayton Road<br />
-                    Weybridge, Surrey<br />
-                    KT13 0TY, United Kingdom
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Social Media */}
-            <div className="mt-10">
-              <h3 className="font-bold text-lg mb-4">Follow Us</h3>
-              <div className="flex gap-4">
-                <a
-                  href="https://www.linkedin.com/company/clinigen"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 bg-[#F7F4F1] rounded-full flex items-center justify-center hover:bg-[#706FE4] hover:text-white transition-all duration-300"
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white font-medium px-8 py-3.5 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                  </svg>
-                </a>
-                <a
-                  href="https://twitter.com/clinigen"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 bg-[#F7F4F1] rounded-full flex items-center justify-center hover:bg-[#706FE4] hover:text-white transition-all duration-300"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                  </svg>
-                </a>
-                <a
-                  href="https://www.facebook.com/clinigen"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 bg-[#F7F4F1] rounded-full flex items-center justify-center hover:bg-[#706FE4] hover:text-white transition-all duration-300"
-                >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </motion.div>
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </button>
+              </form>
+            </motion.div>
+          </div>
         </div>
+      </section>
 
-        {/* Regional Offices */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-20"
-        >
-          <h2 className="text-3xl font-bold mb-8 text-center">Our Global Locations</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {REGIONS.map((region, idx) => (
-              <div
-                key={idx}
-                className="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-all duration-300 hover:border-[#706FE4]"
+      {/* Locations Section */}
+      <section className="py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] mb-3">
+              Our Locations
+            </h2>
+            <p className="text-gray-600">
+              Tracing the Path of Our Legacy and Growth
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {LOCATIONS.map((location, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-[#F9F8F7] rounded-2xl p-6 hover:shadow-lg transition-shadow"
               >
-                <h3 className="text-xl font-bold text-[#270072] mb-4">{region.name}</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Phone size={16} className="text-[#706FE4]" />
-                    <a href={`tel:${region.phone}`} className="text-[#706FE4] font-medium hover:underline">
-                      {region.phone}
-                    </a>
+                <h3 className="text-xl font-bold text-[#1D0E62] mb-4">
+                  {location.city}
+                </h3>
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <span className="text-gray-500 block mb-1">Address:</span>
+                    <p className="text-gray-700 font-medium">{location.address}</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Mail size={16} className="text-[#706FE4]" />
-                    <a href={`mailto:${region.email}`} className="text-[#706FE4] font-medium hover:underline">
-                      {region.email}
-                    </a>
+                  <div>
+                    <span className="text-gray-500 block mb-1">Phone Number:</span>
+                    <p className="text-gray-700 font-medium">{location.phone}</p>
                   </div>
-                  <div className="flex items-start gap-2 mt-3">
-                    <MapPin size={16} className="text-[#706FE4] mt-0.5" />
-                    <p className="text-gray-600">{region.address}</p>
-                  </div>
+                  <a
+                    href="#"
+                    className="inline-block text-[#7A6FE4] font-semibold text-xs hover:underline"
+                  >
+                    View On Map
+                  </a>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

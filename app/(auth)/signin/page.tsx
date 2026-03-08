@@ -9,13 +9,14 @@ import { useRouter } from "next/navigation";
 import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import Image from "next/image";
+import Header from "@/components/layout/Header";
 
 type LoginFormInputs = {
   email: string;
   password: string;
 };
 
-// Validation helpers
 const validateEmail = (email: string) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email) return "Email is required";
@@ -23,128 +24,200 @@ const validateEmail = (email: string) => {
   return true;
 };
 
-export default function LoginPage() {
-  const { register, handleSubmit, formState: {errors}} = useForm<LoginFormInputs>();
+export default function SignInPage() {
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
   const { isLoading, login } = useAuthStore();
   const router = useRouter();
   const { error: showError } = useToast();
 
-
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
       await login(data.email, data.password);
-      router.push('/')
+      router.push('/');
     } catch (error: any) {
       showError(error.message || "Login failed. Please try again.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] flex flex-col items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-[#F5F6F9] flex flex-col">
+      {/* Navbar */}
+      <Header />
 
-      {/* Main Card Container */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-4xl bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden"
-      >
-
-        {/* Left Side: Login Form */}
-        <div className="flex-[1.2] p-8 md:p-12">
-          <header className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              {/* Clinigen Direct Logo Placeholder */}
-              <h2 className="text-2xl font-black italic tracking-tighter">
-                <span className="text-[#6FCF97]">CLINIGEN</span>
-                <span className="text-[#7B3FE4]">DIRECT</span>
-              </h2>
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-5xl bg-white rounded-3xl shadow-sm flex flex-col lg:flex-row"
+        >
+          {/* Left Side - Login Form */}
+          <div className="lg:w-1/2 p-8 lg:p-12">
+            {/* Logo */}
+            <div className="flex justify-center mb-8">
+              <Image
+                src="/images/Halo-Direct.png"
+                alt="Halo Direct"
+                width={180}
+                height={60}
+                className="object-contain"
+              />
             </div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">Welcome back</h1>
-            <p className="text-slate-500 text-sm leading-relaxed">
-              Login to view Clinigen Direct<br />
-              or Cliniport Managed Access Client Centre
-            </p>
-          </header>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 max-w-sm mx-auto">
-            <Input
-              label="Email"
-              type="email"
-              placeholder="info@haloishere.com"
-              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              registration={register("email", { 
-                required: "Email is required",
-                validate: (v) => validateEmail(v)
-              })}
-              error={errors.email}
-            />
-
-            <Input
-              label="Password"
-              type="password"
-              placeholder="password123"
-              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
-              registration={register("password", { 
-                required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters"
-                }
-              })}
-              error={errors.password}
-            />
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              isLoading={isLoading}
-              className="w-full font-bold py-3.5 rounded-full mt-4 transition-all"
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </Button>
-
-            <div className="text-center mt-6">
-              <Link href="/forget-password" className="text-[#4A90E2] hover:underline font-medium text-sm">
-                Forgot your password?
-              </Link>
-            </div>
-          </form>
-        </div>
-
-        {/* Right Side: Sign Up Promo */}
-        <div className="flex-1 bg-[#F9F8F6] p-8 md:p-12 flex flex-col items-center justify-center text-center">
-          <h2 className="text-2xl font-bold text-slate-800 mb-4">New here?</h2>
-          <p className="text-slate-600 mb-8 font-medium">
-            Get access to over <span className="font-bold">1220 medicines</span> on one platform
-          </p>
-
-          {/* Graphic Placeholder (matching the card in the image) */}
-          <div className="relative bg-white p-6 rounded-xl border border-slate-200 shadow-sm mb-10 w-full max-w-60">
-            <div className="text-left">
-              <span className="text-[10px] font-bold text-slate-400 block mb-1">UNIPHIS</span>
-              <span className="text-5xl font-black text-slate-800">40</span>
-              <p className="text-[8px] text-slate-400 mt-2 leading-tight">
-                Most frequent information<br />
-                on products and medicine<br />
-                request forms.
+            {/* Header */}
+            <div className="text-center mb-10">
+              <h1 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] mb-3">
+                Welcome Back
+              </h1>
+              <p className="text-gray-600 text-sm leading-relaxed">
+                Log in to access your Halo Direct dashboard and<br />
+                manage medicine requests through our secure platform.
               </p>
             </div>
-            <div className="absolute -top-3 -right-3 w-10 h-10 bg-[#FF5E62] rounded-full flex items-center justify-center text-white shadow-md">
-              💊
-            </div>
-            {/* Dotted path SVG would go here */}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-sm mx-auto">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  placeholder="info@haloishere.com"
+                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
+                  registration={register("email", {
+                    required: "Email is required",
+                    validate: (v) => validateEmail(v)
+                  })}
+                  error={errors.email}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <Input
+                  type="password"
+                  placeholder="password123"
+                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
+                  registration={register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters"
+                    }
+                  })}
+                  error={errors.password}
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                isLoading={isLoading}
+                className="w-full font-medium py-3.5 rounded-full bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white transition-all mt-4"
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </Button>
+
+              <div className="text-center mt-6">
+                <Link href="/forget-password" className="text-[#4A90E2] hover:underline font-medium text-sm">
+                  Forgot your password?
+                </Link>
+              </div>
+            </form>
           </div>
 
-          <Link href="/signup" className="w-full max-w-40">
-            <Button
-              varient="secondary"
-              className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#7B3FE4] hover:text-white font-bold py-2.5 rounded-full transition-all"
-            >
-              Sign up
-            </Button>
-          </Link>
+          {/* Right Side - Sign Up Promo */}
+          <div className="lg:w-1/2 bg-[#FAFAF8] p-8 lg:p-12 flex flex-col items-center justify-center text-center">
+            <h2 className="text-2xl font-bold text-[#1D0E62] mb-3">
+              New here?
+            </h2>
+            <p className="text-gray-600 text-sm mb-8 leading-relaxed">
+              Get access to over <span className="font-bold">1220 medicines</span> on one platform
+            </p>
+
+            {/* Image */}
+            <div className="w-full max-w-sm mb-8">
+              <Image
+                src="/images/shortage.jpg"
+                alt="Pharmacy warehouse"
+                width={400}
+                height={250}
+                className="w-full h-[200px] object-cover rounded-2xl shadow-sm"
+              />
+            </div>
+
+            <Link href="/signup">
+              <button className="bg-[#C4A7F0] hover:bg-[#B595E8] text-white font-medium px-10 py-3 rounded-full transition-colors">
+                Sign Up
+              </button>
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-100 py-12 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-5 gap-8">
+            {/* Brand */}
+            <div className="md:col-span-1">
+              <div className="text-2xl font-bold text-[#7A6FE4] mb-4">
+                halo<span className="text-[#C4A7F0]">direct</span>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                We are a global healthcare company dedicated to providing access to medicines for patients worldwide.
+              </p>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="font-bold text-[#1D0E62] mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="/about" className="hover:text-[#7A6FE4]">About Us</Link></li>
+                <li><Link href="/contact" className="hover:text-[#7A6FE4]">Contact</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Our Team</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Careers</Link></li>
+              </ul>
+            </div>
+
+            {/* Services */}
+            <div>
+              <h4 className="font-bold text-[#1D0E62] mb-4">Services</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Managed Access Programs</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Commercialization</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Pharmacovigilance</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Market Access</Link></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div>
+              <h4 className="font-bold text-[#1D0E62] mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="/support" className="hover:text-[#7A6FE4]">Help Center</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Report Adverse Event</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Product Shortage</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">FAQs</Link></li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-bold text-[#1D0E62] mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Privacy Policy</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Terms of Use</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Terms of Sale</Link></li>
+                <li><Link href="#" className="hover:text-[#7A6FE4]">Cookie Policy</Link></li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </motion.div>
+      </footer>
     </div>
   );
 }

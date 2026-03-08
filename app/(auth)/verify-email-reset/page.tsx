@@ -8,6 +8,7 @@ import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
+import Header from "@/components/layout/Header";
 
 interface VerifyResetFormData {
   verificationCode: string;
@@ -70,12 +71,16 @@ export default function VerifyEmailForResetPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] flex flex-col items-center justify-center p-4 font-sans">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md bg-white rounded-xl shadow-sm border border-slate-200 p-8"
-      >
+    <div className="min-h-screen bg-[#F3F4F6] flex flex-col">
+      {/* Navbar */}
+      <Header />
+
+      <div className="flex-1 flex flex-col items-center justify-center p-4 font-sans">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md bg-white rounded-xl shadow-sm border border-slate-200 p-8"
+        >
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <h2 className="text-2xl font-black italic tracking-tighter">
@@ -147,6 +152,7 @@ export default function VerifyEmailForResetPage() {
           </p>
         </div>
       </motion.div>
+      </div>
     </div>
   );
 }

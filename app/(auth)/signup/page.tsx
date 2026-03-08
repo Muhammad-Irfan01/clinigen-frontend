@@ -12,6 +12,36 @@ import { useRouter } from "next/navigation";
 import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import Header from "@/components/themeforest/Header";
+import Image from "next/image";
+
+// --- Helper UI Components ---
+const StepIndicator = ({ step, current, title, desc }: any) => {
+  const isDone = current === "final" || (typeof current === "number" && step < current);
+  const isActive = current === step;
+  return (
+    <div className="flex items-start gap-4 z-10 relative">
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-all
+        ${isDone ? 'bg-[#7B3FE4] text-white' : isActive ? 'bg-[#1A1A3F] text-white' : 'bg-white text-slate-400 border border-slate-200'}`}>
+        {isDone ? <Check size={16} strokeWidth={3} /> : step}
+      </div>
+      <div>
+        <h3 className={`text-sm font-bold ${isActive || isDone ? 'text-[#1A1A3F]' : 'text-slate-400'}`}>{title}</h3>
+        <p className="text-[11px] text-slate-500 leading-tight">{desc}</p>
+      </div>
+    </div>
+  );
+};
+
+const SuccessInfo = ({ icon, title, desc }: any) => (
+  <div className="flex gap-4">
+    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 shadow-inner">{icon}</div>
+    <div>
+      <h4 className="font-bold text-slate-800">{title}</h4>
+      <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
+    </div>
+  </div>
+);
 
 // --- Validation Helpers ---
 const validateEmail = (email: string) => {
@@ -115,9 +145,14 @@ export default function ClinigenSignupFlow() {
   const Sidebar = () => (
     <div className="w-full md:w-95 bg-[#F3F2FF] p-10 flex flex-col justify-between relative overflow-hidden">
       <div className="z-10">
-        <div className="mb-10 flex items-center gap-1 text-xl font-black italic tracking-tighter">
-          <span className="text-[#6FCF97]">CLINIGEN</span>
-          <span className="text-[#7B3FE4]">DIRECT</span>
+        <div className="mb-10 flex justify-center">
+          <Image
+            src="/images/Halo-Direct.png"
+            alt="Halo Direct"
+            width={180}
+            height={60}
+            className="object-contain"
+          />
         </div>
 
         <h1 className="text-3xl font-bold text-[#1A1A3F] leading-tight mb-12">
@@ -146,8 +181,12 @@ export default function ClinigenSignupFlow() {
   );
 
   return (
-    <div className="min-h-screen bg-[#F8F9FB] flex items-center justify-center p-4 md:p-10 font-sans text-slate-800">
-      <motion.div layout className="w-full max-w-6xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden min-h-187.5">
+    <div className="min-h-screen bg-[#F8F9FB] flex flex-col">
+      {/* Navbar */}
+      <Header />
+
+      <div className="flex-1 flex items-center justify-center p-4 md:p-10 font-sans text-slate-800">
+        <motion.div layout className="w-full max-w-6xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden min-h-187.5">
 
         <Sidebar />
 
@@ -266,7 +305,7 @@ export default function ClinigenSignupFlow() {
                   <Button
                     type="button"
                     onClick={nextStep}
-                    className="w-full md:w-auto self-end float-right bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold"
+                    className="w-full md:w-auto self-end float-right bg-[#706FE4] hover:bg-[#5a5bd4] text-white px-12 py-3 rounded-full font-bold"
                   >
                     Next
                   </Button>
@@ -343,7 +382,7 @@ export default function ClinigenSignupFlow() {
                   <Button
                     type="button"
                     onClick={nextStep}
-                    className="bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold"
+                    className="bg-[#706FE4] hover:bg-[#5a5bd4] text-white px-12 py-3 rounded-full font-bold"
                   >
                     Next
                   </Button>
@@ -390,7 +429,7 @@ export default function ClinigenSignupFlow() {
                     type="submit"
                     disabled={isLoading}
                     isLoading={isLoading}
-                    className={`bg-[#7B3FE4] text-white px-12 py-3 rounded-full font-bold`}
+                    className="bg-[#706FE4] hover:bg-[#5a5bd4] text-white px-12 py-3 rounded-full font-bold"
                   >
                     {isLoading ? 'Signing up...' : 'Sign Up'}
                   </Button>
@@ -401,6 +440,7 @@ export default function ClinigenSignupFlow() {
           </AnimatePresence>
         </form>
       </motion.div>
+      </div>
 
       {/* Persistent Help Button */}
       <Button
@@ -411,31 +451,3 @@ export default function ClinigenSignupFlow() {
     </div>
   );
 }
-
-// --- Helper UI Components ---
-const StepIndicator = ({ step, current, title, desc }: any) => {
-  const isDone = current === "final" || (typeof current === "number" && current > step);
-  const isActive = current === step;
-  return (
-    <div className="flex items-start gap-4 z-10 relative">
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-all
-        ${isDone ? 'bg-[#7B3FE4] text-white' : isActive ? 'bg-[#1A1A3F] text-white' : 'bg-white text-slate-400 border border-slate-200'}`}>
-        {isDone ? <Check size={16} strokeWidth={3} /> : step}
-      </div>
-      <div>
-        <h3 className={`text-sm font-bold ${isActive || isDone ? 'text-[#1A1A3F]' : 'text-slate-400'}`}>{title}</h3>
-        <p className="text-[11px] text-slate-500 leading-tight">{desc}</p>
-      </div>
-    </div>
-  );
-};
-
-const SuccessInfo = ({ icon, title, desc }: any) => (
-  <div className="flex gap-4">
-    <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center shrink-0 shadow-inner">{icon}</div>
-    <div>
-      <h4 className="font-bold text-slate-800">{title}</h4>
-      <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
-    </div>
-  </div>
-);
