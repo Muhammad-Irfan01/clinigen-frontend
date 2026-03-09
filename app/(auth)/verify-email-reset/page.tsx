@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { useForm } from "react-hook-form";
 import Header from "@/components/layout/Header";
+import Image from "next/image";
 
 interface VerifyResetFormData {
   verificationCode: string;
@@ -72,8 +73,6 @@ export default function VerifyEmailForResetPage() {
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] flex flex-col">
-      {/* Navbar */}
-      <Header />
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 font-sans">
         <motion.div
@@ -83,10 +82,13 @@ export default function VerifyEmailForResetPage() {
         >
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <h2 className="text-2xl font-black italic tracking-tighter">
-              <span className="text-[#6FCF97]">CLINIGEN</span>
-              <span className="text-[#7B3FE4]">DIRECT</span>
-            </h2>
+            <Image
+              src="/images/Halo-Direct.png"
+              alt="Halo Direct"
+              width={200}
+              height={200}
+              className="object-contain"
+            />
           </div>
           <div className="mx-auto w-16 h-16 bg-[#F3F2FF] rounded-full flex items-center justify-center mb-4">
             <span className="text-[#7B3FE4] text-2xl">✉️</span>
@@ -96,7 +98,7 @@ export default function VerifyEmailForResetPage() {
             We've sent a verification code to your email address. Please enter the code below.
           </p>
           {resetEmail && (
-            <p className="text-sm text-[#7B3FE4] mt-2 font-medium">
+            <p className="text-sm text-[#706FE4] mt-2 font-medium">
               Sent to: {resetEmail}
             </p>
           )}
@@ -107,7 +109,7 @@ export default function VerifyEmailForResetPage() {
             label="Verification Code"
             type="text"
             placeholder="Enter 6-digit code"
-            className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4] text-center text-xl tracking-widest"
+            className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4] text-center text-xl tracking-widest"
             registration={register("verificationCode", { 
               required: "Verification code is required", 
               minLength: { value: 6, message: "Code must be 6 digits" }, 
@@ -123,7 +125,7 @@ export default function VerifyEmailForResetPage() {
             type="submit"
             disabled={isLoading}
             isLoading={isLoading}
-            className="w-full font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm"
+            className="w-full font-bold py-3.5 rounded-full bg-[#706FE4] hover:bg-[#5a5bd4] text-white transition-all text-sm"
           >
             {isLoading ? "Verifying..." : "Verify Email"}
           </Button>
@@ -136,7 +138,7 @@ export default function VerifyEmailForResetPage() {
               varient="secondary"
               onClick={handleResendCode}
               disabled={isResending}
-              className="text-[#7B3FE4] font-semibold hover:underline disabled:opacity-50"
+              className="text-[#706FE4] font-semibold hover:underline disabled:opacity-50"
             >
               {isResending ? "Resending..." : "Resend Code"}
             </Button>
@@ -146,7 +148,7 @@ export default function VerifyEmailForResetPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-slate-500">
             Remember your password?{" "}
-            <a href="/signin" className="text-[#7B3FE4] font-semibold hover:underline">
+            <a href="/signin" className="text-[#706FE4] font-semibold hover:underline">
               Sign in
             </a>
           </p>

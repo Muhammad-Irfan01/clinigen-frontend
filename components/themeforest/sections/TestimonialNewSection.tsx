@@ -46,7 +46,7 @@ export default function TestimonialSection() {
   const [activeDot, setActiveDot] = useState(0);
 
   return (
-    <section className="w-full bg-[#F5F4F6] py-16 px-6">
+    <section className="w-full bg-[#F5F4F6] py-20 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <motion.div

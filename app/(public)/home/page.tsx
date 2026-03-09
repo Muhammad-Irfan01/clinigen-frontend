@@ -35,7 +35,7 @@ export default function Home() {
             className="text-4xl md:text-6xl font-extrabold text-blue-950 leading-tight"
           >
             Accessing medicines <br />
-            <span className="text-gradient-primary">globally, simplified.</span>
+            {/* <span className="text-gradient-primary">globally, simplified.</span> */}
           </motion.h1>
 
           <motion.p

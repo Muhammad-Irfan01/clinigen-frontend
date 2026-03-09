@@ -26,10 +26,10 @@ export default function MedicineAccessSection() {
   ];
 
   return (
-    <section className="w-full bg-[#FAF9FB] py-16 px-6">
+    <section className="w-full bg-[#FAF9FB] py-10 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8 py-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -69,7 +69,7 @@ export default function MedicineAccessSection() {
               className="group"
             >
               <div className="overflow-hidden rounded-2xl mb-5">
-                <div className="aspect-[3/2] bg-gray-200 relative overflow-hidden">
+                <div className="aspect-3/2 bg-gray-200 relative overflow-hidden">
                   <img
                     src={feature.image}
                     alt={feature.title}

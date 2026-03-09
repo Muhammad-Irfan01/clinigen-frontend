@@ -217,13 +217,13 @@ export default function SupportPage() {
             </motion.div>
           </div>
         </div>
-      <section className="py-8 px-6">
+      <section className="py-8 md:px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-linear-to-r from-[#A98DF2] to-[#C4A7F0] rounded-2xl px-6 py-5 md:px-8 md:py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+            className="bg-linear-to-r from-[#A98DF2] to-[#C4A7F0] rounded-2xl px-2 py-5 md:px-8 md:py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
           >
             <h3 className="text-xl md:text-2xl font-bold text-white text-center sm:text-left">
               Need Help Finding Hard-to-Source Medicines?

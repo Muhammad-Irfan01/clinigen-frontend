@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { useForm } from 'react-hook-form';
 import Header from '@/components/layout/Header';
+import Image from 'next/image';
 
 interface ResetPasswordFormData {
   password: string;
@@ -87,9 +88,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] flex flex-col">
-      {/* Navbar */}
-      <Header />
-
+      
       <div className="flex-1 flex flex-col items-center justify-center p-4 font-sans">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -98,10 +97,13 @@ export default function ResetPasswordPage() {
         >
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
-            <h2 className="text-2xl font-black italic tracking-tighter">
-              <span className="text-[#6FCF97]">CLINIGEN</span>
-              <span className="text-[#7B3FE4]">DIRECT</span>
-            </h2>
+            <Image
+              src="/images/Halo-Direct.png"
+              alt="Halo Direct"
+              width={200}
+              height={200}
+              className="object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-slate-800 mb-2">Set New Password</h1>
           <p className="text-slate-500 text-sm">
@@ -115,7 +117,7 @@ export default function ResetPasswordPage() {
               label="New Password"
               type="password"
               placeholder="Enter new password"
-              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-slate-700"
               registration={register("password", { 
                 required: "Password is required",
                 validate: (v) => validatePassword(v)
@@ -150,7 +152,7 @@ export default function ResetPasswordPage() {
             type="submit"
             disabled={isLoading}
             isLoading={isLoading}
-            className="w-full py-3.5 rounded-full transition-all text-sm font-bold"
+            className="w-full py-3.5 rounded-full bg-[#706FE4] hover:bg-[#5a5bd4] text-white transition-all text-sm font-bold"
           >
             {isLoading ? 'Updating...' : 'Update Password'}
           </Button>
@@ -159,7 +161,7 @@ export default function ResetPasswordPage() {
         <div className="mt-6 text-center">
           <p className="text-sm text-slate-500">
             Remember your password?{' '}
-            <a href="/signin" className="text-[#7B3FE4] font-semibold hover:underline">
+            <a href="/signin" className="text-[#706FE4] font-semibold hover:underline">
               Sign in
             </a>
           </p>

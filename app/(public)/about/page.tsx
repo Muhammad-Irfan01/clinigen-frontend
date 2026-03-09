@@ -41,7 +41,7 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-white text-[#2d1a47] font-sans">
       {/* Hero Section */}
-      <section className="bg-[#E8E6F5] py-16 px-6">
+      <section className="bg-[#E8E6F5] py-16 px-2 md:px-6">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <motion.div
@@ -66,7 +66,7 @@ export default function AboutUs() {
           >
             <div className="grid lg:grid-cols-2">
               {/* Left Content */}
-              <div className="p-10 lg:p-16 flex flex-col justify-center">
+              <div className="p-4 lg:p-16 flex flex-col justify-center">
                 <span className="inline-block bg-[#E8E4F5] text-[#7A6FE4] text-xs font-semibold px-4 py-1.5 rounded-full mb-4 w-fit">
                   ABOUT HALO DIRECT
                 </span>

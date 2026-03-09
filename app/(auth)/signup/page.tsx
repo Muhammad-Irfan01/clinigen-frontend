@@ -22,7 +22,7 @@ const StepIndicator = ({ step, current, title, desc }: any) => {
   return (
     <div className="flex items-start gap-4 z-10 relative">
       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-sm transition-all
-        ${isDone ? 'bg-[#7B3FE4] text-white' : isActive ? 'bg-[#1A1A3F] text-white' : 'bg-white text-slate-400 border border-slate-200'}`}>
+        ${isDone ? 'bg-[#706FE4] text-white' : isActive ? 'bg-[#1A1A3F] text-white' : 'bg-white text-slate-400 border border-slate-200'}`}>
         {isDone ? <Check size={16} strokeWidth={3} /> : step}
       </div>
       <div>
@@ -149,8 +149,8 @@ export default function ClinigenSignupFlow() {
           <Image
             src="/images/Halo-Direct.png"
             alt="Halo Direct"
-            width={180}
-            height={60}
+            width={200}
+            height={200}
             className="object-contain"
           />
         </div>
@@ -170,7 +170,7 @@ export default function ClinigenSignupFlow() {
       {/* Decorative Phone UI from Image */}
       <div className="mt-10 relative flex justify-center opacity-90 scale-90">
         <div className="w-44 h-72 bg-slate-800 rounded-[2.5rem] border-[6px] border-slate-900 shadow-2xl relative overflow-hidden">
-          <div className="bg-[#7B3FE4] h-full w-full p-4 flex flex-col gap-2">
+          <div className="bg-[#706FE4] h-full w-full p-4 flex flex-col gap-2">
             <div className="bg-white/20 h-6 rounded w-full" />
             <div className="bg-white/10 h-16 rounded w-full mt-4" />
           </div>
@@ -182,8 +182,6 @@ export default function ClinigenSignupFlow() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FB] flex flex-col">
-      {/* Navbar */}
-      <Header />
 
       <div className="flex-1 flex items-center justify-center p-4 md:p-10 font-sans text-slate-800">
         <motion.div layout className="w-full max-w-6xl bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row overflow-hidden min-h-187.5">
@@ -200,7 +198,7 @@ export default function ClinigenSignupFlow() {
                     label="First name"
                     type="text"
                     placeholder="First name"
-                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                     registration={register("firstName", { 
                       required: "First name is required",
                       validate: (v) => validateRequired(v, "First name")
@@ -211,7 +209,7 @@ export default function ClinigenSignupFlow() {
                     label="Last name"
                     type="text"
                     placeholder="Last name"
-                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                     registration={register("lastName", { 
                       required: "Last name is required",
                       validate: (v) => validateRequired(v, "Last name")
@@ -223,7 +221,7 @@ export default function ClinigenSignupFlow() {
                   label="Your work email address"
                   type="email"
                   placeholder="work@email.com"
-                  className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                  className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                   registration={register("email", { 
                     required: "Email is required",
                     validate: (v) => validateEmail(v)
@@ -235,7 +233,7 @@ export default function ClinigenSignupFlow() {
                     label="Work phone"
                     type="tel"
                     placeholder="+44"
-                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                     registration={register("phone", { 
                       required: "Phone number is required",
                       validate: (v) => validatePhone(v)
@@ -246,7 +244,7 @@ export default function ClinigenSignupFlow() {
                     label="Extension (opt)"
                     type="text"
                     placeholder="Extension"
-                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                    className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                     registration={register("extension")}
                     error={errors.extension}
                   />
@@ -254,7 +252,7 @@ export default function ClinigenSignupFlow() {
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="space-y-1">
                     <label className="text-sm font-semibold text-slate-600">Your job</label>
-                    <select {...register("jobRole", { required: "Please select your job role" })} className="w-full border border-slate-300 rounded-lg p-3 bg-white outline-none focus:ring-2 focus:ring-[#7B3FE4]">
+                    <select {...register("jobRole", { required: "Please select your job role" })} className="w-full border border-slate-300 rounded-lg p-3 bg-white outline-none focus:ring-2 focus:ring-[#706FE4]">
                       <option value="">Please select</option>
                       <option value="Physician">Physician</option>
                       <option value="Pharmacist">Pharmacist</option>
@@ -267,7 +265,7 @@ export default function ClinigenSignupFlow() {
                         label="License number"
                         type="text"
                         placeholder="admj9725732"
-                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                         registration={register("licenseNumber", { 
                           required: "License number is required for physicians",
                           validate: (v) => validateRequired(v, "License number")
@@ -281,7 +279,7 @@ export default function ClinigenSignupFlow() {
                   label="Password"
                   type="password"
                   placeholder="Password"
-                  className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                  className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                   registration={register("password", { 
                     required: "Password is required",
                     validate: (v) => validatePassword(v)
@@ -329,7 +327,7 @@ export default function ClinigenSignupFlow() {
                         label="Institute name"
                         type="text"
                         placeholder="Institute name"
-                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                         registration={register("instituteName", { 
                           required: "Institute name is required",
                           validate: (v) => validateRequired(v, "Institute name")
@@ -340,7 +338,7 @@ export default function ClinigenSignupFlow() {
                         label="Address line 1"
                         type="text"
                         placeholder="Address line 1"
-                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                        className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                         registration={register("addressLine1", { 
                           required: "Address is required",
                           validate: (v) => validateRequired(v, "Address line 1")
@@ -352,7 +350,7 @@ export default function ClinigenSignupFlow() {
                           label="Town or city"
                           type="text"
                           placeholder="Town or city"
-                          className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#7B3FE4]/20 focus:border-[#7B3FE4]"
+                          className="w-full border border-slate-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-[#706FE4]/20 focus:border-[#706FE4]"
                           registration={register("townCity", { 
                             required: "Town or city is required",
                             validate: (v) => validateRequired(v, "Town or city")
@@ -375,7 +373,7 @@ export default function ClinigenSignupFlow() {
                     type="button"
                     onClick={prevStep}
                     varient="secondary"
-                    className="border-2 border-[#7B3FE4] text-[#7B3FE4] px-10 py-2.5 rounded-full font-bold"
+                    className="border-2 border-[#706FE4] text-[#706FE4] px-10 py-2.5 rounded-full font-bold"
                   >
                     Previous
                   </Button>
@@ -411,7 +409,7 @@ export default function ClinigenSignupFlow() {
                 </div>
                 <div className="flex flex-wrap gap-2 mb-10">
                   {selectedMedicines.map(m => (
-                    <span key={m} className="bg-[#F3F2FF] text-[#7B3FE4] px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2">
+                    <span key={m} className="bg-[#F3F2FF] text-[#706FE4] px-4 py-1.5 rounded-full text-sm font-bold flex items-center gap-2">
                       {m} <X size={14} className="cursor-pointer" onClick={() => setSelectedMedicines(selectedMedicines.filter(x => x !== m))} />
                     </span>
                   ))}
@@ -421,7 +419,7 @@ export default function ClinigenSignupFlow() {
                     type="button"
                     onClick={prevStep}
                     varient="secondary"
-                    className="border-2 border-[#7B3FE4] text-[#7B3FE4] px-10 py-2.5 rounded-full font-bold"
+                    className="border-2 border-[#706FE4] text-[#706FE4] px-10 py-2.5 rounded-full font-bold"
                   >
                     Previous
                   </Button>
@@ -444,7 +442,7 @@ export default function ClinigenSignupFlow() {
 
       {/* Persistent Help Button */}
       <Button
-        className="fixed bottom-6 right-6 bg-[#E9E4F5] text-[#63499E] px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm"
+        className="fixed bottom-6 right-6 bg-[#706FE4] hover:bg-[#5a5bd4] px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2 font-bold text-sm"
       >
         👋 Need help?
       </Button>

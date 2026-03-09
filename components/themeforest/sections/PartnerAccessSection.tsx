@@ -22,7 +22,7 @@ export default function PartnerAccessSection() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-row sm:flex-col sm:items-start sm:justify-between gap-4"
+            className="flex flex-col sm:items-start sm:justify-between gap-4"
           >
             <p className="text-gray-600 text-sm leading-relaxed max-w-md">
               Halo Direct connects healthcare professionals with trusted global supply networks to access licensed, shortage, and specialty medicines.

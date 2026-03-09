@@ -10,6 +10,7 @@ import useToast from "@/lib/useToast";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import Header from "@/components/layout/Header";
+import Image from "next/image";
 
 // Validation helper
 const validateEmail = (email: string) => {
@@ -44,8 +45,6 @@ export default function RecoverPasswordPage() {
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] flex flex-col">
-      {/* Navbar */}
-      <Header />
 
       <div className="flex-1 flex flex-col items-center justify-center p-4 font-sans">
 
@@ -60,10 +59,13 @@ export default function RecoverPasswordPage() {
         <div className="flex-[1.2] p-8 md:p-12">
           <header className="text-center mb-8">
             <div className="flex justify-center mb-4">
-              <h2 className="text-2xl font-black italic tracking-tighter">
-                <span className="text-[#6FCF97]">CLINIGEN</span>
-                <span className="text-[#7B3FE4]">DIRECT</span>
-              </h2>
+              <Image
+                src="/images/Halo-Direct.png"
+                alt="Halo Direct"
+                width={200}
+                height={200}
+                className="object-contain"
+              />
             </div>
             <h1 className="text-3xl font-bold text-slate-800 mb-2">Recover password</h1>
             <p className="text-slate-500 text-sm leading-relaxed">
@@ -76,7 +78,7 @@ export default function RecoverPasswordPage() {
               label="Email"
               type="email"
               placeholder="info@haloishere.com"
-              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#7B3FE4] outline-none transition-all text-slate-700"
+              className="w-full px-4 py-3 rounded-lg bg-[#EBF1FA] border-transparent focus:bg-white focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-slate-700"
               registration={register("email", { 
                 required: "Email is required",
                 validate: (v) => validateEmail(v)
@@ -88,7 +90,7 @@ export default function RecoverPasswordPage() {
               type="submit"
               disabled={isLoading}
               isLoading={isLoading}
-              className="w-full font-bold py-3.5 rounded-full shadow-lg shadow-indigo-100 transition-all text-sm"
+              className="w-full font-bold py-3.5 rounded-full bg-[#706FE4] hover:bg-[#5a5bd4] text-white transition-all text-sm"
             >
               {isLoading ? "Sending..." : "Email me a verification code"}
             </Button>
@@ -97,7 +99,7 @@ export default function RecoverPasswordPage() {
               <Link href="/signin">
                 <Button
                   varient="secondary"
-                  className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#F3F2FF] font-bold py-2.5 rounded-full transition-all text-sm"
+                  className="w-full border-2 border-[#706FE4] text-[#706FE4] hover:bg-[#F3F2FF] font-bold py-2.5 rounded-full transition-all text-sm"
                 >
                   Back to login
                 </Button>
@@ -120,7 +122,7 @@ export default function RecoverPasswordPage() {
                <div className="absolute bottom-0 w-full h-4/5 bg-slate-300 rounded-t-lg mx-auto flex items-end justify-center">
                   <span className="text-4xl">👩‍🔬</span>
                </div>
-               <div className="absolute top-4 left-4 w-8 h-8 bg-[#7B3FE4] rounded-lg flex items-center justify-center text-white">
+               <div className="absolute top-4 left-4 w-8 h-8 bg-[#706FE4] rounded-lg flex items-center justify-center text-white">
                   ⚡
                </div>
             </div>
@@ -137,21 +139,13 @@ export default function RecoverPasswordPage() {
           <Link href="/signup" className="w-full max-w-50">
             <Button
               varient="secondary"
-              className="w-full border-2 border-[#7B3FE4] text-[#7B3FE4] hover:bg-[#7B3FE4] hover:text-white font-bold py-2.5 rounded-full transition-all text-sm"
+              className="w-full border-2 border-[#706FE4] text-[#706FE4] hover:bg-[#706FE4] hover:text-white font-bold py-2.5 rounded-full transition-all text-sm"
             >
               Sign up
             </Button>
           </Link>
         </div>
       </motion.div>
-
-      {/* Footer Links */}
-      <footer className="mt-8 text-center text-xs text-slate-500 max-w-lg leading-relaxed">
-        By continuing to use Clinigen Direct, you accept our{" "}
-        <Link href="#" className="text-[#4A90E2] hover:underline">Terms of Use</Link>,{" "}
-        <Link href="#" className="text-[#4A90E2] hover:underline">Terms of Sale</Link> and our{" "}
-        <Link href="#" className="text-[#4A90E2] hover:underline">Privacy Policy</Link>.
-      </footer>
       </div>
     </div>
   );

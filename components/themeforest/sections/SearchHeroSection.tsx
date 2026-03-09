@@ -17,12 +17,12 @@ export default function SearchHeroSection() {
   };
 
   return (
-    <section className="w-full bg-[#F9F4F4] py-20 px-6">
+    <section className="w-full bg-[#F9F4F4] p-4 lg:p-40">
       <div className="max-w-4xl mx-auto text-center space-y-6">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight"
+          className="text-2xl md:text-5xl font-bold text-gray-900 leading-tight"
         >
           Accessing Medicines
           <br />

@@ -36,21 +36,21 @@ export default function AboutHeroSection() {
   ];
 
   return (
-    <section className="w-full py-16 px-6">
+    <section className="w-full p-4 lg:p-40">
       <div className="max-w-6xl mx-auto">
         {/* Purple Gradient Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="rounded-3xl bg-gradient-to-r from-[#7A6FE4] to-[#D48AF2] p-10 text-white"
+          className="rounded-3xl bg-linear-to-r from-[#7A6FE4] to-[#D48AF2] p-2 md:p-10 text-white"
         >
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
             <div className="flex-1">
               <span className="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
                 ABOUT HALO DIRECT
               </span>
-              <h2 className="text-4xl lg:text-5xl font-bold leading-tight">
+              <h2 className="text-2xl md:text-5xl font-bold leading-tight">
                 Simplifying Access
                 <br />
                 to Critical Medicines
@@ -71,7 +71,7 @@ export default function AboutHeroSection() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10 pt-10 border-t border-white/20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6 mt-10 pt-10 border-t border-white/20">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
@@ -92,7 +92,7 @@ export default function AboutHeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="grid md:grid-cols-4 gap-8 mt-16"
+          className="grid md:grid-cols-4 gap-8 mt-16 py-6"
         >
           {features.map((feature, index) => (
             <motion.div

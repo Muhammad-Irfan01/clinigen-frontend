@@ -33,7 +33,7 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
   ];
   return (
     <section className={`case-studies-block ${classname}`}>
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-2 md:px-6">
         {/* <div className="flex items-center justify-between w-full max-lg:flex-wrap gap-y-2">
           <div className="max-lg:w-full">
             <div className="tag text-sm font-bold text-[#706FE4] bg-[#F7F4F1] px-4 py-2 rounded-full inline-block">
@@ -53,7 +53,7 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-[#E8E6F5] rounded-3xl p-8 lg:p-12"
+          className="bg-[#E8E6F5] rounded-3xl p-4 lg:py-20 lg:px-10"
         >
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             {/* Left Side */}
@@ -75,9 +75,9 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-2xl p-8 lg:p-10 shadow-sm"
+              className="bg-white rounded-2xl p-4 lg:p-10 shadow-sm"
             >
-              <h3 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] leading-tight mb-8">
+              <h3 className="text-2xl lg:text-4xl font-bold text-[#1D0E62] leading-tight mb-8">
                 Access Critical Medicines Faster
               </h3>
               <ul className="space-y-4">

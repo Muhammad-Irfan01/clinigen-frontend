@@ -23,7 +23,7 @@ export const Button = ({
     className={clsx(
         'px-4 py-2 rounded-md transition',
         {
-            'bg-blue-500 text-white hover:bg-blue-600': varient === 'primary',
+            'bg-[#706FE4] hover:bg-[#5a5bd4 text-white ': varient === 'primary',
             'bg-gray-200 text-[#413851] hover:bg-gray-300': varient === 'secondary',
             'bg-red-500 text-white hover:bg-red-600': varient === 'danger',
             'opacity-50 cursor-not-allowed': disabled || isLoading,

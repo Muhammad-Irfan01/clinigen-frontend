@@ -41,8 +41,6 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F6F9] flex flex-col">
-      {/* Navbar */}
-      <Header />
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-6 py-12">
@@ -58,8 +56,8 @@ export default function SignInPage() {
               <Image
                 src="/images/Halo-Direct.png"
                 alt="Halo Direct"
-                width={180}
-                height={60}
+                width={200}
+                height={200}
                 className="object-contain"
               />
             </div>
@@ -84,7 +82,7 @@ export default function SignInPage() {
                 <Input
                   type="email"
                   placeholder="info@haloishere.com"
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
                   registration={register("email", {
                     required: "Email is required",
                     validate: (v) => validateEmail(v)
@@ -100,7 +98,7 @@ export default function SignInPage() {
                 <Input
                   type="password"
                   placeholder="password123"
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#7A6FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
                   registration={register("password", {
                     required: "Password is required",
                     minLength: {
@@ -116,7 +114,7 @@ export default function SignInPage() {
                 type="submit"
                 disabled={isLoading}
                 isLoading={isLoading}
-                className="w-full font-medium py-3.5 rounded-full bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white transition-all mt-4"
+                className="w-full font-medium py-3.5 rounded-full bg-[#706FE4] hover:bg-[#5a5bd4] text-white transition-all mt-4"
               >
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
@@ -157,67 +155,6 @@ export default function SignInPage() {
           </div>
         </motion.div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-100 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-8">
-            {/* Brand */}
-            <div className="md:col-span-1">
-              <div className="text-2xl font-bold text-[#7A6FE4] mb-4">
-                halo<span className="text-[#C4A7F0]">direct</span>
-              </div>
-              <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                We are a global healthcare company dedicated to providing access to medicines for patients worldwide.
-              </p>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="font-bold text-[#1D0E62] mb-4">Company</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/about" className="hover:text-[#7A6FE4]">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-[#7A6FE4]">Contact</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Our Team</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Careers</Link></li>
-              </ul>
-            </div>
-
-            {/* Services */}
-            <div>
-              <h4 className="font-bold text-[#1D0E62] mb-4">Services</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Managed Access Programs</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Commercialization</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Pharmacovigilance</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Market Access</Link></li>
-              </ul>
-            </div>
-
-            {/* Support */}
-            <div>
-              <h4 className="font-bold text-[#1D0E62] mb-4">Support</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/support" className="hover:text-[#7A6FE4]">Help Center</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Report Adverse Event</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Product Shortage</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">FAQs</Link></li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="font-bold text-[#1D0E62] mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Terms of Use</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Terms of Sale</Link></li>
-                <li><Link href="#" className="hover:text-[#7A6FE4]">Cookie Policy</Link></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
