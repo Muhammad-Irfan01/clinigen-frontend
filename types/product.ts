@@ -269,7 +269,23 @@ export interface CartItem {
   quantity: number;
   productVariantId?: number;
   options?: any;
-  product: Product;
+  product: {
+    id: number;
+    name: string;
+    slug: string;
+    price?: string | number;
+    image?: string | null;
+    sku?: string;
+    description?: string;
+    in_stock?: boolean;
+    inStock?: boolean;
+    product_translations?: Array<{
+      name: string;
+      description: string;
+      locale?: string;
+    }>;
+    [key: string]: any; // Allow additional fields
+  };
   subtotal: number;
 }
 

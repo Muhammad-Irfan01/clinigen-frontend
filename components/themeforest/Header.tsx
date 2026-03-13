@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import * as Icon from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "@/store/auth.store";
+import { useProductStore } from "@/store/product.store";
 
 // Navigation data
 const navItems = [
@@ -56,11 +57,29 @@ export default function Header({ theme = "light" }: HeaderProps) {
   const [showSearch, setShowSearch] = useState(false);
   const [isHeaderFixed, setIsHeaderFixed] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
-  
+  const { cart, fetchCart } = useProductStore();
+  const [cartCount, setCartCount] = useState(0);
+
   const headerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<number>(0);
 
   const isLight = theme === "light";
+
+  // Fetch cart only on authentication change (login/logout)
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchCart();
+    } else {
+      // Clear cart when logged out
+      setCartCount(0);
+    }
+  }, [isAuthenticated]);
+
+  // Update cart count whenever cart object changes
+  useEffect(() => {
+    const newCount = cart?.count || 0;
+    setCartCount(newCount);
+  }, [cart?.items]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -230,9 +249,11 @@ export default function Header({ theme = "light" }: HeaderProps) {
                       aria-label="Cart"
                     >
                       <Icon.Handbag className="text-2xl text-gray-700" />
-                      <span className="cart__quantity absolute top-[-4px] right-[-5px] h-4 w-4 bg-[#706FE4] text-white text-[10px] font-normal rounded-full flex items-center justify-center">
-                        0
-                      </span>
+                      {cartCount > 0 && (
+                        <span className="cart__quantity absolute top-[-4px] right-[-5px] h-4 w-4 bg-[#706FE4] text-white text-[10px] font-normal rounded-full flex items-center justify-center">
+                          {cartCount > 99 ? '99+' : cartCount}
+                        </span>
+                      )}
                     </button>
                   )}
 

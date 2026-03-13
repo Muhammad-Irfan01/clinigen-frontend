@@ -53,19 +53,19 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-[#E8E6F5] rounded-3xl p-4 lg:py-20 lg:px-10"
+          className="bg-[#E8E6F5] rounded-3xl p-4 lg:py-10 lg:px-10"
         >
           <div className="grid lg:grid-cols-2 gap-10 items-center">
             {/* Left Side */}
-            <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] leading-tight mb-6">
-                Connecting Healthcare Professionals to Critical Medicines
+            <div className="flex flex-col items-center">
+              <h2 className="text-3xl lg:text-3xl font-bold text-[#1D0E62] leading-tight mb-6">
+                Connecting Healthcare <br/> Professionals to Critical Medicines
               </h2>
               <div className="overflow-hidden rounded-2xl">
                 <img
                   src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&h=400&fit=crop"
                   alt="Medicine shelves"
-                  className="w-full h-[300px] object-cover"
+                  className="lg:w-125 h-100 rounded-r-2xl object-cover"
                 />
               </div>
             </div>
@@ -75,9 +75,9 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-2xl p-4 lg:p-10 shadow-sm"
+              className="bg-white rounded-2xl p-4 lg:p-8 shadow-sm"
             >
-              <h3 className="text-2xl lg:text-4xl font-bold text-[#1D0E62] leading-tight mb-8">
+              <h3 className="text-2xl lg:text-5xl font-bold text-[#1D0E62] leading-tight mb-8">
                 Access Critical Medicines Faster
               </h3>
               <ul className="space-y-4">
@@ -89,8 +89,8 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
                     transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    <Check className="w-5 h-5 text-[#7A6FE4] shrink-0 mt-0.5" />
-                    <span className="text-gray-700 text-sm leading-relaxed">
+                    <Check size={34} className=" text-[#7A6FE4] shrink-0" />
+                    <span className="text-gray-700 text-md leading-relaxed">
                       {feature}
                     </span>
                   </motion.li>
@@ -104,7 +104,7 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
               >
                 <a
                   href="/about"
-                  className="inline-block bg-[#C4A7F0] hover:bg-[#B595E8] text-white font-medium px-6 py-3 rounded-full transition-colors"
+                  className="inline-block bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-6 py-1.5 rounded-full transition-colors"
                 >
                   Explore Halo Direct
                 </a>

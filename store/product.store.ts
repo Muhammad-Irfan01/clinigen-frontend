@@ -108,11 +108,14 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
     try {
       const response = await productAPI.getCart();
+      console.log('[product.store] Cart fetched:', response);
+      
       set({
         cart: response,
         loading: false,
       });
     } catch (error: any) {
+      console.error('[product.store] Cart fetch error:', error);
       set({ error: error.message, loading: false });
       toast.error(error.message || 'Failed to fetch cart');
     }
@@ -123,12 +126,18 @@ export const useProductStore = create<ProductState>((set, get) => ({
     const toast = useToast();
 
     try {
+      console.log('[product.store] Adding to cart:', data);
       await productAPI.addToCart(data);
+      console.log('[product.store] Add to cart successful, fetching updated cart...');
+      
       // Update cart after adding item
       await get().fetchCart();
+      console.log('[product.store] Cart refetched successfully, count:', get().cart?.count);
+      
       toast.success('Product added to cart successfully');
       set({ loading: false });
     } catch (error: any) {
+      console.error('[product.store] Add to cart error:', error);
       set({ error: error.message, loading: false });
       toast.error(error.message || 'Failed to add product to cart');
     }

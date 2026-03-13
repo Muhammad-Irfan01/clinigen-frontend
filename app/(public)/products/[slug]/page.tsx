@@ -15,6 +15,7 @@ import { productAPI } from '@/lib/productAPI';
 import { Product } from '@/types/product';
 import useToast from '@/lib/useToast';
 import { useAuth } from '@/lib/useAuth';
+import { useProductStore } from '@/store/product.store';
 
 export default function SingleProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
@@ -25,6 +26,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
   const [loading, setLoading] = useState<boolean>(true);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [isBookmarkLoading, setIsBookmarkLoading] = useState<boolean>(false);
+    const { cart, fetchCart } = useProductStore();
   const { success: showSuccess, error: showError } = useToast();
 
   // Fetch product details from backend using slug
@@ -95,6 +97,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
         productId: product.id,
         quantity: 1
       });
+      await fetchCart();
       showSuccess('Product added to cart successfully!');
     } catch (error: any) {
       console.error('Error adding to cart:', error);

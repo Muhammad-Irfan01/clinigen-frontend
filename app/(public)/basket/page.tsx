@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Trash2, CheckCircle, MessageSquare } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
-import { CartItem, Cart } from '@/types/product';
+import { useProductStore } from '@/store/product.store';
+import { CartItem } from '@/types/product';
 import useToast from '@/lib/useToast';
 import { Button } from '@/components/ui/Button';
 import { div } from 'framer-motion/client';
@@ -13,45 +14,26 @@ import { div } from 'framer-motion/client';
 // --- Main Basket Page ---
 
 export default function BasketPage() {
-  const [cart, setCart] = useState<Cart | null>(null);
+  const { cart, fetchCart, clearCart: clearCartStore } = useProductStore();
   const [loading, setLoading] = useState(true);
   const [updatingQuantities, setUpdatingQuantities] = useState<Record<number, boolean>>({});
   const { error: showError, success: showSuccess } = useToast();
   const router = useRouter()
+  
   // Load cart items on component mount
-  const fetchCart = async () => {
-    try {
-      const cartData = await productAPI.getCart();
-      setCart(cartData);
-    } catch (error: any) {
-      console.error('Error fetching cart:', error);
-
-      // Check if it's an "Invalid product ID" error
-      if (error?.response?.data?.message?.includes('Invalid product ID')) {
-        // The cart data is corrupted, offer to clear it
-        if (window.confirm('Your cart contains invalid product data. Would you like to clear your cart?')) {
-          try {
-            await productAPI.clearCart();
-            setCart({ items: [], total: 0, count: 0 });
-            showSuccess('Corrupted cart cleared successfully');
-          } catch (clearError) {
-            console.error('Error clearing cart:', clearError);
-            showError('Failed to clear corrupted cart');
-          }
-        } else {
-          // Set an empty cart to prevent continuous error
-          setCart({ items: [], total: 0, count: 0 });
-        }
-      } else {
-        showError(error.message || 'Failed to load cart');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchCart();
+    const loadCart = async () => {
+      try {
+        await fetchCart();
+      } catch (error: any) {
+        console.error('Error fetching cart:', error);
+        showError(error.message || 'Failed to load cart');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadCart();
   }, []);
 
   const handleQuantityChange = async (productId: number, newQuantity: number) => {
@@ -60,28 +42,14 @@ export default function BasketPage() {
     setUpdatingQuantities(prev => ({ ...prev, [productId]: true }));
 
     try {
-      // Update the cart item
-      const updatedCart = await productAPI.updateCartItem(productId, { quantity: newQuantity });
-      setCart(updatedCart);
-      fetchCart();
+      // Update the cart item using store method
+      await productAPI.updateCartItem(productId, { quantity: newQuantity });
+      // Refetch cart to get updated count
+      await fetchCart();
       showSuccess('Cart updated successfully');
     } catch (error: any) {
       console.error('Error updating cart item:', error);
-
-      // Check if it's an "Invalid product ID" error
-      if (error?.response?.data?.message?.includes('Invalid product ID')) {
-        showError('This product is no longer available in your cart. The cart will be refreshed.');
-        // Refresh the cart to get the latest valid data
-        try {
-          const freshCart = await productAPI.getCart();
-          setCart(freshCart);
-        } catch (refreshError) {
-          console.error('Error refreshing cart:', refreshError);
-          setCart({ items: [], total: 0, count: 0 }); // Fallback to empty cart
-        }
-      } else {
-        showError(error.message || 'Failed to update cart item');
-      }
+      showError(error.message || 'Failed to update cart item');
     } finally {
       setUpdatingQuantities(prev => ({ ...prev, [productId]: false }));
     }
@@ -91,27 +59,12 @@ export default function BasketPage() {
   const handleRemoveItem = async (productId: number) => {
     try {
       await productAPI.removeFromCart(productId);
-      // Reload cart after removal
-      const updatedCart = await productAPI.getCart();
-      setCart(updatedCart);
+      // Refetch cart to get updated count
+      await fetchCart();
       showSuccess('Item removed from cart');
     } catch (error: any) {
       console.error('Error removing item from cart:', error);
-
-      // Check if it's an "Invalid product ID" error
-      if (error?.response?.data?.message?.includes('Invalid product ID')) {
-        showError('This product is no longer available in your cart. The cart will be refreshed.');
-        // Refresh the cart to get the latest valid data
-        try {
-          const freshCart = await productAPI.getCart();
-          setCart(freshCart);
-        } catch (refreshError) {
-          console.error('Error refreshing cart:', refreshError);
-          setCart({ items: [], total: 0, count: 0 }); // Fallback to empty cart
-        }
-      } else {
-        showError(error.message || 'Failed to remove item from cart');
-      }
+      showError(error.message || 'Failed to remove item from cart');
     }
   };
 
@@ -201,14 +154,13 @@ export default function BasketPage() {
               Proceed to checkout
             </Button>
 
-            {/* Button to clear corrupted cart data */}
+            {/* Button to clear cart */}
             <Button
               varient="danger"
               onClick={async () => {
                 if (window.confirm('Are you sure you want to clear your cart? This will remove all items.')) {
                   try {
-                    await productAPI.clearCart();
-                    setCart({ items: [], total: 0, count: 0 });
+                    await clearCartStore();
                     showSuccess('Cart cleared successfully');
                   } catch (error: any) {
                     console.error('Error clearing cart:', error);
@@ -218,7 +170,7 @@ export default function BasketPage() {
               }}
               className="w-full py-2 mt-2 text-sm text-red-600 hover:text-white font-bold rounded-full border border-red-600 hover:bg-red-600 transition-colors"
             >
-              Clear Cart (if having issues)
+              Clear Cart
             </Button>
           </div>
         </div>
@@ -249,10 +201,26 @@ function BasketProductCard({
 
   const calculatedAmount = (quantity * (item.subtotal / item.quantity)).toFixed(2);
 
-  const productName = item.product?.product_translations?.[0]?.name || `Product ${item.productId}`;
-  const productDescription = item.product?.product_translations?.[0]?.description || 'Product details not available';
+  // Get product name - prioritize direct name field from API response
+  const productName = 
+    item.product?.name ||  // Direct name from API (e.g., "Tyler Molina")
+    item.product?.product_translations?.[0]?.name || 
+    `Product #${item.productId}`;
+    
+  // Get product description
+  const productDescription = 
+    item.product?.description || 
+    item.product?.product_translations?.[0]?.description || 
+    '';
+    
   const productSku = item.product?.sku || 'N/A';
-  const productInStock = item.product?.in_stock ?? false;
+  const productInStock = item.product?.in_stock ?? item.product?.inStock ?? true;
+
+  console.log('[BasketProductCard] Displaying product:', {
+    productId: item.productId,
+    productName,
+    hasName: !!item.product?.name,
+  });
 
   const handleQuantityUpdate = (newQuantity: number) => {
     if (newQuantity !== quantity) {
@@ -394,7 +362,7 @@ function BasketProductCard({
                     <p className="text-xs font-bold text-gray-400 uppercase">Alternate Products</p>
                     <p className="text-sm font-semibold text-[#7C3AED]">
                       {item.product.shortage_alternatives_shortage_alternatives_product_idToproducts
-                        .map(alt => alt.products_shortage_alternatives_alternative_product_idToproducts?.product_translations[0]?.name)
+                        .map((alt: any) => alt.products_shortage_alternatives_alternative_product_idToproducts?.product_translations[0]?.name)
                         .filter(Boolean)
                         .join(', ')}
                     </p>

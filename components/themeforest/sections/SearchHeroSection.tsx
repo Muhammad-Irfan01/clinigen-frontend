@@ -17,23 +17,23 @@ export default function SearchHeroSection() {
   };
 
   return (
-    <section className="w-full bg-[#F9F4F4] p-4 lg:p-40">
-      <div className="max-w-4xl mx-auto text-center space-y-6">
+    <section className="w-full bg-[#f7f4f1] p-4 lg:p-40">
+      <div className="max-w-5xl mx-auto text-center space-y-6">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-2xl md:text-5xl font-bold text-gray-900 leading-tight"
+          className="text-2xl md:text-6xl text-[#162556] leading-tight"
         >
           Accessing Medicines
           <br />
-          <span className="text-gray-900">Globally, Simplified</span>
+          <span className="text-[#162556] font-bold">Globally, Simplified</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="text-sm text-gray-600 max-w-xl mx-auto"
+          className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto"
         >
           A dedicated platform for healthcare professionals to source unlicensed,
           shortage, or specialty medicines securely and efficiently.
@@ -44,24 +44,24 @@ export default function SearchHeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           onSubmit={handleSubmit}
-          className="max-w-xl mx-auto"
+          className="max-w-2xl mx-auto"
         >
           <div className="relative flex items-center">
             <div className="absolute left-4 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-gray-500 stroke-[1.5]" />
+              <Search className="h-6 w-6 text-gray-900 stroke-[1.5]" />
             </div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by generic or brand name"
-              className="w-full pl-11 pr-12 py-3.5 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 placeholder-gray-400"
+              className="w-full pl-12 pr-12 py-3 bg-white border border-gray-200  rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 placeholder-gray-800 text-lg"
             />
             <button
               type="submit"
               className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white px-6 py-4 rounded-r-full transition-colors flex items-center justify-center"
             >
-              <Search className="h-4 w-4 stroke-2" />
+              <Search className="h-5 w-6 stroke-2" />
             </button>
           </div>
         </motion.form>
