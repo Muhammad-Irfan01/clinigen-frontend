@@ -36,7 +36,7 @@ export default function HealthcareAccessSection() {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl lg:text-4xl font-bold text-[#1D0E62]"
+            className="text-3xl lg:text-[40px] font-bold text-[#1D0E62]"
           >
             Healthcare Medicine Access
           </motion.h2>
@@ -45,7 +45,7 @@ export default function HealthcareAccessSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
             href="/how-it-works"
-            className="bg-[#C4A7F0] hover:bg-[#B595E8] text-white font-medium px-6 py-2.5 rounded-full transition-colors inline-block w-fit"
+            className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-6 py-1 rounded-full transition-colors inline-block w-fit"
           >
             See How It Works
           </motion.a>
@@ -62,14 +62,14 @@ export default function HealthcareAccessSection() {
               className="bg-white rounded-xl p-6 lg:p-8 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#E8E4F5] rounded-xl flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-6 h-6 text-[#7A6FE4]" />
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0">
+                  <feature.icon size={36} className=" text-[#7A6FE4]" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-[#1D0E62] mb-2">
+                  <h3 className="text-2xl font-bold text-[#1D0E62] mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-500 font-semibold text-md leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

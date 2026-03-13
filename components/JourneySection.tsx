@@ -7,13 +7,13 @@ const JOURNEY_ITEMS = [
   {
     title: "Our Commitment Begins",
     description: "Halo Direct helps healthcare professionals access licensed, shortage, and specialty medicines through a reliable and simplified sourcing platform.",
-    image: "https://images.unsplash.com/photo-1576091160550-217358c7e618?w=600&h=400&fit=crop",
+    image: "/images/journey1.png",
     align: "left",
   },
   {
     title: "Building Global Supply Networks",
     description: "Halo Direct connects healthcare professionals with a trusted global network to source hard-to-find medicines quickly, safely, and efficiently.",
-    image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=400&fit=crop",
+    image: "/images/Untitled.png",
     align: "right",
   },
   {
@@ -25,7 +25,7 @@ const JOURNEY_ITEMS = [
   {
     title: "Focused on Patient Safety",
     description: "Patient safety is our priority. Halo Direct works with trusted partners and strict quality standards to ensure medicines are sourced safely and reliably.",
-    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=600&h=400&fit=crop",
+    image: "/images/journey4.png",
     align: "right",
   },
 ];
@@ -40,10 +40,10 @@ export default function JourneySection() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] mb-4">
+          <h2 className="text-3xl lg:text-[40px] font-bold text-[#1D0E62] mb-4">
             Our Path to Better Medicine Access
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-[#939290] font-semibold max-w-3xl mx-auto">
             From building global supply networks to supporting healthcare professionals worldwide.
           </p>
         </motion.div>
@@ -66,27 +66,25 @@ export default function JourneySection() {
                   item.align === "left" ? "md:flex-row" : "md:flex-row-reverse"
                 } gap-8 md:gap-12 items-center`}
               >
-                {/* Image Side */}
+                <div className={`w-full md:w-1/2 ${
+                  item.align === "left" ? "md:text-right md:pr-8" : "md:text-left md:pl-8 "
+                }`}>
+                  <h3 className="text-xl lg:text-[28px] font-bold text-[#1D0E62] mb-4">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-400 font-semibold text-sm">
+                    {item.description}
+                  </p>
+                </div>
+
                 <div className="w-full md:w-1/2">
-                  <div className="overflow-hidden rounded-2xl">
+                  <div className={`overflow-hidden rounded-2xl ${item.align === "left" && "flex justify-end"}`}>
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-full h-[280px] md:h-[320px] object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-4/5 rounded-2xl h-65 md:h-65 object-cover hover:scale-105 transition-transform duration-500"
                     />
                   </div>
-                </div>
-
-                {/* Content Side */}
-                <div className={`w-full md:w-1/2 ${
-                  item.align === "left" ? "md:text-right md:pr-8" : "md:text-left md:pl-8"
-                }`}>
-                  <h3 className="text-2xl lg:text-3xl font-bold text-[#1D0E62] mb-4">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {item.description}
-                  </p>
                 </div>
               </motion.div>
             ))}

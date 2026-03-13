@@ -49,10 +49,10 @@ export default function AboutUs() {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1D0E62] mb-4">
+            <h1 className="text-xl lg:text-5xl font-bold text-[#1D0E62] mb-4">
               About Us
             </h1>
-            <p className="text-gray-600 text-base max-w-2xl mx-auto">
+            <p className="text-[#939290] font-semibold text-lg max-w-3xl mx-auto">
               Discover our mission to help healthcare professionals access critical medicines quickly.
             </p>
           </motion.div>
@@ -70,10 +70,10 @@ export default function AboutUs() {
                 <span className="inline-block bg-[#E8E4F5] text-[#7A6FE4] text-xs font-semibold px-4 py-1.5 rounded-full mb-4 w-fit">
                   ABOUT HALO DIRECT
                 </span>
-                <h2 className="text-3xl lg:text-4xl font-bold text-[#1D0E62] leading-tight mb-6">
+                <h2 className="text-3xl lg:text-5xl font-bold text-[#1D0E62] leading-tight mb-6">
                   Ensuring Patients Get the Medicines They Need
                 </h2>
-                <p className="text-gray-600 text-sm leading-relaxed max-w-md">
+                <p className="text-[#939290] text-sm leading-relaxed max-w-md font-semibold">
                   Halo Direct helps healthcare professionals quickly find and request licensed, shortage, and specialty medicines through a secure digital platform and trusted global supply network.
                 </p>
               </div>
@@ -91,80 +91,6 @@ export default function AboutUs() {
       </section>
 
       <HealthcareAccessSection />
-
-      {/* Mission Section */}
-      {/* <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <h2 className="text-3xl font-bold mb-6 text-[#270072]">Our Mission</h2>
-              <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                We exist to make sure a healthcare professional with a patient in need, anywhere in the world,
-                can always get the right medicine for their individual patient – quickly, easily and safely,
-                whether licensed or unlicensed.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                To support this mission, we employ over 1,200 people and have offices in 14 locations around
-                the world. Our dedicated team works tirelessly to bridge the gap between patients and the
-                medicines they need.
-              </p>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-[#F7F4F1] rounded-2xl p-8"
-            >
-              <div className="grid grid-cols-2 gap-6">
-                {STATS.map((stat, idx) => (
-                  <div key={idx} className="text-center p-6 bg-white rounded-xl shadow-sm">
-                    <div className="text-3xl font-bold text-[#706FE4] mb-2">{stat.value}</div>
-                    <div className="text-sm text-gray-600">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section> */}
-
-      {/* Values Section */}
-      {/* <section className="py-20 px-6 bg-[#F7F4F1]">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-[#270072] mb-4">Our Values</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              The principles that guide everything we do
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {VALUES.map((value, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + idx * 0.1 }}
-                className="bg-white rounded-xl p-8 text-center hover:shadow-lg transition-all duration-300"
-              >
-                <div className="w-16 h-16 bg-[#706FE4] rounded-full flex items-center justify-center mx-auto mb-6">
-                  {value.icon}
-                </div>
-                <h3 className="text-xl font-bold text-[#270072] mb-3">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section> */}
 
       {/* What We Do Section */}
       {/* <section className="py-20 px-6">
@@ -236,77 +162,6 @@ export default function AboutUs() {
       <JourneySection />
 
       <PartnerAccessSection />
-
-      {/* Global Presence Section */}
-      {/* <section className="py-20 px-6 bg-[#270072] text-white">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold mb-4">Global Presence</h2>
-            <p className="text-lg text-purple-100 max-w-2xl mx-auto">
-              With offices across multiple continents, we're never far from the patients we serve
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { region: "Europe", countries: "UK, France, Germany, Benelux, Eastern Europe" },
-              { region: "Americas", countries: "USA, Canada, Latin America" },
-              { region: "Asia Pacific", countries: "Australia, New Zealand, Japan, Singapore" },
-              { region: "Middle East", countries: "UAE, Saudi Arabia, Israel" },
-              { region: "Africa", countries: "South Africa, Nigeria, Kenya" },
-              { region: "Nordics", countries: "Sweden, Norway, Denmark, Finland" }
-            ].map((area, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + idx * 0.1 }}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-6"
-              >
-                <h3 className="text-xl font-bold mb-2">{area.region}</h3>
-                <p className="text-purple-200">{area.countries}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* CTA Section */}
-      {/* <section className="py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-3xl font-bold text-[#270072] mb-6"
-          >
-            Want to Learn More?
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg text-gray-600 mb-8"
-          >
-            Discover how Clinigen can help you provide better care for your patients
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <a
-              href="/contact"
-              className="inline-block bg-[#706FE4] text-white px-8 py-4 rounded-lg font-bold hover:bg-[#5a5bd4] transition-all duration-300"
-            >
-              Contact Us Today
-            </a>
-          </motion.div>
-        </div>
-      </section> */}
     </div>
   );
 }
