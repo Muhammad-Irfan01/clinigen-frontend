@@ -229,9 +229,9 @@ export default function DrugShortagesPage() {
     };
 
     return (
-        <div className="min-h-screen font-sans bg-[#FAF8F5] pb-12">
+        <div className="min-h-screen font-sans bg-white pb-12">
             {/* Hero Section */}
-            <section className="bg-linear-to-r from-[#F5F3FF] via-white to-[#FFF9F5] py-16 lg:py-20">
+            <section className="bg-[#f7f4f1] py-16 lg:py-20">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Left Column - Headings */}
@@ -243,6 +243,13 @@ export default function DrugShortagesPage() {
                         >
                             {/* Badge */}
                             <div className="inline-flex items-center gap-2 bg-[#706FE4] text-white px-4 py-2 rounded-full text-sm font-bold">
+                                <Image
+                                    src="/images/pill-icon.png"
+                                    alt="Pill icon"
+                                    width={16}
+                                    height={16}
+                                    className="w-4 h-4 filter brightness-0 invert"
+                                />
                                 <span>UK Drug Shortages</span>
                             </div>
 
@@ -253,7 +260,7 @@ export default function DrugShortagesPage() {
                             </h1>
 
                             {/* Subheading */}
-                            <p className="text-3xl lg:text-4xl font-light text-[#5B6B7A]">
+                            <p className="text-3xl lg:text-5xl font-light text-[#5B6B7A]">
                                 Find Reliable<br />
                                 Drug Alternatives
                             </p>
@@ -267,7 +274,7 @@ export default function DrugShortagesPage() {
                             className="space-y-6"
                         >
                             {/* Description */}
-                            <p className="text-[#5B6B7A] leading-relaxed">
+                            <p className="text-[#5B6B7A] leading-relaxed text-md">
                                 The Halo Direct UK Drug Shortages platform provides regularly updated
                                 information on medicines experiencing supply issues across the UK, along
                                 with available alternative options to support continued patient care.
@@ -275,7 +282,7 @@ export default function DrugShortagesPage() {
 
                             {/* Key Areas Section */}
                             <div>
-                                <h2 className="text-base font-bold text-[#0F2544] mb-4">
+                                <h2 className="text-md font-bold text-[#0F2544] mb-4">
                                     Key Areas We Focus On
                                 </h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -288,7 +295,7 @@ export default function DrugShortagesPage() {
                                             className="flex items-center gap-2"
                                         >
                                             <Check className="w-4 h-4 text-[#706FE4] shrink-0" />
-                                            <span className="text-sm font-medium text-[#5B6B7A]">
+                                            <span className="text-md font-medium text-[#5B6B7A]">
                                                 {area}
                                             </span>
                                         </motion.div>
@@ -301,7 +308,7 @@ export default function DrugShortagesPage() {
             </section>
 
             {/* Table Section */}
-            <section className="max-w-6xl mx-auto px-6 py-12">
+            <section className="max-w-7xl mx-auto px-6 py-12">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -387,7 +394,7 @@ export default function DrugShortagesPage() {
                                         </div>
                                         <div className="py-4 px-4 text-center">
                                             <motion.div
-                                                animate={{ rotate: expandedRow === item.id ? 180 : 0 }}
+                                                animate={{ rotate: expandedRow === item.id ? 180 : 0, backgroundColor: expandedRow === item.id ? '#F97316' : '#706FE4' }}
                                                 transition={{ duration: 0.2 }}
                                                 className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#706FE4] text-white"
                                             >
@@ -412,9 +419,9 @@ export default function DrugShortagesPage() {
                                                 <p className="text-xs text-gray-500 mt-1">{item.alternative}</p>
                                             </div>
                                             <motion.div
-                                                animate={{ rotate: expandedRow === item.id ? 180 : 0 }}
+                                                animate={{ rotate: expandedRow === item.id ? 180 : 0, backgroundColor: expandedRow === item.id ? '#F97316' : '#706FE4' }}
                                                 transition={{ duration: 0.2 }}
-                                                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#706FE4] text-white flex-shrink-0"
+                                                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#706FE4] text-white shrink-0"
                                             >
                                                 <ChevronDown size={14} />
                                             </motion.div>
@@ -491,10 +498,15 @@ export default function DrugShortagesPage() {
                         transition={{ duration: 0.6 }}
                         className="space-y-6"
                     >
-                        <h2 className="text-3xl lg:text-4xl font-bold text-[#0F2544] leading-tight">
-                            Stay Updated with<br />
-                            <span className="text-[#706FE4]">Real-Time Shortage Information</span>
+                       <div className="inline-block px-3 py-1 bg-[#E8E0FF] rounded-full text-xs font-medium text-[#706FE4]">
+                            UK Medicine Access
+                        </div>
+
+                        <h2 className="text-3xl lg:text-4xl font-semibold text-[#0F2544] leading-tight">
+                            Hard-to-Find<br />
+                            <span className="font-extrabold">Medicines, Solved</span>
                         </h2>
+
                         
                         <p className="text-[#5B6B7A] leading-relaxed text-lg">
                             Our platform provides healthcare professionals across the UK with 

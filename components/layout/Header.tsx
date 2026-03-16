@@ -44,13 +44,25 @@ const Header = () => {
     const [haloHealthModalOpen, setHaloHealthModalOpen] = useState<boolean>(false)
     const { logout, isAuthenticated } = useAuthStore();
     const { cart, fetchCart } = useProductStore();
+    const [bookmarkCount, setBookmarkCount] = useState<number>(0);
 
-    // Fetch cart on mount and when authenticated
+    // Fetch cart and bookmarks on mount and when authenticated
     useEffect(() => {
         if (isAuthenticated) {
             fetchCart();
+            fetchBookmarkCount();
         }
     }, [isAuthenticated]);
+
+    const fetchBookmarkCount = async () => {
+        try {
+            const { productAPI } = await import('@/lib/productAPI');
+            const bookmarks = await productAPI.getUserBookmarks();
+            setBookmarkCount(bookmarks?.count || 0);
+        } catch (error) {
+            console.error('Failed to fetch bookmarks:', error);
+        }
+    };
 
     const cartCount = cart?.count || 0;
 
@@ -88,10 +100,15 @@ const Header = () => {
                                 </div>
                             </AppTooltip>
 
-                            <AppTooltip content="Viewed your bookmarked products">
-                                <div onClick={() => router.push('/bookmark')} className="flex items-center gap-1 text-sm hover:underline hover:text-[#007aff] cursor-pointer">
+                            <AppTooltip content="View your bookmarked products">
+                                <div onClick={() => router.push('/bookmark')} className="flex items-center gap-1 text-sm hover:underline hover:text-[#007aff] cursor-pointer relative">
                                     <Bookmark strokeWidth={1.4} />
                                     <span>Bookmark</span>
+                                    {bookmarkCount > 0 && (
+                                        <span className="absolute -top-2 -right-2 bg-[#706FE4] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                            {bookmarkCount}
+                                        </span>
+                                    )}
                                 </div>
                             </AppTooltip>
 
@@ -230,9 +247,14 @@ const Header = () => {
                                         </span>
                                     )}
                                 </div>
-                                <div onClick={() => router.push('/bookmark')} className="flex flex-col items-center cursor-pointer">
+                                <div onClick={() => router.push('/bookmark')} className="flex flex-col items-center cursor-pointer relative">
                                     <Bookmark strokeWidth={1.4} />
                                     <span className="text-xs mt-1">Bookmark</span>
+                                    {bookmarkCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-[#706FE4] text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                            {bookmarkCount}
+                                        </span>
+                                    )}
                                 </div>
                                 <div onClick={() => router.push('/my-account')} className="flex flex-col items-center cursor-pointer">
                                     <Cog strokeWidth={1.5} />

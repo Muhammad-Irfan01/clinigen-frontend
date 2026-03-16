@@ -91,9 +91,9 @@ function AccordionItem({ question, answer, isOpen, onClick }: {
           onClick={onClick}
           className="w-full flex items-center justify-between py-4 px-6 text-left hover:bg-gray-50 transition-colors"
         >
-          <span className="text-sm text-gray-700 pr-4">{question}</span>
+          <span className="text-md text-gray-700 pr-4">{question}</span>
           <ChevronDown
-            className={`w-5 h-5 bg-[#7A6FE4] text-white rounded-full shrink-0 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+            className={`w-5 h-5 text-white rounded-full shrink-0 transition-all duration-300 ${isOpen ? "rotate-180 bg-[#F97316]" : "bg-[#7A6FE4]"}`}
           />
         </button>
         <AnimatePresence>
@@ -105,7 +105,7 @@ function AccordionItem({ question, answer, isOpen, onClick }: {
               transition={{ duration: 0.3 }}
               className="overflow-hidden"
             >
-              <div className="px-6 pb-4 text-sm text-gray-600 leading-relaxed">
+              <div className="px-6 pb-4 text-md text-gray-600 leading-relaxed">
                 {answer}
               </div>
             </motion.div>
@@ -152,7 +152,7 @@ export default function SupportPage() {
 
       {/* FAQ Sections */}
       <section className="py-8 px-6">
-        <div className="max-w-4xl mx-auto space-y-12">
+        <div className="max-w-6xl mx-auto space-y-12">
           {FAQ_SECTIONS.map((section, sectionIndex) => (
             <motion.div
               key={sectionIndex}
@@ -192,7 +192,7 @@ export default function SupportPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1D0E62] leading-tight">
+              <h2 className="text-3xl md:text-5xl font-bold text-[#1D0E62] leading-tight lg:w-100">
                 Helpful guides available after login
               </h2>
             </motion.div>
@@ -207,10 +207,10 @@ export default function SupportPage() {
                 show you how to search, request, and manage medicine orders on Halo Direct.
               </p>
               <div className="flex gap-3">
-                <button className="bg-[#D4A7F0] hover:bg-[#C495E8] text-white font-medium px-6 py-2.5 rounded-full transition-colors">
+                <button className="bg-[#D4A7F0] hover:bg-[#C495E8] text-white font-medium px-6 py-1 rounded-full transition-colors">
                   Sign Up
                 </button>
-                <button className="bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white font-medium px-6 py-2.5 rounded-full transition-colors">
+                <button className="bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white font-medium px-6 py-1 rounded-full transition-colors">
                   Login
                 </button>
               </div>
@@ -225,12 +225,12 @@ export default function SupportPage() {
             viewport={{ once: true }}
             className="bg-linear-to-r from-[#A98DF2] to-[#C4A7F0] rounded-2xl px-2 py-5 md:px-8 md:py-6 flex flex-col sm:flex-row items-center justify-between gap-4"
           >
-            <h3 className="text-xl md:text-2xl font-bold text-white text-center sm:text-left">
+            <h3 className="text-xl md:text-[26px] font-bold text-white text-center sm:text-left">
               Need Help Finding Hard-to-Source Medicines?
             </h3>
             <button
               onClick={() => window.location.href = "/contact"}
-              className="bg-white hover:bg-gray-50 text-[#7A6FE4] font-semibold px-6 py-3 rounded-full transition-colors w-full sm:w-auto"
+              className="bg-white hover:bg-gray-50 text-[#7A6FE4] font-semibold px-6 py-1 rounded-full transition-colors w-full sm:w-auto"
             >
               Request Access
             </button>

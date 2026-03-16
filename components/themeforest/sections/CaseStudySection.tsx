@@ -34,21 +34,6 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
   return (
     <section className={`case-studies-block ${classname}`}>
       <div className="max-w-7xl mx-auto px-2 md:px-6">
-        {/* <div className="flex items-center justify-between w-full max-lg:flex-wrap gap-y-2">
-          <div className="max-lg:w-full">
-            <div className="tag text-sm font-bold text-[#706FE4] bg-[#F7F4F1] px-4 py-2 rounded-full inline-block">
-              Why we do
-            </div>
-            <h3 className="text-3xl md:text-4xl font-bold text-[#1D0E62] mt-3">
-              Case studies
-            </h3>
-          </div>
-          <div className="xl:w-5/12 lg:w-1/2 w-full">
-            <span className="text-gray-600">
-              Case studies that showcase our approach, process, and results for specific clients.
-            </span>
-          </div>
-        </div> */}
          <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -112,7 +97,7 @@ export default function CaseStudySection({ classname }: CaseStudySectionProps) {
             </motion.div>
           </div>
         </motion.div>
-        <div className="md:mt-10 mt-6 overflow-hidden">
+        <div className="overflow-hidden">
           <Swiper
             spaceBetween={24}
             slidesPerView={1}

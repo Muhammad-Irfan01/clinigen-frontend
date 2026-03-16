@@ -26,10 +26,10 @@ export default function MedicineAccessSection() {
   ];
 
   return (
-    <section className="w-full bg-[#FAF9FB] py-10 px-6">
+    <section className="w-full bg-[#FAF9FB] py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="grid lg:grid-cols-2 gap-8 py-10">
+        <div className="flex flex-col lg:flex-row justify-between lg:items-center gap-8 pb-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

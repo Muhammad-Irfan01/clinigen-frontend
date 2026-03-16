@@ -171,7 +171,7 @@ const ProductCatalogue = () => {
             {/* Advanced Filter Dropdown Button */}
             <button
               onClick={() => setShowFilter(!showFilter)}
-              className="flex items-center gap-2 px-4 py-3 bg-[#706FE4] text-white font-medium text-sm hover:bg-[#5F5ED4] transition-colors"
+              className="flex items-center gap-2 px-4 py-3 bg-[#7a6fe4] text-white font-medium text-sm hover:bg-[#5F5ED4] transition-colors"
             >
               Advanced Filter
               <ChevronDown size={16} className={clsx("transition-transform", showFilter && "rotate-180")} />
@@ -190,7 +190,7 @@ const ProductCatalogue = () => {
                   value={searchTerm}
                   onChange={handleSearch}
                 />
-                <button className="absolute right-1 bg-[#706FE4] hover:bg-[#5F5ED4] text-white p-1.5 rounded-md transition-colors">
+                <button className="absolute right-1 bg-[#7a6fe4] hover:bg-[#5F5ED4] text-white p-1.5 rounded-md transition-colors">
                   <Search size={16} />
                 </button>
               </div>
@@ -337,17 +337,20 @@ const ProductCatalogue = () => {
                     </div>
 
                     {/* Action Column */}
-                    <div className="col-span-2 flex items-center justify-end">
+                    <div className="col-span-2 flex items-center justify-end gap-2">
                       <button
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-[#706FE4] to-[#8575E9] text-white px-5 py-2 rounded-full text-xs font-bold hover:from-[#5F5ED4] hover:to-[#706FE4] transition-all shadow-sm hover:shadow-md"
+                        className="inline-flex items-center gap-2 bg-linear-to-r from-[#706FE4] to-[#8575E9] text-white px-5 py-2 rounded-lg text-xs font-bold hover:from-[#5F5ED4] hover:to-[#706FE4] transition-all shadow-sm hover:shadow-md"
                         onClick={(e) => {
                           e.stopPropagation();
                           router.push(`/products/${product.slug}`);
                         }}
                       >
                         REQUEST
-                        <ArrowRight size={14} />
                       </button>
+                      <div className='bg-[#7a6fe4] text-white px-4 py-2 rounded-lg'>
+                        <ArrowRight size={14} />
+                      </div>
+
                     </div>
                   </motion.div>
                 ))}
@@ -376,8 +379,8 @@ const ProductCatalogue = () => {
           </div>
         )}
       </div>
-       <section className="max-w-7xl mx-auto px-6 py-16">
-                <div className="grid lg:grid-cols-2 gap-12 items-center">
+       <section className="max-w-6xl mx-auto px-6 py-16">
+                <div className="grid lg:grid-cols-2 gap-8 items-center">
                     {/* Left Content */}
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}
@@ -386,11 +389,28 @@ const ProductCatalogue = () => {
                         transition={{ duration: 0.6 }}
                         className="space-y-6"
                     >
-                        <h2 className="text-3xl lg:text-4xl font-bold text-[#0F2544] leading-tight">
-                            Stay Updated with<br />
-                            <span className="text-[#706FE4]">Real-Time Shortage Information</span>
+                        <div className="inline-block px-3 py-1 bg-[#E8E0FF] rounded-full text-xs font-medium text-[#706FE4]">
+                            UK Medicine Access
+                        </div>
+
+                        <h2 className="text-3xl lg:text-4xl font-semibold text-[#0F2544] leading-tight">
+                            Hard-to-Find<br />
+                            <span className="font-extrabold">Medicines, Solved</span>
                         </h2>
-                        
+
+                        {/* <p className="text-[#5B6B7A] leading-relaxed text-sm lg:text-md lg:pr-10">
+                            The Halo Direct UK Drug Shortages platform helps
+                            healthcare professionals quickly find reliable
+                            alternatives for medicines currently facing shortages
+                            across the UK.
+                        </p>
+
+                        <p className="text-[#5B6B7A] leading-relaxed text-sm lg:text-md lg:pr-10">
+                            Access regularly updated information and available
+                            alternative options, helping ensure patients continue
+                            to receive the treatments they need without
+                            unnecessary delays.
+                        </p> */}
                         <p className="text-[#5B6B7A] leading-relaxed text-lg">
                             Our platform provides healthcare professionals across the UK with 
                             up-to-date information on medicine shortages, ensuring you can make 
