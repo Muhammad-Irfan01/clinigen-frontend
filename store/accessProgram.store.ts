@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { accessProgramAPI } from '@/lib/accessProgramAPI';
 import { AccessProgram, Patient, CreatePatientRequest } from '@/types/accessProgram';
-import useToast from '@/lib/useToast';
 
 interface AccessProgramState {
   accessPrograms: AccessProgram[];
@@ -34,7 +33,6 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
 
   fetchAccessPrograms: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.getAllAccessPrograms();
@@ -44,13 +42,11 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch access programs');
     }
   },
 
   fetchAccessProgramById: async (id: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.getAccessProgramById(id);
@@ -60,13 +56,11 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch access program');
     }
   },
 
   fetchPatientsForProgram: async (id: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.getPatientsForProgram(id);
@@ -76,13 +70,11 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch patients for program');
     }
   },
 
   fetchAllPatients: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.getAllPatients();
@@ -92,13 +84,11 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch patients');
     }
   },
 
   fetchPatientById: async (id: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.getPatientById(id);
@@ -108,13 +98,11 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch patient');
     }
   },
 
   createPatient: async (data: CreatePatientRequest) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.createPatient(data);
@@ -123,18 +111,15 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
         patients: [...state.patients, response],
         loading: false,
       }));
-      toast.success('Patient created successfully');
       return response;
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to create patient');
       throw error;
     }
   },
 
   updatePatient: async (id: number, data: Partial<CreatePatientRequest>) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await accessProgramAPI.updatePatient(id, data);
@@ -144,18 +129,15 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
         loading: false,
       }));
 
-      toast.success('Patient updated successfully');
       return response;
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to update patient');
       throw error;
     }
   },
 
   deletePatient: async (id: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       await accessProgramAPI.deletePatient(id);
@@ -164,11 +146,8 @@ export const useAccessProgramStore = create<AccessProgramState>((set, get) => ({
         selectedPatient: state.selectedPatient?.id === id ? null : state.selectedPatient,
         loading: false,
       }));
-
-      toast.success('Patient deleted successfully');
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to delete patient');
       throw error;
     }
   },

@@ -171,7 +171,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <section className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-6 border-b flex justify-between items-center bg-white">
                         <h2 className="text-lg font-bold">Product details</h2>
-                        <button className="bg-[#7C3AED] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#6D28D9] transition-all">
+                        <button className="bg-[#706FE4] text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#5A5BD4] transition-all">
                             Order available items again
                         </button>
                     </div>
@@ -215,12 +215,12 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                                         </td>
                                         <td className="px-6 py-6">
                                             <div className="flex items-center gap-4">
-                                                <button className="px-5 py-1.5 border-2 border-purple-700 text-purple-700 font-bold text-sm rounded-full hover:bg-purple-50 transition-all">
+                                                <button className="px-5 py-1.5 border-2 border-[#5A5BD4] text-[#5A5BD4] font-bold text-sm rounded-full hover:bg-purple-50 transition-all">
                                                     Order again
                                                 </button>
                                                 <button
                                                     onClick={() => setIsProductExpanded(!isProductExpanded)}
-                                                    className="text-purple-700"
+                                                    className="text-[#5A5BD4]"
                                                 >
                                                     {isProductExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
                                                 </button>

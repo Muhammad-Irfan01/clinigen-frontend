@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { productAPI } from '@/lib/productAPI';
 import { Product, ProductApiResponse, SearchProductsParams, Cart, AddToCartRequest, UpdateCartItemRequest, CheckoutRequest, CheckoutResponse, Wishlist } from '@/types/product';
-import useToast from '@/lib/useToast';
 
 interface ProductState {
   products: Product[];
@@ -55,7 +54,6 @@ export const useProductStore = create<ProductState>((set, get) => ({
 
   fetchProducts: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await productAPI.getAllProducts();
@@ -65,13 +63,11 @@ export const useProductStore = create<ProductState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch products');
     }
   },
 
   fetchProductById: async (id: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await productAPI.getProductById(id);
@@ -81,13 +77,11 @@ export const useProductStore = create<ProductState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch product');
     }
   },
 
   searchProducts: async (params: SearchProductsParams) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await productAPI.searchProducts(params);
@@ -98,18 +92,16 @@ export const useProductStore = create<ProductState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to search products');
     }
   },
 
   fetchCart: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await productAPI.getCart();
       console.log('[product.store] Cart fetched:', response);
-      
+
       set({
         cart: response,
         loading: false,
@@ -117,67 +109,56 @@ export const useProductStore = create<ProductState>((set, get) => ({
     } catch (error: any) {
       console.error('[product.store] Cart fetch error:', error);
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch cart');
     }
   },
 
   addToCart: async (data: AddToCartRequest) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       console.log('[product.store] Adding to cart:', data);
       await productAPI.addToCart(data);
       console.log('[product.store] Add to cart successful, fetching updated cart...');
-      
+
       // Update cart after adding item
       await get().fetchCart();
       console.log('[product.store] Cart refetched successfully, count:', get().cart?.count);
-      
-      toast.success('Product added to cart successfully');
+
       set({ loading: false });
     } catch (error: any) {
       console.error('[product.store] Add to cart error:', error);
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to add product to cart');
     }
   },
 
   updateCartItem: async (productId: number, data: UpdateCartItemRequest) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       await productAPI.updateCartItem(productId, data);
       // Update cart after updating item
       await get().fetchCart();
-      toast.success('Cart updated successfully');
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to update cart item');
     }
   },
 
   removeFromCart: async (productId: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       await productAPI.removeFromCart(productId);
       // Update cart after removing item
       await get().fetchCart();
-      toast.success('Product removed from cart successfully');
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to remove product from cart');
     }
   },
 
   clearCart: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       await productAPI.clearCart();
@@ -185,16 +166,13 @@ export const useProductStore = create<ProductState>((set, get) => ({
         cart: { items: [], total: 0, count: 0 },
         loading: false,
       });
-      toast.success('Cart cleared successfully');
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to clear cart');
     }
   },
 
   checkout: async (data: CheckoutRequest) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await productAPI.checkout(data);
@@ -203,18 +181,15 @@ export const useProductStore = create<ProductState>((set, get) => ({
         cart: { items: [], total: 0, count: 0 },
         loading: false,
       });
-      toast.success(response.message || 'Order placed successfully');
       return response;
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to complete checkout');
       throw error;
     }
   },
 
   fetchWishlist: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await productAPI.getUserBookmarks();
@@ -224,39 +199,32 @@ export const useProductStore = create<ProductState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch wishlist');
     }
   },
 
   addBookmark: async (productId: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       await productAPI.addBookmark(productId);
       // Update wishlist after adding bookmark
       await get().fetchWishlist();
-      toast.success('Product added to bookmarks successfully');
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to add bookmark');
     }
   },
 
   removeBookmark: async (productId: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       await productAPI.removeBookmark(productId);
       // Update wishlist after removing bookmark
       await get().fetchWishlist();
-      toast.success('Product removed from bookmarks successfully');
       set({ loading: false });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to remove bookmark');
     }
   },
 

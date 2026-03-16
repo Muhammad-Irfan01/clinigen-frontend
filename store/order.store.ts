@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { orderAPI } from '@/lib/orderAPI';
 import { Order } from '@/types/order';
-import useToast from '@/lib/useToast';
 
 interface OrderState {
   orders: Order[];
@@ -25,7 +24,6 @@ export const useOrderStore = create<OrderState>((set, get) => ({
 
   fetchUserOrders: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await orderAPI.getUserOrders();
@@ -35,13 +33,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch user orders');
     }
   },
 
   fetchOrderById: async (id: number) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await orderAPI.getOrderById(id);
@@ -51,13 +47,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch order');
     }
   },
 
   fetchAllOrders: async () => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await orderAPI.getAllOrders();
@@ -67,13 +61,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || 'Failed to fetch all orders');
     }
   },
 
   fetchOrdersByStatus: async (status: string) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await orderAPI.getOrdersByStatus(status);
@@ -83,13 +75,11 @@ export const useOrderStore = create<OrderState>((set, get) => ({
       });
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || `Failed to fetch orders with status ${status}`);
     }
   },
 
   updateOrderStatus: async (id: number, status: string) => {
     set({ loading: true, error: null });
-    const toast = useToast();
 
     try {
       const response = await orderAPI.updateOrderStatus(id, status);
@@ -101,10 +91,8 @@ export const useOrderStore = create<OrderState>((set, get) => ({
         selectedOrder: state.selectedOrder?.id === id ? response : state.selectedOrder,
         loading: false,
       }));
-      toast.success('Order status updated successfully');
     } catch (error: any) {
       set({ error: error.message, loading: false });
-      toast.error(error.message || `Failed to update order status`);
       throw error;
     }
   },
