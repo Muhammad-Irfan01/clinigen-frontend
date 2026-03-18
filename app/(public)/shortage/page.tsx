@@ -426,24 +426,24 @@ export default function DrugShortagesPage() {
                                             <div className="space-y-3">
                                                 <div className="flex gap-4">
                                                     <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Strength</span>
-                                                    <span className="text-sm text-gray-600 flex-1">{item.product.strength || 'N/A'}</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.product.product_translations?.[0]?.description || 'N/A'}</span>
                                                 </div>
-                                                
+
                                                 <div className="flex gap-4">
                                                     <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Dosage form</span>
-                                                    <span className="text-sm text-gray-600 flex-1">{item.product.dosage_form || 'N/A'}</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.product.dosage_form_pack_size || 'N/A'}</span>
                                                 </div>
-                                                
+
                                                 <div className="flex gap-4">
                                                     <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Pack size</span>
-                                                    <span className="text-sm text-gray-600 flex-1">{item.product.pack_size || item.form}</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.form || 'N/A'}</span>
                                                 </div>
-                                                
+
                                                 <div className="flex gap-4">
                                                     <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Country of license</span>
                                                     <span className="text-sm text-gray-600 flex-1">{item.product.country_of_license || 'United Kingdom'}</span>
                                                 </div>
-                                                
+
                                                 <div className="flex gap-4">
                                                     <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Estimated delivery</span>
                                                     <a href="/signin" className="text-sm text-[#706FE4] underline flex-1">Log in to view</a>

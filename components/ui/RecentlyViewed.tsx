@@ -81,11 +81,11 @@ export const RecentlyViewed = () => {
   }, [products, itemsPerPage, totalPages]);
 
   const getProductName = (product: Product) => {
-    return product.product_translations?.[0]?.name || product.name || 'Unknown Product';
+    return product.product_translations?.[0]?.name || 'Unknown Product';
   };
 
   const getProductDescription = (product: Product) => {
-    return product.product_translations?.[0]?.description || product.description || '';
+    return product.product_translations?.[0]?.description || product.product_translations?.[0]?.short_description || '';
   };
 
   if (loading) {
