@@ -42,17 +42,17 @@ export default function AboutUs() {
     <div className="min-h-screen bg-white text-[#2d1a47] font-sans">
       {/* Hero Section */}
       <section className="bg-[#E8E6F5] py-16 px-2 md:px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl mx-auto pb-4">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-10"
           >
-            <h1 className="text-xl lg:text-5xl font-bold text-[#1D0E62] mb-4">
+            <h1 className="text-2xl lg:text-5xl font-bold text-[#1D0E62] mb-4">
               About Us
             </h1>
-            <p className="text-[#939290] font-semibold text-lg max-w-3xl mx-auto">
+            <p className="text-[#939290] font-semibold text-sm md:text:lg max-w-3xl mx-auto">
               Discover our mission to help healthcare professionals access critical medicines quickly.
             </p>
           </motion.div>
@@ -66,11 +66,11 @@ export default function AboutUs() {
           >
             <div className="grid lg:grid-cols-2">
               {/* Left Content */}
-              <div className="p-4 lg:p-16 flex flex-col justify-center">
+              <div className="p-8 lg:p-16 flex flex-col justify-center">
                 <span className="inline-block bg-[#E8E4F5] text-[#7A6FE4] text-xs font-semibold px-4 py-1.5 rounded-full mb-4 w-fit">
                   ABOUT HALO DIRECT
                 </span>
-                <h2 className="text-3xl lg:text-5xl font-bold text-[#1D0E62] leading-tight mb-6">
+                <h2 className="text-2xl lg:text-5xl font-bold text-[#1D0E62] leading-tight mb-6">
                   Ensuring Patients Get the Medicines They Need
                 </h2>
                 <p className="text-[#939290] text-sm leading-relaxed max-w-md font-semibold">
@@ -78,7 +78,7 @@ export default function AboutUs() {
                 </p>
               </div>
               {/* Right Image */}
-              <div className="relative min-h-[400px] lg:min-h-full lg:h-full">
+              <div className="relative min-h-100 lg:min-h-full lg:h-full">
                 <img
                   src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop"
                   alt="Healthcare professional in pharmacy"

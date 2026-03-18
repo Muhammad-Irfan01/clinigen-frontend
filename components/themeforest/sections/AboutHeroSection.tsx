@@ -71,19 +71,28 @@ export default function AboutHeroSection() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6 mt-10 pt-10 border-t border-white/20">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 * index }}
-                className="border-l border-white/30 pl-4 first:border-l-0 first:pl-0"
-              >
-                <div className="text-4xl font-bold">{stat.value}</div>
-                <div className="text-white/80 text-sm mt-1">{stat.label}</div>
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-6 mt-10 pt-10 border-t border-white/20">
+            {stats.map((stat, index) => {
+              const isEven = (index + 1) % 2 === 0;
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 * index }}
+                  className={`
+  pl-4
+  ${isEven ? "border-l border-white/30" : "border-l-0"}
+  md:border-l md:border-white/30
+  md:first:border-l-0
+`}
+                >
+                  <div className="text-4xl font-bold">{stat.value}</div>
+                  <div className="text-white/80 text-sm mt-1">{stat.label}</div>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
 

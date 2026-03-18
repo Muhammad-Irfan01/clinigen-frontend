@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react'
 import { FeatureCard } from '@/components/ui/FeaturedCard';
 import { useRouter } from 'next/navigation';
+import HaloDirectSection from '@/components/HaloDirectSection';
 
 export default function Home() {
   const router = useRouter();
@@ -71,6 +72,8 @@ export default function Home() {
           />
         </section>
       </main>
+
+      <HaloDirectSection />
 
       <section className="bg-slate-50 py-20 px-6 mt-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">

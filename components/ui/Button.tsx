@@ -21,7 +21,7 @@ export const Button = ({
     <button
     disabled={ disabled || isLoading}
     className={clsx(
-        'px-4 py-2 rounded-md transition',
+        'px-4 py-2 transition',
         {
             'bg-[#706FE4] hover:bg-[#5a5bd4 text-white ': varient === 'primary',
             'bg-gray-200 text-[#413851] hover:bg-gray-300': varient === 'secondary',

@@ -82,7 +82,7 @@ export default function SignInPage() {
                 <Input
                   type="email"
                   placeholder="info@haloishere.com"
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
                   registration={register("email", {
                     required: "Email is required",
                     validate: (v) => validateEmail(v)
@@ -98,7 +98,7 @@ export default function SignInPage() {
                 <Input
                   type="password"
                   placeholder="password123"
-                  className="w-full px-4 py-3.5 rounded-xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
+                  className="w-full px-4 py-3.5 rounded-2xl bg-[#E8EEF8] border-0 focus:ring-2 focus:ring-[#706FE4] outline-none transition-all text-gray-700 placeholder-gray-400"
                   registration={register("password", {
                     required: "Password is required",
                     minLength: {

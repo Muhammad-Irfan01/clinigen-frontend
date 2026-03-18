@@ -29,7 +29,7 @@ export default function PartnerAccessSection() {
             </p>
             <button
               onClick={() => window.location.href = ""}
-              className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-6 py-1 rounded-full transition-colors"
+              className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-3 md:px-6 py-1 rounded-full transition-colors w-60"
             >
               See How It Works
             </button>
@@ -48,7 +48,7 @@ export default function PartnerAccessSection() {
           </h3>
           <button
             onClick={() => window.location.href = "/contact"}
-            className="bg-white hover:bg-gray-50 text-[#7A6FE4] font-semibold px-6 py-1.5 rounded-2xl transition-colors w-full sm:w-auto"
+            className="bg-white hover:bg-gray-50 text-[#7A6FE4] font-semibold px-6 py-1.5 rounded-2xl transition-colors sm:w-auto"
           >
             Request Access
           </button>

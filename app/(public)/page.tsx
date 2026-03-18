@@ -19,6 +19,7 @@ import BannerSection from "@/components/themeforest/sections/BannerSection";
 import BrandSection from "@/components/themeforest/sections/BrandSection";
 import TestimonialSection from "@/components/themeforest/sections/TestimonialSection";
 import ContactSection from "@/components/themeforest/sections/ContactSection";
+import HaloDirectSection from "@/components/HaloDirectSection";
 
 const Home = () => {
   return (
@@ -31,7 +32,8 @@ const Home = () => {
         <BannerSection />
         <TestimonialNewSection />
         <BrandLogoSection />
-        <ContactSection classname="bg-linear-to-r from-[#706FE4] to-[#D89AFE]" />
+        {/* <ContactSection classname="bg-linear-to-r from-[#706FE4] to-[#D89AFE]" /> */}
+        <HaloDirectSection />
         {/* <HeroSection /> */}
         {/* <ConnectMedicinesSection /> */}
         {/* <AboutSection /> */}

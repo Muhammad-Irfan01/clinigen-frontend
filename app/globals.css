@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* Hide scrollbar for Marquee component */
+.marquee-container::-webkit-scrollbar {
+  display: none;
+}
+.marquee-container {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Font Family CSS Variables */
 :root {
   --font-sans: 'Manrope', sans-serif;

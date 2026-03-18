@@ -17,7 +17,7 @@ export default function SearchHeroSection() {
   };
 
   return (
-    <section className="w-full bg-[#f7f4f1] p-4 lg:p-40">
+    <section className="w-full bg-[#f7f4f1] p-10 lg:p-40">
       <div className="max-w-5xl mx-auto text-center space-y-6">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -48,20 +48,20 @@ export default function SearchHeroSection() {
         >
           <div className="relative flex items-center">
             <div className="absolute left-4 flex items-center pointer-events-none">
-              <Search className="h-6 w-6 text-gray-900 stroke-[1.5]" />
+              <Search className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-gray-900 md:stroke-[1.5]" />
             </div>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search by generic or brand name"
-              className="w-full pl-12 pr-12 py-3 bg-white border border-gray-200  rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 placeholder-gray-800 text-lg"
+              className="w-full pl-10 md:pl-12 pr-4 md:pr-12 py-3 bg-white border border-gray-200  rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 sm:placeholder-gray-800 text-xs md:text-lg"
             />
             <button
               type="submit"
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white px-6 py-4 rounded-r-full transition-colors flex items-center justify-center"
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white px-4 md:px-6 py-4 md:py-4 rounded-r-full transition-colors flex items-center justify-center"
             >
-              <Search className="h-5 w-6 stroke-2" />
+              <Search className="w-2.5 h-2.5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-6 lg:h-5.5" />
             </button>
           </div>
         </motion.form>

@@ -137,8 +137,8 @@ export default function Orders() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                    {/* Table Headers */}
-                    <div className="grid grid-cols-12 gap-4 px-4 py-3 text-xs font-bold tracking-widest uppercase text-gray-500">
+                    {/* Desktop Table Headers */}
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 text-xs font-bold tracking-widest uppercase text-gray-500">
                         <div className="col-span-2">Order Number</div>
                         <div className="col-span-2">P.O. Number</div>
                         <div className="col-span-2">Patient</div>
@@ -157,61 +157,127 @@ export default function Orders() {
                             </div>
                         ) : filteredOrders.length > 0 ? (
                             <AnimatePresence>
+                                {/* Desktop View */}
                                 {filteredOrders
                                     .slice((currentPage - 1) * resultsPerPage, currentPage * resultsPerPage)
                                     .map((order, idx) => (
-                                    <motion.div
-                                        key={order.id}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: idx * 0.05 }}
-                                        className="grid grid-cols-12 gap-4 px-4 py-5 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
-                                        onClick={() => router.push(`/order/${order.id}`)}
-                                    >
-                                        {/* Order Number Column */}
-                                        <div className="col-span-2">
-                                            <div className="font-bold text-gray-800 text-base">{order.id}</div>
-                                        </div>
+                                    <React.Fragment key={order.id}>
+                                        {/* Desktop Row */}
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: idx * 0.05 }}
+                                            className="hidden md:grid grid-cols-12 gap-4 px-4 py-5 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                                            onClick={() => router.push(`/order/${order.id}`)}
+                                        >
+                                            {/* Order Number Column */}
+                                            <div className="col-span-2">
+                                                <div className="font-bold text-gray-800 text-base">{order.id}</div>
+                                            </div>
 
-                                        {/* P.O. Number Column */}
-                                        <div className="col-span-2">
-                                            <span className="text-sm text-gray-600">{order.id}</span>
-                                        </div>
+                                            {/* P.O. Number Column */}
+                                            <div className="col-span-2">
+                                                <span className="text-sm text-gray-600">{order.id}</span>
+                                            </div>
 
-                                        {/* Patient Column */}
-                                        <div className="col-span-2 flex items-center">
-                                            <span className="text-sm text-gray-600">{getPatientName(order)}</span>
-                                        </div>
+                                            {/* Patient Column */}
+                                            <div className="col-span-2 flex items-center">
+                                                <span className="text-sm text-gray-600">{getPatientName(order)}</span>
+                                            </div>
 
-                                        {/* Products Column */}
-                                        <div className="col-span-2 flex items-center">
-                                            <span className="text-sm text-gray-600">{getProductName(order)}</span>
-                                        </div>
+                                            {/* Products Column */}
+                                            <div className="col-span-2 flex items-center">
+                                                <span className="text-sm text-gray-600">{getProductName(order)}</span>
+                                            </div>
 
-                                        {/* Cost Column */}
-                                        <div className="col-span-1 flex items-center">
-                                            <span className="font-semibold text-gray-800 text-sm">{getTotalCost(order)}</span>
-                                        </div>
+                                            {/* Cost Column */}
+                                            <div className="col-span-1 flex items-center">
+                                                <span className="font-semibold text-gray-800 text-sm">{getTotalCost(order)}</span>
+                                            </div>
 
-                                        {/* Date Column */}
-                                        <div className="col-span-1 flex items-center">
-                                            <span className="text-sm text-gray-600">{formatDate(order.createdAt)}</span>
-                                        </div>
+                                            {/* Date Column */}
+                                            <div className="col-span-1 flex items-center">
+                                                <span className="text-sm text-gray-600">{formatDate(order.createdAt)}</span>
+                                            </div>
 
-                                        {/* Status Column */}
-                                        <div className="col-span-2 flex items-center justify-end">
-                                            <OrderStatusPill status={order.status as any} />
-                                            <button
-                                                className="ml-3 bg-[#7a6fe4] text-white px-4 py-2 rounded-lg"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    router.push(`/order/${order.id}`);
-                                                }}
-                                            >
-                                                <ArrowRight size={14} />
-                                            </button>
-                                        </div>
-                                    </motion.div>
+                                            {/* Status Column */}
+                                            <div className="col-span-2 flex items-center justify-end">
+                                                <OrderStatusPill status={order.status as any} />
+                                                <button
+                                                    className="ml-3 bg-[#7a6fe4] text-white px-4 py-2 rounded-lg"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/order/${order.id}`);
+                                                    }}
+                                                >
+                                                    <ArrowRight size={14} />
+                                                </button>
+                                            </div>
+                                        </motion.div>
+
+                                        {/* Mobile Card */}
+                                        <motion.div
+                                            key={`mobile-${order.id}`}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: idx * 0.05 }}
+                                            className="md:hidden bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer p-4 space-y-3"
+                                            onClick={() => router.push(`/order/${order.id}`)}
+                                        >
+                                            {/* Header Row */}
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase">Order Number</p>
+                                                    <p className="font-bold text-gray-800 text-lg">{order.id}</p>
+                                                </div>
+                                                <OrderStatusPill status={order.status as any} />
+                                            </div>
+
+                                            {/* Details Grid */}
+                                            <div className="grid grid-cols-2 gap-4 pt-3 border-t">
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase">Patient</p>
+                                                    <p className="text-sm text-gray-700 font-medium">{getPatientName(order)}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase">P.O. Number</p>
+                                                    <p className="text-sm text-gray-600">{order.id}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase">Products</p>
+                                                    <p className="text-sm text-gray-600 truncate">{getProductName(order)}</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase">Cost</p>
+                                                    <p className="text-sm font-semibold text-gray-800">{getTotalCost(order)}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase">Date</p>
+                                                    <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
+                                                </div>
+                                            </div>
+
+                                            {/* View Details Button */}
+                                            <div className="pt-3 border-t flex justify-end">
+                                                <button
+                                                    className="bg-[#7a6fe4] text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-[#5a5bd4] transition-colors flex items-center gap-2"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/order/${order.id}`);
+                                                    }}
+                                                >
+                                                    View Details
+                                                    <ArrowRight size={16} />
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    </React.Fragment>
                                 ))}
                             </AnimatePresence>
                         ) : (

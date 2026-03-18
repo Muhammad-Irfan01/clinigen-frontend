@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Trash2, CheckCircle, MessageSquare } from 'lucide-react';
+import { ChevronDown, Trash2, CheckCircle, MessageSquare, Truck } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { productAPI } from '@/lib/productAPI';
 import { useProductStore } from '@/store/product.store';
@@ -137,11 +137,7 @@ export default function BasketPage() {
 
             {/* Free Shipping Callout */}
             <div className="p-4 rounded-xl bg-[#E6F4FF] border border-[#B3D9FF] flex items-center justify-center text-center">
-              <img
-                src="shipping-icon-placeholder.svg" // Replace with actual SVG or use a placeholder icon
-                alt="Shipping Truck"
-                className="w-12 h-12 mr-3"
-              />
+              <Truck className="w-12 h-12 text-[#1D0E62] mr-3" />
               <p className="text-xs font-bold text-[#1D0E62] leading-tight">
                 FREE Shipping on all *small-sized orders!
               </p>

@@ -121,7 +121,7 @@ export default function ContactPage() {
                     <a
                       key={social.name}
                       href="#"
-                      className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center hover:bg-[#7A6FE4] hover:text-white transition-colors shadow-sm shrink-0"
+                      className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center hover:bg-[#1D0E62] text-[#1D0E62] hover:text-white transition-colors shadow-sm shrink-0"
                       aria-label={social.name}
                     >
                       <IconComponent className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -160,7 +160,7 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-10 shadow-sm order-2 lg:order-2"
             >
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-9">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   <div>
                     <input

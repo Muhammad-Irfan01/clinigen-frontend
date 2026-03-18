@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const FAQ_SECTIONS = [
   {
@@ -118,6 +119,7 @@ function AccordionItem({ question, answer, isOpen, onClick }: {
 
 export default function SupportPage() {
   const [openIndex, setOpenIndex] = useState<{ section: number; question: number } | null>(null);
+  const router = useRouter();
 
   const toggleAccordion = (sectionIndex: number, questionIndex: number) => {
     setOpenIndex(
@@ -207,10 +209,10 @@ export default function SupportPage() {
                 show you how to search, request, and manage medicine orders on Halo Direct.
               </p>
               <div className="flex gap-3">
-                <button className="bg-[#D4A7F0] hover:bg-[#C495E8] text-white font-medium px-6 py-1 rounded-full transition-colors">
+                <button onClick={() => router.push('/signup')} className="bg-[#D4A7F0] hover:bg-[#C495E8] text-white font-medium px-6 py-1 rounded-full transition-colors">
                   Sign Up
                 </button>
-                <button className="bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white font-medium px-6 py-1 rounded-full transition-colors">
+                <button onClick={() => router.push('/signin')} className="bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white font-medium px-6 py-1 rounded-full transition-colors">
                   Login
                 </button>
               </div>
@@ -230,7 +232,7 @@ export default function SupportPage() {
             </h3>
             <button
               onClick={() => window.location.href = "/contact"}
-              className="bg-white hover:bg-gray-50 text-[#7A6FE4] font-semibold px-6 py-1 rounded-full transition-colors w-full sm:w-auto"
+              className="bg-white hover:bg-gray-50 text-[#7A6FE4] font-semibold px-6 py-1 rounded-lg transition-colors w-auto"
             >
               Request Access
             </button>

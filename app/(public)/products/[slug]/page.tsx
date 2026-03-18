@@ -26,7 +26,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
   const [loading, setLoading] = useState<boolean>(true);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [isBookmarkLoading, setIsBookmarkLoading] = useState<boolean>(false);
-    const { cart, fetchCart } = useProductStore();
+  const { cart, fetchCart, addBookmark, removeBookmark, isBookmarked: checkBookmark } = useProductStore();
   const { success: showSuccess, error: showError } = useToast();
 
   // Fetch product details from backend using slug
@@ -60,9 +60,9 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
         if (!cancelled) {
           setProduct(productData);
 
-          // Check if product is bookmarked
+          // Check if product is bookmarked using store method
           try {
-            const bookmarked = await productAPI.isBookmarked(productData.id);
+            const bookmarked = await checkBookmark(productData.id);
             if (!cancelled) setIsBookmarked(bookmarked);
           } catch (error: any) {
             if (error?.response?.status === 401) {
@@ -117,10 +117,10 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
     setIsBookmarkLoading(true);
     try {
       if (isBookmarked) {
-        await productAPI.removeBookmark(product.id);
+        await removeBookmark(product.id);
         setIsBookmarked(false);
       } else {
-        await productAPI.addBookmark(product.id);
+        await addBookmark(product.id);
         setIsBookmarked(true);
       }
       showSuccess(isBookmarked ? 'Bookmark removed successfully!' : 'Added to bookmarks successfully!');
@@ -228,7 +228,8 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
 
           {/* Main Product Row */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            {/* Desktop Table */}
+            <table className="w-full text-left hidden md:table">
               <thead className="bg-[#F9FAFB] text-[10px] uppercase font-bold text-gray-400 border-b">
                 <tr>
                   <th className="px-6 py-4">Strength</th>
@@ -251,8 +252,8 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                   </td>
                   <td className="px-6 py-8">
                     <span className={`px-4 py-1 rounded-full text-xs font-bold border ${
-                      product.in_stock 
-                        ? 'bg-[#E8F5E9] text-[#2E7D32] border-green-100' 
+                      product.in_stock
+                        ? 'bg-[#E8F5E9] text-[#2E7D32] border-green-100'
                         : 'bg-red-50 text-red-700 border-red-100'
                     }`}>
                       {product.in_stock ? 'In Stock' : 'Out of Stock'}
@@ -265,7 +266,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                     {product.qty !== null && product.qty !== undefined ? product.qty : (product.manage_stock ? '0' : 'Unlimited')}
                   </td>
                   <td className="px-6 py-8 text-sm font-bold">
-                    {product.qty !== null && product.qty !== undefined 
+                    {product.qty !== null && product.qty !== undefined
                       ? `£${(parseFloat(String(product.selling_price || product.price || '0')) * product.qty).toFixed(2)}`
                       : `£${product.selling_price || product.price || '0'}`
                     }
@@ -296,6 +297,79 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
                 </tr>
               </tbody>
             </table>
+
+            {/* Mobile Card Layout */}
+            <div className="md:hidden p-4">
+              <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+                {/* Product Name */}
+                <div>
+                  <p className="font-bold text-lg text-[#1D0E62]">{product.product_translations && product.product_translations.length > 0 ? product.product_translations[0].name : 'N/A'}</p>
+                  <p className="text-sm text-gray-500 mt-1">{product.dosage_form_pack_size || 'N/A'}</p>
+                </div>
+
+                {/* Details Grid */}
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold text-gray-500">SKU</span>
+                    <span className="text-sm text-gray-700">{product.sku || 'N/A'}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold text-gray-500">Status</span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                      product.in_stock
+                        ? 'bg-[#E8F5E9] text-[#2E7D32]'
+                        : 'bg-red-50 text-red-700'
+                    }`}>
+                      {product.in_stock ? 'In Stock' : 'Out of Stock'}
+                    </span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold text-gray-500">Pack Price</span>
+                    <span className="text-sm font-bold text-[#1D0E62]">£{product.selling_price || product.price || '0'}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold text-gray-500">Quantity</span>
+                    <span className="text-sm text-gray-700">{product.qty !== null && product.qty !== undefined ? product.qty : (product.manage_stock ? '0' : 'Unlimited')}</span>
+                  </div>
+                  
+                  <div className="flex justify-between">
+                    <span className="text-sm font-semibold text-gray-500">Total</span>
+                    <span className="text-sm font-bold text-[#1D0E62]">
+                      {product.qty !== null && product.qty !== undefined
+                        ? `£${(parseFloat(String(product.selling_price || product.price || '0')) * product.qty).toFixed(2)}`
+                        : `£${product.selling_price || product.price || '0'}`
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-between pt-4 border-t">
+                  {isAuthenticated ? (
+                    <button
+                      onClick={handleAddToCart}
+                      className="bg-[#706FE4] hover:bg-[#5F5ED4] text-white px-6 py-2 rounded-full font-bold text-sm transition-colors"
+                    >
+                      Add to Cart
+                    </button>
+                  ) : (
+                    <span className="text-xs text-gray-400 italic flex items-center gap-1">
+                      <Bookmark className="h-3 w-3" />
+                      Sign in to purchase
+                    </span>
+                  )}
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-gray-400 hover:text-[#7C3AED] transition-colors p-2"
+                  >
+                    {isExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Expandable Technical Specs Section */}

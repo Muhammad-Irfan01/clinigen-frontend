@@ -8,54 +8,54 @@ const footerLinks = {
   company: [
     { label: "About Us", href: "/about" },
     { label: "Contact", href: "/contact" },
-    { label: "Our Team", href: "/physicians" },
-    { label: "Careers", href: "/careers" },
-    { label: "News", href: "/news" },
+    // { label: "Our Team", href: "/physicians" },
+    // { label: "Careers", href: "/careers" },
+    // { label: "News", href: "/news" },
   ],
-  services: [
-    { label: "Managed Access Programs", href: "/services/map" },
-    { label: "Commercialization", href: "/services/commercialization" },
-    { label: "Pharmacovigilance", href: "/services/pharmacovigilance" },
-    { label: "Market Access", href: "/services/market-access" },
-    { label: "Distribution", href: "/services/distribution" },
-  ],
+  // services: [
+  //   { label: "Managed Access Programs", href: "/services/map" },
+  //   { label: "Commercialization", href: "/services/commercialization" },
+  //   { label: "Pharmacovigilance", href: "/services/pharmacovigilance" },
+  //   { label: "Market Access", href: "/services/market-access" },
+  //   { label: "Distribution", href: "/services/distribution" },
+  // ],
   support: [
     { label: "Help Center", href: "/support" },
-    { label: "Report Adverse Event", href: "/report-event" },
+    // { label: "Report Adverse Event", href: "/report-event" },
     { label: "Product Shortage", href: "/shortage" },
-    { label: "FAQs", href: "/faqs" },
+    // { label: "FAQs", href: "/faqs" },
   ],
   legal: [
     { label: "Privacy Policy", href: "/privacy-policy" },
-    { label: "Terms of Use", href: "/terms-of-use" },
-    { label: "Terms of Sale", href: "/terms-of-sale" },
-    { label: "Cookie Policy", href: "/cookie-policy" },
+    // { label: "Terms of Use", href: "/terms-of-use" },
+    // { label: "Terms of Sale", href: "/terms-of-sale" },
+    // { label: "Cookie Policy", href: "/cookie-policy" },
     { label: "Privacy Statement (PV)", href: "/privacy-pharmacovigilance" },
   ],
 };
 
-const socialLinks = [
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/company/clinigen",
-    icon: <Icon.LinkedinLogo className="text-lg" />,
-  },
-  {
-    label: "Twitter",
-    href: "https://twitter.com/clinigen",
-    icon: <Icon.TwitterLogo className="text-lg" />,
-  },
-  {
-    label: "Facebook",
-    href: "https://www.facebook.com/clinigen",
-    icon: <Icon.FacebookLogo className="text-lg" />,
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/clinigen",
-    icon: <Icon.InstagramLogo className="text-lg" />,
-  },
-];
+// const socialLinks = [
+//   {
+//     label: "LinkedIn",
+//     href: "https://www.linkedin.com/company/clinigen",
+//     icon: <Icon.LinkedinLogo className="text-lg" />,
+//   },
+//   {
+//     label: "Twitter",
+//     href: "https://twitter.com/clinigen",
+//     icon: <Icon.TwitterLogo className="text-lg" />,
+//   },
+//   {
+//     label: "Facebook",
+//     href: "https://www.facebook.com/clinigen",
+//     icon: <Icon.FacebookLogo className="text-lg" />,
+//   },
+//   {
+//     label: "Instagram",
+//     href: "https://www.instagram.com/clinigen",
+//     icon: <Icon.InstagramLogo className="text-lg" />,
+//   },
+// ];
 
 interface FooterProps {
   theme?: "light" | "dark";
@@ -91,7 +91,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
               We are a global healthcare company dedicated to providing access to
               medicines for patients worldwide.
             </p>
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <p
                 className={`text-sm font-medium ${
                   isLight ? "text-gray-700" : "text-white"
@@ -117,7 +117,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
                   </Link>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Company Links */}
@@ -148,7 +148,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
           </div>
 
           {/* Services Links */}
-          <div>
+          {/* <div>
             <h4
               className={`text-base font-bold mb-4 ${
                 isLight ? "text-[#270072]" : "text-white"
@@ -172,7 +172,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
                 </li>
               ))}
             </ul>
-          </div>
+          </div> */}
 
           {/* Support Links */}
           <div>

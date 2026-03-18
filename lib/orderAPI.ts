@@ -1,5 +1,8 @@
 import { Order, OrderApiResponse } from '@/types/order';
 import { authApi } from './apiService';
+import axios from 'axios';
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Order API functions using the auth API instance to handle authentication automatically
 export const orderAPI = {
@@ -20,4 +23,16 @@ export const orderAPI = {
     method: 'PATCH',
     data: { status }
   }),
+
+  // Download invoice PDF
+  downloadInvoice: async (orderId: number) => {
+    const response = await axios.get(`${BASE_URL}/orders/${orderId}/invoice`, {
+      responseType: 'blob',
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/pdf',
+      },
+    });
+    return response;
+  },
 };

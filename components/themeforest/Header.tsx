@@ -57,8 +57,9 @@ export default function Header({ theme = "light" }: HeaderProps) {
   const [showSearch, setShowSearch] = useState(false);
   const [isHeaderFixed, setIsHeaderFixed] = useState(false);
   const { isAuthenticated, user, logout } = useAuthStore();
-  const { cart, fetchCart } = useProductStore();
+  const { cart, fetchCart, wishlist, fetchWishlist } = useProductStore();
   const [cartCount, setCartCount] = useState(0);
+  const [bookmarkCount, setBookmarkCount] = useState(0);
 
   const headerRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<number>(0);
@@ -69,9 +70,11 @@ export default function Header({ theme = "light" }: HeaderProps) {
   useEffect(() => {
     if (isAuthenticated) {
       fetchCart();
+      fetchWishlist();
     } else {
-      // Clear cart when logged out
+      // Clear cart and bookmarks when logged out
       setCartCount(0);
+      setBookmarkCount(0);
     }
   }, [isAuthenticated]);
 
@@ -79,7 +82,13 @@ export default function Header({ theme = "light" }: HeaderProps) {
   useEffect(() => {
     const newCount = cart?.count || 0;
     setCartCount(newCount);
-  }, [cart?.items]);
+  }, [cart?.count, cart?.items]);
+
+  // Update bookmark count whenever wishlist object changes
+  useEffect(() => {
+    const newCount = wishlist?.count || 0;
+    setBookmarkCount(newCount);
+  }, [wishlist?.count, wishlist?.items]);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -224,7 +233,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
 
                 {/* Icons */}
                 <div className="list__icons flex items-center">
-                  {/* Search Icon - Only show when logged in */}
+                  {/* Commented out search icon
                   {isAuthenticated && (
                     <button
                       className="menu-icon -search flex-shrink-0 mr-6 hover:opacity-70 transition-opacity"
@@ -235,6 +244,26 @@ export default function Header({ theme = "light" }: HeaderProps) {
                       aria-label="Search"
                     >
                       <Icon.MagnifyingGlass className="text-2xl text-gray-700" />
+                    </button>
+                  )}
+                  */}
+
+                  {/* Bookmark Icon - Only show when logged in */}
+                  {isAuthenticated && (
+                    <button
+                      className="menu-icon -bookmark flex-shrink-0 mr-6 relative hover:opacity-70 transition-opacity"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        router.push("/bookmarks");
+                      }}
+                      aria-label="Bookmarks"
+                    >
+                      <Icon.Bookmark className="text-2xl text-gray-700" />
+                      {bookmarkCount > 0 && (
+                        <span className="bookmark__quantity absolute top-[-4px] right-[-5px] h-4 w-4 bg-[#706FE4] text-white text-[10px] font-normal rounded-full flex items-center justify-center">
+                          {bookmarkCount > 99 ? '99+' : bookmarkCount}
+                        </span>
+                      )}
                     </button>
                   )}
 
@@ -473,12 +502,20 @@ export default function Header({ theme = "light" }: HeaderProps) {
                       <p className="text-[16px] font-medium text-gray-900 mb-3">Quick Actions</p>
                       <div className="space-y-2">
                         <Link
+                          href="/bookmarks"
+                          onClick={() => setShowMobileNav(false)}
+                          className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#706FE4] transition-colors"
+                        >
+                          <Icon.Bookmark className="text-lg" />
+                          My Bookmarks {bookmarkCount > 0 && <span className="bg-[#706FE4] text-white text-xs px-2 py-0.5 rounded-full">{bookmarkCount}</span>}
+                        </Link>
+                        <Link
                           href="/basket"
                           onClick={() => setShowMobileNav(false)}
                           className="flex items-center gap-3 py-2 text-gray-700 hover:text-[#706FE4] transition-colors"
                         >
                           <Icon.Handbag className="text-lg" />
-                          My Basket
+                          My Basket {cartCount > 0 && <span className="bg-[#706FE4] text-white text-xs px-2 py-0.5 rounded-full">{cartCount}</span>}
                         </Link>
                         <Link
                           href="/my-account"

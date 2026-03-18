@@ -21,13 +21,13 @@ const InfoSection = ({ title, children }: { title: string; children: React.React
 );
 
 const Field = ({ label, value, isEditable = false }: { label: string; value: string; isEditable?: boolean }) => (
-  <div className="flex justify-between items-start group">
-    <div>
+  <div className="flex justify-between items-start gap-2 group">
+    <div className="flex-1 min-w-0">
       <p className="text-[11px] font-bold text-gray-400 uppercase tracking-tight">{label}</p>
-      <p className="text-sm font-bold text-gray-800">{value}</p>
+      <p className="text-sm font-bold text-gray-800 break-words hyphens-auto">{value}</p>
     </div>
     {isEditable && (
-      <Button varient="secondary" className="text-[#706FE4] text-xs font-bold hover:underline">Edit</Button>
+      <Button varient="secondary" className="text-[#706FE4] text-xs font-bold hover:underline shrink-0">Edit</Button>
     )}
   </div>
 );
@@ -83,17 +83,17 @@ export default function AccountDetailPage() {
         <section className="space-y-4">
           <div className="flex justify-between items-center px-2">
             <h2 className="font-bold">Shipping addresses</h2>
-            <Button varient="secondary" className="px-8 py-2 border-2 border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
+            <Button varient="secondary" className="hidden md:flex px-8 py-2 border-2 border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
               Request new address
             </Button>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-lg">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 w-full">
             <div className="flex items-center gap-2 mb-4">
               <span className="font-bold text-sm">Primary</span>
               <span className="bg-[#E8F5E9] text-[#2E7D32] text-[10px] font-bold px-2 py-0.5 rounded">Selected</span>
             </div>
-            
+
             <div className="space-y-1 mb-8">
               <p className="text-[11px] font-bold text-gray-400 uppercase">Address</p>
               <p className="text-sm font-bold leading-relaxed text-gray-700">
@@ -102,21 +102,28 @@ export default function AccountDetailPage() {
             </div>
 
             {/* Info Box */}
-            <div className="bg-[#F3E8FF] rounded-lg p-4 flex gap-4">
-              <div className="text-[#7C3AED] mt-1"><Info size={20} fill="currentColor" className="text-white" /></div>
+            <div className="bg-[#F3E8FF] rounded-lg p-4 flex flex-col md:flex-row gap-4">
+              <div className="text-[#7C3AED] mt-1 shrink-0"><Info size={20} fill="currentColor" className="text-white" /></div>
               <div className="text-xs leading-relaxed text-[#1D0E62]">
                 <p className="font-bold mb-1">Shipping addresses</p>
                 <p>
-                  You can request to add or remove a shipping address by clicking the relevant button below. 
-                  If you require a change to an existing address please contact our Customer Services team 
-                  directly on <span className="font-bold">+44 (0) 1932 824 100</span> or email 
+                  You can request to add or remove a shipping address by clicking the relevant button below.
+                  If you require a change to an existing address please contact our Customer Services team
+                  directly on <span className="font-bold">+44 (0) 1932 824 100</span> or email
                   <span className="text-[#7C3AED] font-bold cursor-pointer ml-1 underline">ukcustomerservice@clinigengroup.com</span>.
                 </p>
               </div>
             </div>
+
+            {/* Mobile Button */}
+            <div className="md:hidden mt-4">
+              <Button varient="secondary" className="w-full px-8 py-2 border-2 border-[#706FE4] text-[#706FE4] rounded-full font-bold text-sm hover:bg-[#706FE4] hover:text-white transition-colors">
+                Request new address
+              </Button>
+            </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 px-8 max-w-lg">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 px-8 max-w-lg w-full">
              <span className="font-bold text-sm text-gray-800">Additional</span>
              <span className="ml-3 bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">0</span>
           </div>
@@ -125,18 +132,18 @@ export default function AccountDetailPage() {
         {/* 4. Billing Info */}
         <section className="space-y-4">
           <div className="px-2 font-bold uppercase text-[11px] tracking-widest text-gray-500">Billing information</div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-lg">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 w-full">
             <div className="space-y-1 mb-6">
               <p className="text-[11px] font-bold text-gray-400 uppercase">Address</p>
               <p className="text-sm font-bold leading-relaxed text-gray-700">
                 Part Ground Floor, Drayton Court, Drayton Road, GB, B90 4NG
               </p>
             </div>
-            <div className="bg-[#F3E8FF] rounded-lg p-4 flex gap-4">
-              <div className="text-[#7C3AED] mt-1"><Info size={20} fill="currentColor" className="text-white" /></div>
+            <div className="bg-[#F3E8FF] rounded-lg p-4 flex flex-col md:flex-row gap-4">
+              <div className="text-[#7C3AED] mt-1 shrink-0"><Info size={20} fill="currentColor" className="text-white" /></div>
               <div className="text-xs leading-relaxed text-[#1D0E62]">
                 <p className="font-bold mb-1">Need to update your billing information?</p>
-                <p>To change your billing information please contact Credit Control by emailing 
+                <p>To change your billing information please contact Credit Control by emailing
                 <span className="text-[#7C3AED] font-bold cursor-pointer ml-1 underline">creditcontrol@clinigengroup.com</span>.</p>
               </div>
             </div>

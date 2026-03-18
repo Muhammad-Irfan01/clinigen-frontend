@@ -229,7 +229,7 @@ export default function DrugShortagesPage() {
     };
 
     return (
-        <div className="min-h-screen font-sans bg-white pb-12">
+        <div className="min-h-screen font-sans bg-[#f7f4f1] pb-12">
             {/* Hero Section */}
             <section className="bg-[#f7f4f1] py-16 lg:py-20">
                 <div className="max-w-7xl mx-auto px-6">
@@ -260,7 +260,7 @@ export default function DrugShortagesPage() {
                             </h1>
 
                             {/* Subheading */}
-                            <p className="text-3xl lg:text-5xl font-light text-[#5B6B7A]">
+                            <p className="text-3xl lg:text-5xl font-light text-[#162556]">
                                 Find Reliable<br />
                                 Drug Alternatives
                             </p>
@@ -308,7 +308,7 @@ export default function DrugShortagesPage() {
             </section>
 
             {/* Table Section */}
-            <section className="max-w-7xl mx-auto px-6 py-12">
+            <section className="max-w-7xl mx-auto px-6 py-12 bg-[#f7f4f1]">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -408,31 +408,59 @@ export default function DrugShortagesPage() {
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.05 }}
-                                        className={`lg:hidden bg-white rounded-lg overflow-hidden p-4 hover:bg-[#F5F2EE] transition-colors cursor-pointer`}
+                                        className={`lg:hidden bg-white rounded-lg overflow-hidden p-5 transition-colors cursor-pointer`}
                                         onClick={() => toggleRow(item.id)}
                                     >
-                                        <div className="flex justify-between items-start mb-3">
-                                            <div>
-                                                <span className={`text-sm ${item.inShortage.toLowerCase() === item.inShortage ? "font-medium" : "font-bold"} text-[#1A1A3F]`}>
+                                        <div className="space-y-4">
+                                            {/* Header: Product Name + Status */}
+                                            <div className="flex justify-between items-start">
+                                                <span className="text-base font-bold text-[#1A1A3F]">
                                                     {item.inShortage}
                                                 </span>
-                                                <p className="text-xs text-gray-500 mt-1">{item.alternative}</p>
+                                                <span className="inline-block px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] text-xs font-semibold rounded-full">
+                                                    {item.status}
+                                                </span>
                                             </div>
-                                            <motion.div
-                                                animate={{ rotate: expandedRow === item.id ? 180 : 0, backgroundColor: expandedRow === item.id ? '#F97316' : '#706FE4' }}
-                                                transition={{ duration: 0.2 }}
-                                                className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#706FE4] text-white shrink-0"
-                                            >
-                                                <ChevronDown size={14} />
-                                            </motion.div>
+                                            
+                                            {/* Product Details Grid */}
+                                            <div className="space-y-3">
+                                                <div className="flex gap-4">
+                                                    <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Strength</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.product.strength || 'N/A'}</span>
+                                                </div>
+                                                
+                                                <div className="flex gap-4">
+                                                    <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Dosage form</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.product.dosage_form || 'N/A'}</span>
+                                                </div>
+                                                
+                                                <div className="flex gap-4">
+                                                    <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Pack size</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.product.pack_size || item.form}</span>
+                                                </div>
+                                                
+                                                <div className="flex gap-4">
+                                                    <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Country of license</span>
+                                                    <span className="text-sm text-gray-600 flex-1">{item.product.country_of_license || 'United Kingdom'}</span>
+                                                </div>
+                                                
+                                                <div className="flex gap-4">
+                                                    <span className="text-sm font-semibold text-[#1A1A3F] min-w-[140px]">Estimated delivery</span>
+                                                    <a href="/signin" className="text-sm text-[#706FE4] underline flex-1">Log in to view</a>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Expand Arrow Button */}
+                                            <div className="flex justify-end pt-2">
+                                                <motion.div
+                                                    animate={{ rotate: expandedRow === item.id ? 180 : 0, backgroundColor: expandedRow === item.id ? '#F97316' : '#706FE4' }}
+                                                    transition={{ duration: 0.2 }}
+                                                    className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#706FE4] text-white"
+                                                >
+                                                    <ChevronDown size={18} />
+                                                </motion.div>
+                                            </div>
                                         </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            <span className="inline-block px-2 py-1 bg-[#E8F5E9] text-[#2E7D32] text-xs font-semibold rounded-full">
-                                                {item.status}
-                                            </span>
-                                            <span className="text-xs text-gray-500">{item.startDate}</span>
-                                        </div>
-                                        <p className="text-xs text-gray-600 mt-2">{item.form}</p>
                                     </motion.div>
 
                                     {/* Expanded Row - Product Information */}
@@ -443,7 +471,7 @@ export default function DrugShortagesPage() {
                                                 animate={{ opacity: 1, height: "auto" }}
                                                 exit={{ opacity: 0, height: 0 }}
                                                 transition={{ duration: 0.3 }}
-                                                className="bg-white rounded-b-lg overflow-hidden"
+                                                className="bg-white overflow-hidden"
                                             >
                                                 <ProductInfoCard 
                                                     product={item.product} 
@@ -457,7 +485,6 @@ export default function DrugShortagesPage() {
                             ))
                         )}
                     </div>
-                    <div className="bg-white rounded-b-lg border-t border-gray-100"></div>
                 </motion.div>
 
                 {/* Pagination */}
@@ -502,13 +529,13 @@ export default function DrugShortagesPage() {
                             UK Medicine Access
                         </div>
 
-                        <h2 className="text-3xl lg:text-4xl font-semibold text-[#0F2544] leading-tight">
+                        <h2 className="text-3xl lg:text-5xl font-semibold text-[#0F2544] leading-tight">
                             Hard-to-Find<br />
                             <span className="font-extrabold">Medicines, Solved</span>
                         </h2>
 
                         
-                        <p className="text-[#5B6B7A] leading-relaxed text-lg">
+                        <p className="text-[#5B6B7A] leading-relaxed text-md">
                             Our platform provides healthcare professionals across the UK with 
                             up-to-date information on medicine shortages, ensuring you can make 
                             informed decisions for your patients.
@@ -546,10 +573,10 @@ export default function DrugShortagesPage() {
                             </div>
                         </div>
 
-                        <button className="mt-4 bg-[#706FE4] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#5a5bd4] transition-colors inline-flex items-center gap-2">
+                        {/* <button className="mt-4 bg-[#706FE4] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#5a5bd4] transition-colors inline-flex items-center gap-2">
                             Learn More
                             <ChevronRight className="w-4 h-4" />
-                        </button>
+                        </button> */}
                     </motion.div>
 
                     {/* Right Image */}

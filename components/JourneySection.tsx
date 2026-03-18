@@ -78,11 +78,11 @@ export default function JourneySection() {
                 </div>
 
                 <div className="w-full md:w-1/2">
-                  <div className={`overflow-hidden rounded-2xl ${item.align === "left" && "flex justify-end"}`}>
+                  <div className={`overflow-hidden rounded-2xl ${item.align === "left" && "flex md:justify-end"}`}>
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-4/5 rounded-2xl h-65 md:h-65 object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-full md:w-4/5 rounded-2xl h-65 md:h-65 object-cover hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 </div>

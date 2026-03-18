@@ -290,8 +290,8 @@ const ProductCatalogue = () => {
 
         {/* --- Product List Section --- */}
         <div className="mt-8">
-          {/* Table Headers */}
-          <div className="grid grid-cols-12 gap-4 px-4 py-3 text-xs font-bold tracking-widest uppercase text-gray-500">
+          {/* Table Headers - Hidden on mobile */}
+          <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-3 text-xs font-bold tracking-widest uppercase text-gray-500">
             <div className="col-span-5">Product Name</div>
             <div className="col-span-2">Program</div>
             <div className="col-span-3">Therapeutic Area</div>
@@ -313,44 +313,74 @@ const ProductCatalogue = () => {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="grid grid-cols-12 gap-4 px-4 py-5 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer"
+                    className="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all cursor-pointer p-4 md:px-4 md:py-5"
                     onClick={() => router.push(`/products/${product.slug}`)}
                   >
-                    {/* Product Name Column */}
-                    <div className="col-span-5">
+                    {/* Mobile Layout */}
+                    <div className="md:hidden space-y-3">
                       <div className="font-bold text-gray-800 text-base">{getProductName(product)}</div>
                       {getProductDescription(product) && (
-                        <div className="text-sm text-gray-500 mt-1">{getProductDescription(product)}</div>
+                        <div className="text-sm text-gray-500">{getProductDescription(product)}</div>
                       )}
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className="inline-flex px-3 py-1 bg-[#E8E0FF] text-[#706FE4] rounded-full text-xs font-medium">
+                          Access Program
+                        </span>
+                        <span className="text-sm text-gray-600">{getProductCategory(product)}</span>
+                      </div>
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                        <button
+                          className="inline-flex items-center gap-2 bg-linear-to-r from-[#706FE4] to-[#8575E9] text-white px-5 py-2 rounded-lg text-xs font-bold hover:from-[#5F5ED4] hover:to-[#706FE4] transition-all shadow-sm hover:shadow-md"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/products/${product.slug}`);
+                          }}
+                        >
+                          REQUEST
+                        </button>
+                        <div className='bg-[#7a6fe4] text-white px-4 py-2 rounded-lg'>
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Program Column */}
-                    <div className="col-span-2 flex items-center">
-                      <span className="inline-flex px-3 py-1 bg-[#E8E0FF] text-[#706FE4] rounded-full text-xs font-medium">
-                        Access Program
-                      </span>
-                    </div>
-
-                    {/* Therapeutic Area Column */}
-                    <div className="col-span-3 flex items-center">
-                      <span className="text-sm text-gray-600">{getProductCategory(product)}</span>
-                    </div>
-
-                    {/* Action Column */}
-                    <div className="col-span-2 flex items-center justify-end gap-2">
-                      <button
-                        className="inline-flex items-center gap-2 bg-linear-to-r from-[#706FE4] to-[#8575E9] text-white px-5 py-2 rounded-lg text-xs font-bold hover:from-[#5F5ED4] hover:to-[#706FE4] transition-all shadow-sm hover:shadow-md"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          router.push(`/products/${product.slug}`);
-                        }}
-                      >
-                        REQUEST
-                      </button>
-                      <div className='bg-[#7a6fe4] text-white px-4 py-2 rounded-lg'>
-                        <ArrowRight size={14} />
+                    {/* Desktop Layout */}
+                    <div className="hidden md:grid grid-cols-12 gap-4">
+                      {/* Product Name Column */}
+                      <div className="col-span-5">
+                        <div className="font-bold text-gray-800 text-base">{getProductName(product)}</div>
+                        {getProductDescription(product) && (
+                          <div className="text-sm text-gray-500 mt-1">{getProductDescription(product)}</div>
+                        )}
                       </div>
 
+                      {/* Program Column */}
+                      <div className="col-span-2 flex items-center">
+                        <span className="inline-flex px-3 py-1 bg-[#E8E0FF] text-[#706FE4] rounded-full text-xs font-medium">
+                          Access Program
+                        </span>
+                      </div>
+
+                      {/* Therapeutic Area Column */}
+                      <div className="col-span-3 flex items-center">
+                        <span className="text-sm text-gray-600">{getProductCategory(product)}</span>
+                      </div>
+
+                      {/* Action Column */}
+                      <div className="col-span-2 flex items-center justify-end gap-2">
+                        <button
+                          className="inline-flex items-center gap-2 bg-linear-to-r from-[#706FE4] to-[#8575E9] text-white px-5 py-2 rounded-lg text-xs font-bold hover:from-[#5F5ED4] hover:to-[#706FE4] transition-all shadow-sm hover:shadow-md"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(`/products/${product.slug}`);
+                          }}
+                        >
+                          REQUEST
+                        </button>
+                        <div className='bg-[#7a6fe4] text-white px-4 py-2 rounded-lg'>
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -393,7 +423,7 @@ const ProductCatalogue = () => {
                             UK Medicine Access
                         </div>
 
-                        <h2 className="text-3xl lg:text-4xl font-semibold text-[#0F2544] leading-tight">
+                        <h2 className="text-3xl lg:text-5xl font-semibold text-[#0F2544] leading-tight">
                             Hard-to-Find<br />
                             <span className="font-extrabold">Medicines, Solved</span>
                         </h2>
@@ -411,7 +441,7 @@ const ProductCatalogue = () => {
                             to receive the treatments they need without
                             unnecessary delays.
                         </p> */}
-                        <p className="text-[#5B6B7A] leading-relaxed text-lg">
+                        <p className="text-[#5B6B7A] leading-relaxed text-md">
                             Our platform provides healthcare professionals across the UK with 
                             up-to-date information on medicine shortages, ensuring you can make 
                             informed decisions for your patients.
@@ -449,10 +479,10 @@ const ProductCatalogue = () => {
                             </div>
                         </div>
 
-                        <button className="mt-4 bg-[#706FE4] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#5a5bd4] transition-colors inline-flex items-center gap-2">
+                        {/* <button className="mt-4 bg-[#706FE4] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#5a5bd4] transition-colors inline-flex items-center gap-2">
                             Learn More
                             <ChevronRight className="w-4 h-4" />
-                        </button>
+                        </button> */}
                     </motion.div>
 
                     {/* Right Image */}
@@ -469,7 +499,7 @@ const ProductCatalogue = () => {
                                 alt="Healthcare professional checking medicine shortage information"
                                 width={600}
                                 height={500}
-                                className="w-full h-auto object-cover"
+                                className="w-auto h-auto object-cover"
                             />
                             <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
                         </div>
