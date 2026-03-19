@@ -80,7 +80,7 @@ export default function AboutUs() {
               {/* Right Image */}
               <div className="relative min-h-100 lg:min-h-full lg:h-full">
                 <img
-                  src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop"
+                  src="/images/smarter1.jpg"
                   alt="Healthcare professional in pharmacy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />

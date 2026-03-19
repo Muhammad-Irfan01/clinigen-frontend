@@ -28,7 +28,7 @@ export default function PartnerAccessSection() {
               Halo Direct connects healthcare professionals with trusted global supply networks to access licensed, shortage, and specialty medicines.
             </p>
             <button
-              onClick={() => window.location.href = ""}
+              onClick={() => window.location.href = "/support"}
               className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-3 md:px-6 py-1 rounded-full transition-colors w-60"
             >
               See How It Works

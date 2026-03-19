@@ -44,7 +44,7 @@ export default function HealthcareAccessSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            href="/how-it-works"
+            href="/support"
             className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-6 py-1 rounded-full transition-colors inline-block w-fit"
           >
             See How It Works
