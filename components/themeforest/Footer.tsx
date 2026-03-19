@@ -247,7 +247,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
             </p>
             <div className="flex items-center gap-4">
               <Link
-                href="/terms-of-services"
+                href="/terms-of-use"
                 className={`text-sm ${
                   isLight
                     ? "text-gray-600 hover:text-[#706FE4]"
