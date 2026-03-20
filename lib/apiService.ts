@@ -26,6 +26,11 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest: any = error.config;
 
+    // Skip redirect if _skipAuthRedirect is set
+    if (error.response?.status === 401 && originalRequest?._skipAuthRedirect) {
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401 && !originalRequest?._retry) {
       originalRequest._retry = true;
 
@@ -67,13 +72,16 @@ axiosInstance.interceptors.response.use(
 /* ================= GENERIC AUTH API ================= */
 export async function authApi<T>(
   url: string,
-  config: AxiosRequestConfig = {}
+  config: AxiosRequestConfig = {},
+  options: { skipAuthRedirect?: boolean } = {}
 ): Promise<T> {
   const response: AxiosResponse<T> = await axiosInstance({
     url,
     method: config.method || "GET",
     data: config.data,
     params: config.params,
+    // Add flag to skip auth redirect for specific calls
+    ...(options.skipAuthRedirect ? { _skipAuthRedirect: true } : {}),
   });
 
   return response.data;

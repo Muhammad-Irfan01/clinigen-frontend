@@ -37,22 +37,22 @@ const footerLinks = {
 // const socialLinks = [
 //   {
 //     label: "LinkedIn",
-//     href: "https://www.linkedin.com/company/clinigen",
+//     href: "https://www.linkedin.com/company/Halo Direct",
 //     icon: <Icon.LinkedinLogo className="text-lg" />,
 //   },
 //   {
 //     label: "Twitter",
-//     href: "https://twitter.com/clinigen",
+//     href: "https://twitter.com/Halo Direct",
 //     icon: <Icon.TwitterLogo className="text-lg" />,
 //   },
 //   {
 //     label: "Facebook",
-//     href: "https://www.facebook.com/clinigen",
+//     href: "https://www.facebook.com/Halo Direct",
 //     icon: <Icon.FacebookLogo className="text-lg" />,
 //   },
 //   {
 //     label: "Instagram",
-//     href: "https://www.instagram.com/clinigen",
+//     href: "https://www.instagram.com/Halo Direct",
 //     icon: <Icon.InstagramLogo className="text-lg" />,
 //   },
 // ];
@@ -78,7 +78,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
                     ? "/images/Halo-Direct.png"
                     : "/images/Halo-Direct-Light.png"
                 }
-                alt="Clinigen"
+                alt="Halo Direct"
                 width={148}
                 height={40}
               />
@@ -243,7 +243,7 @@ export default function Footer({ theme = "light" }: FooterProps) {
                 isLight ? "text-gray-600" : "text-purple-200"
               }`}
             >
-              © {new Date().getFullYear()} Clinigen Ltd. All Rights Reserved.
+              © {new Date().getFullYear()} HaloDirect Ltd. All Rights Reserved.
             </p>
             <div className="flex items-center gap-4">
               <Link

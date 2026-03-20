@@ -156,7 +156,7 @@ export default function ClinigenSignupFlow() {
         </div>
 
         <h1 className="text-3xl font-bold text-[#1A1A3F] leading-tight mb-12">
-          Sign up for access to Clinigen Direct in two minutes
+          Sign up for access to Halo Direct Direct in two minutes
         </h1>
 
         <div className="space-y-10 relative">

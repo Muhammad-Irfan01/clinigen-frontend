@@ -78,7 +78,7 @@ export default function Home() {
       <section className="bg-slate-50 py-20 px-6 mt-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold">New to Clinigen Direct?</h2>
+            <h2 className="text-3xl font-bold">New to Halo Direct Direct?</h2>
             <p className="text-gray-600">Create an account to start ordering and tracking medicines online.</p>
           </div>
           <button className="flex items-center gap-2 bg-white border border-gray-200 px-8 py-4 rounded-xl font-bold hover:shadow-md transition-all">

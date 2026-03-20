@@ -86,6 +86,6 @@ export const productAPI = {
   getUserBookmarks: () =>
     authApi<Wishlist>("/products/bookmarks"),
 
-  isBookmarked: (productId: number) =>
-    authApi<boolean>(`/products/${productId}/is-bookmarked`),
+  isBookmarked: (productId: number, skipAuthRedirect: boolean = false) =>
+    authApi<boolean>(`/products/${productId}/is-bookmarked`, {}, { skipAuthRedirect }),
 };

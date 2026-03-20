@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Toast Demo | Clinigen App',
-  description: 'Demonstration of toast notifications in Clinigen App',
+  title: 'Toast Demo | Halo Direct App',
+  description: 'Demonstration of toast notifications in Halo Direct App',
 };
 
 export default function ToastDemoLayout({

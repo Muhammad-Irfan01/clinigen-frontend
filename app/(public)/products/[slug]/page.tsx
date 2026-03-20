@@ -60,14 +60,19 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
         if (!cancelled) {
           setProduct(productData);
 
-          // Check if product is bookmarked using store method
-          try {
-            const bookmarked = await checkBookmark(productData.id);
-            if (!cancelled) setIsBookmarked(bookmarked);
-          } catch (error: any) {
-            if (error?.response?.status === 401) {
+          // Check if product is bookmarked only if user is authenticated
+          if (isAuthenticated) {
+            try {
+              const bookmarked = await checkBookmark(productData.id, true); // skipAuthRedirect to prevent signin redirect
+              if (!cancelled) setIsBookmarked(bookmarked);
+            } catch (error: any) {
+              // Silently handle bookmark check errors for authenticated users
+              console.error('Error checking bookmark status:', error);
               if (!cancelled) setIsBookmarked(false);
             }
+          } else {
+            // User not authenticated, bookmark status is false
+            if (!cancelled) setIsBookmarked(false);
           }
         }
       } catch (error: any) {
@@ -87,7 +92,7 @@ export default function SingleProductPage({ params }: { params: Promise<{ slug: 
       cancelled = true;
       if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [slug]);
+  }, [slug, isAuthenticated]);
 
   const handleAddToCart = async () => {
     if (!product) return;

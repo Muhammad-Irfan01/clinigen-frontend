@@ -35,7 +35,7 @@ interface ProductState {
   fetchWishlist: () => Promise<void>;
   addBookmark: (productId: number) => Promise<void>;
   removeBookmark: (productId: number) => Promise<void>;
-  isBookmarked: (productId: number) => Promise<boolean>;
+  isBookmarked: (productId: number, skipAuthRedirect?: boolean) => Promise<boolean>;
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
@@ -228,9 +228,9 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  isBookmarked: async (productId: number): Promise<boolean> => {
+  isBookmarked: async (productId: number, skipAuthRedirect: boolean = false): Promise<boolean> => {
     try {
-      const response = await productAPI.isBookmarked(productId);
+      const response = await productAPI.isBookmarked(productId, skipAuthRedirect);
       return response;
     } catch (error: any) {
       console.error('Error checking bookmark status:', error);

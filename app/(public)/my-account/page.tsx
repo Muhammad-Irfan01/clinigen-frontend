@@ -110,7 +110,7 @@ export default function AccountDetailPage() {
                   You can request to add or remove a shipping address by clicking the relevant button below.
                   If you require a change to an existing address please contact our Customer Services team
                   directly on <span className="font-bold">+44 (0) 1932 824 100</span> or email
-                  <span className="text-[#7C3AED] font-bold cursor-pointer ml-1 underline">ukcustomerservice@clinigengroup.com</span>.
+                  {/* <span className="text-[#7C3AED] font-bold cursor-pointer ml-1 underline">ukcustomerservice@clinigengroup.com</span>. */}
                 </p>
               </div>
             </div>
@@ -144,7 +144,8 @@ export default function AccountDetailPage() {
               <div className="text-xs leading-relaxed text-[#1D0E62]">
                 <p className="font-bold mb-1">Need to update your billing information?</p>
                 <p>To change your billing information please contact Credit Control by emailing
-                <span className="text-[#7C3AED] font-bold cursor-pointer ml-1 underline">creditcontrol@clinigengroup.com</span>.</p>
+                {/* <span className="text-[#7C3AED] font-bold cursor-pointer ml-1 underline">creditcontrol@clinigengroup.com</span> */}
+                </p>
               </div>
             </div>
           </div>

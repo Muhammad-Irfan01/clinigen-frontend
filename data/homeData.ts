@@ -96,7 +96,7 @@ export const testimonialData: TestimonialItem[] = [
     image: "/images/avatar/540x370.png",
     name: "Dr. Alexander Ball",
     company: "Chief Medical Officer",
-    review: "Clinigen exceeded our expectations with their rapid response and reliable supply chain. Highly recommended!",
+    review: "Halo Direct exceeded our expectations with their rapid response and reliable supply chain. Highly recommended!",
     rate: 5,
   },
   {
@@ -112,7 +112,7 @@ export const testimonialData: TestimonialItem[] = [
     image: "/images/avatar/540x370.png",
     name: "Dr. Tony Adams",
     company: "Pharmacy Lead",
-    review: "We've been able to provide critical treatments to our patients thanks to Clinigen's dedication.",
+    review: "We've been able to provide critical treatments to our patients thanks to Halo Direct's dedication.",
     rate: 4,
   },
   {

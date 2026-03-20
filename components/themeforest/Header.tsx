@@ -130,7 +130,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
                         ? "/images/Halo-Direct.png"
                         : "/images/Halo-Direct-Light.png"
                     }
-                    alt="Clinigen"
+                    alt="Halo Direct"
                     width={148}
                     height={40}
                     priority

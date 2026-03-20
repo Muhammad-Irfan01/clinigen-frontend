@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Auth Demo | Clinigen App',
-  description: 'Demonstration of authentication in Clinigen App',
+  title: 'Auth Demo | Halo Direct App',
+  description: 'Demonstration of authentication in Halo Direct App',
 };
 
 export default function AuthDemoLayout({

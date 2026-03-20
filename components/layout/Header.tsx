@@ -32,7 +32,7 @@ const navItems: NavItem[] = [
     // { label: "Patients", href: "/patients", message: 'View all patients enrolled in managed access program', requiresAuth: true },
     // { label: "Physicians", href: "/physicians", message: 'View all physician you are associated to at you institute' },
     { label: "Shortage", href: "/shortage", message: 'View drug shortage in your country' },
-    { label: "About us", href: "/about", message: 'Learn more about Clinigen and our mission' },
+    { label: "About us", href: "/about", message: 'Learn more about Halo Direct and our mission' },
     { label: "Contact", href: "/contact", message: 'Get in touch with our global team' },
     { label: "Report Adverse Event", href: "/report-event", message: 'Click here to report adverse event your patient may have experience', requiresAuth: true },
 ];
