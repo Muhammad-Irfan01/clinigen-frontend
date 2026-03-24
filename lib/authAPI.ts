@@ -59,14 +59,14 @@ export const authAPI = {
 
   // Get User Profile
   getProfile: () =>
-    api<UserProfile>('/auth/profile', {
+    api<UserProfile>('/user/profile/me', {
       method: 'GET',
     }),
 
   // Update User Profile
   updateProfile: (data: Partial<UserProfile>) =>
-    api<UserProfile>('/auth/profile', {
-      method: 'PUT',
+    api<UserProfile>('/user/profile/me', {
+      method: 'PATCH',
       data,
     }),
 

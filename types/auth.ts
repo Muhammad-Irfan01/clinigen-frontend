@@ -75,19 +75,52 @@ export interface ChangePasswordRequest {
 }
 
 export interface UserProfile {
-  id: string;
+  id: number;
   email: string;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-  // Add other profile fields as needed
+  first_name: string;
+  last_name: string;
+  phone: string;
+  created_at?: string;
+  updated_at?: string;
+  user_profiles?: {
+    id: number;
+    user_id: number;
+    job_role: string | null;
+    license_number: string | null;
+    extension: string | null;
+    institute_name: string | null;
+    address_line_1: string | null;
+    town_city: string | null;
+    country: string | null;
+    created_at: string;
+    updated_at: string;
+  };
+  roles?: Array<{
+    id: number;
+    name: string;
+    permissions: string | null;
+  }>;
 }
 
 export interface User {
-  id: string;
+  id: number;
   email: string;
-  name: string;
-  createdAt?: string;
-  updatedAt?: string;
-  // Add other user fields as needed
+  first_name: string;
+  last_name: string;
+  phone: string;
+  created_at?: string;
+  updated_at?: string;
+  user_profiles?: {
+    id: number;
+    user_id: number;
+    job_role: string | null;
+    license_number: string | null;
+    extension: string | null;
+    institute_name: string | null;
+    address_line_1: string | null;
+    town_city: string | null;
+    country: string | null;
+    created_at: string;
+    updated_at: string;
+  };
 }

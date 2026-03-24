@@ -294,7 +294,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
                         className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                       >
                         <div className="w-8 h-8 bg-[#706FE4] rounded-full flex items-center justify-center text-white text-sm font-bold">
-                          {user?.name?.charAt(0) || user?.email?.charAt(0) || "U"}
+                          {user?.first_name?.charAt(0) || user?.email?.charAt(0) || "U"}
                         </div>
                         <Icon.CaretDown className="text-sm text-gray-700" />
                       </button>
@@ -310,7 +310,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
                             className="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
                           >
                             <div className="px-4 py-2 border-b border-gray-200">
-                              <p className="text-sm font-medium text-gray-900">{user?.name || "User"}</p>
+                              <p className="text-sm font-medium text-gray-900">{user?.first_name || "User"}</p>
                               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                             </div>
                             <Link

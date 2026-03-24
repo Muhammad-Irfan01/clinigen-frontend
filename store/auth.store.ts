@@ -4,52 +4,46 @@ import useToast from '@/lib/useToast';
 import { useRouter } from 'next/navigation';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-
-interface User {
-    id: string;
-    email: string;
-    name: string;
-    // Add other user fields as needed
-}
+import { UserProfile } from '@/types/auth';
 
 interface signupUser {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    phone: string;
-    jobRole: string;
-    licenseNumber: string;
-    extension: string;
-    instituteName: string;
-    addressLine1: string;
-    townCity: string;
-    country: string;
-    medicineSearch: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  phone: string;
+  jobRole: string;
+  licenseNumber: string;
+  extension: string;
+  instituteName: string;
+  addressLine1: string;
+  townCity: string;
+  country: string;
+  medicineSearch: string;
 }
 
 interface AuthState {
-    user: User | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    error: string | null;
-    userEmail: string | null; // Store email for resend activation
-    resetEmail: string | null; // Store email for password reset
+  user: UserProfile | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  userEmail: string | null; // Store email for resend activation
+  resetEmail: string | null; // Store email for password reset
 
-    // Auth methods
-    login: (email: string, password: string) => Promise<void>;
-    signup: (data: signupUser) => Promise<void>;
-    logout: () => void;
-    refreshToken: () => Promise<void>;
-    fetchProfile: () => Promise<void>;
-    changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
-    forgotPassword: (email: string) => Promise<void>;
-    verifyResetEmail: (email: string, code: string) => Promise<void>;
-    resetPassword: (code: string, newPassword: string) => Promise<void>;
-    verifyEmail: (code: string) => Promise<void>;
-    resendActivationCode: (email: string) => Promise<void>;
-    setUserEmail: (email: string) => void; // Set email after signup
-    setResetEmail: (email: string) => void; // Set email for password reset
+  // Auth methods
+  login: (email: string, password: string) => Promise<void>;
+  signup: (data: signupUser) => Promise<void>;
+  logout: () => void;
+  refreshToken: () => Promise<void>;
+  fetchProfile: () => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
+  verifyResetEmail: (email: string, code: string) => Promise<void>;
+  resetPassword: (code: string, newPassword: string) => Promise<void>;
+  verifyEmail: (code: string) => Promise<void>;
+  resendActivationCode: (email: string) => Promise<void>;
+  setUserEmail: (email: string) => void; // Set email after signup
+  setResetEmail: (email: string) => void; // Set email for password reset
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({

@@ -79,7 +79,7 @@ const AuthDemoPage = () => {
     return (
       <div className="container mx-auto p-4">
         <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-bold mb-4">Welcome, {user.name}!</h2>
+          <h2 className="text-xl font-bold mb-4">Welcome, {user.first_name}!</h2>
           <p className="mb-4">You are successfully logged in.</p>
           <p className="mb-4 text-sm text-gray-600">Email: {user.email}</p>
           <Button
