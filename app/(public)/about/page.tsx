@@ -41,7 +41,7 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen bg-white text-[#2d1a47] font-sans">
       {/* Hero Section */}
-      <section className="bg-[#E8E6F5] py-16 px-2 md:px-6">
+      <section className="bg-[#E8E6F5] py-16 px-6">
         <div className="max-w-6xl mx-auto pb-4">
           {/* Header */}
           <motion.div
@@ -80,7 +80,7 @@ export default function AboutUs() {
               {/* Right Image */}
               <div className="relative min-h-100 lg:min-h-full lg:h-full">
                 <img
-                  src="/images/smarter1.jpg"
+                  src="/images/home.jpeg"
                   alt="Healthcare professional in pharmacy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
@@ -89,78 +89,8 @@ export default function AboutUs() {
           </motion.div>
         </div>
       </section>
-
       <HealthcareAccessSection />
-
-      {/* What We Do Section */}
-      {/* <section className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl font-bold text-[#270072] mb-4">What We Do</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Connecting patients with specialty medicines through innovative solutions
-            </p>
-          </motion.div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white border border-gray-200 rounded-xl p-8 hover:border-[#706FE4] transition-all duration-300"
-            >
-              <div className="w-12 h-12 bg-[#706FE4] rounded-lg flex items-center justify-center mb-6">
-                <Pill className="text-white" size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-[#270072] mb-4">Specialty Medicines</h3>
-              <p className="text-gray-600 mb-4">
-                We supply unlicensed and shortage medicines to healthcare professionals, ensuring patients
-                get the treatment they need when standard options aren't available.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-white border border-gray-200 rounded-xl p-8 hover:border-[#706FE4] transition-all duration-300"
-            >
-              <div className="w-12 h-12 bg-[#706FE4] rounded-lg flex items-center justify-center mb-6">
-                <Award className="text-white" size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-[#270072] mb-4">Managed Access Programs</h3>
-              <p className="text-gray-600 mb-4">
-                We manage early access programs that provide patients with promising investigational
-                medicines before they're approved in their country.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="bg-white border border-gray-200 rounded-xl p-8 hover:border-[#706FE4] transition-all duration-300"
-            >
-              <div className="w-12 h-12 bg-[#706FE4] rounded-lg flex items-center justify-center mb-6">
-                <TrendingUp className="text-white" size={24} />
-              </div>
-              <h3 className="text-xl font-bold text-[#270072] mb-4">Commercialization</h3>
-              <p className="text-gray-600 mb-4">
-                We help pharmaceutical companies bring their products to new markets, handling regulatory,
-                distribution, and commercial challenges.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section> */}
-
-      {/* Journey Section */}
       <JourneySection />
-
       <PartnerAccessSection />
     </div>
   );

@@ -29,7 +29,7 @@ export default function PartnerAccessSection() {
             </p>
             <button
               onClick={() => window.location.href = "/support"}
-              className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-3 md:px-6 py-1 rounded-full transition-colors w-60"
+              className="bg-[#d597fa] hover:bg-[#B595E8] text-white font-medium px-3 md:px-4 py-1 rounded-full transition-colors w-45"
             >
               See How It Works
             </button>

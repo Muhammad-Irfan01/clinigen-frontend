@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Pill, Clipboard, Box, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface MedicineCardProps {
   genericName: string;
@@ -8,9 +9,23 @@ interface MedicineCardProps {
   productCode: string;
   dosage: string;
   availability: string;
+  productId?: number;
+  productSlug?: string;
 }
 
-export const MedicineCard = ({ genericName, brand, productCode, dosage, availability }: MedicineCardProps) => {
+export const MedicineCard = ({ genericName, brand, productCode, dosage, availability, productId, productSlug }: MedicineCardProps) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (productSlug) {
+      router.push(`/products/${productSlug}`);
+    } else if (productId) {
+      router.push(`/products/${productId}`);
+    } else {
+      router.push(`/products`);
+    }
+  };
+
   return (
     <motion.div 
       whileHover={{ y: -5 }}
@@ -57,7 +72,7 @@ export const MedicineCard = ({ genericName, brand, productCode, dosage, availabi
         </div>
       </div>
 
-      <button className="mt-6 w-full py-2.5 border-2 border-[#706FE4] text-[#706FE4] font-bold rounded-full hover:bg-[#706FE4] hover:text-white transition-all duration-300">
+      <button onClick={handleClick} className="mt-6 w-full py-2.5 border-2 border-[#706FE4] text-[#706FE4] font-bold rounded-full hover:bg-[#706FE4] hover:text-white transition-all duration-300">
         View medicine
       </button>
     </motion.div>

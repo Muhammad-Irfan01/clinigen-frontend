@@ -31,9 +31,9 @@ export default function HaloDirectSection() {
             </div>
 
             {/* Right Side - Image */}
-            <div className="relative h-64 sm:h-80 lg:h-auto min-h-[300px] lg:min-h-full">
+            <div className="relative h-64 sm:h-80 lg:h-auto min-h-75 lg:min-h-full">
               <img
-                src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&h=600&fit=crop"
+                src="/images/home.jpeg"
                 alt="Doctor using mobile phone - Halo Direct"
                 className="absolute inset-0 w-full h-full object-cover"
               />

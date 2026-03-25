@@ -233,25 +233,9 @@ export default function Header({ theme = "light" }: HeaderProps) {
 
                 {/* Icons */}
                 <div className="list__icons flex items-center">
-                  {/* Commented out search icon
                   {isAuthenticated && (
                     <button
-                      className="menu-icon -search flex-shrink-0 mr-6 hover:opacity-70 transition-opacity"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowSearch(true);
-                      }}
-                      aria-label="Search"
-                    >
-                      <Icon.MagnifyingGlass className="text-2xl text-gray-700" />
-                    </button>
-                  )}
-                  */}
-
-                  {/* Bookmark Icon - Only show when logged in */}
-                  {isAuthenticated && (
-                    <button
-                      className="menu-icon -bookmark flex-shrink-0 mr-6 relative hover:opacity-70 transition-opacity"
+                      className="menu-icon -bookmark flex-shrink-0 mr-6 relative hover:opacity-70 transition-opacity max-md:hidden"
                       onClick={(e) => {
                         e.preventDefault();
                         router.push("/bookmarks");
@@ -270,7 +254,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
                   {/* Cart Icon - Only show when logged in */}
                   {isAuthenticated && (
                     <button
-                      className="menu-icon -cart flex-shrink-0 mr-6 relative hover:opacity-70 transition-opacity"
+                      className="menu-icon -cart flex-shrink-0 mr-6 relative hover:opacity-70 transition-opacity max-md:hidden"
                       onClick={(e) => {
                         e.preventDefault();
                         router.push("/basket");
@@ -288,7 +272,7 @@ export default function Header({ theme = "light" }: HeaderProps) {
 
                   {/* User Menu / Auth Buttons */}
                   {isAuthenticated ? (
-                    <div className="relative">
+                    <div className="relative max-md:hidden">
                       <button
                         onClick={() => setShowUserMenu(!showUserMenu)}
                         className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -321,14 +305,14 @@ export default function Header({ theme = "light" }: HeaderProps) {
                               <Icon.User className="text-lg" />
                               My Account
                             </Link>
-                            <Link
+                            {/* <Link
                               href="/preference"
                               onClick={() => setShowUserMenu(false)}
                               className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-[#F7F4F1]"
                             >
                               <Icon.Gear className="text-lg" />
                               Preferences
-                            </Link>
+                            </Link> */}
                             <button
                               onClick={() => {
                                 logout();

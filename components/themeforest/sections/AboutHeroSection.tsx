@@ -37,13 +37,13 @@ export default function AboutHeroSection() {
 
   return (
     <section className="w-full p-4 lg:p-40">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto py-10 lg:py-0">
         {/* Purple Gradient Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="rounded-3xl bg-linear-to-r from-[#7A6FE4] to-[#D48AF2] p-2 md:p-10 text-white"
+          className="rounded-3xl bg-linear-to-r from-[#7A6FE4] to-[#D48AF2] p-4 md:p-10 text-white"
         >
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
             <div className="flex-1">

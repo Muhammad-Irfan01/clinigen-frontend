@@ -417,7 +417,7 @@ const ProductCatalogue = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="space-y-6"
+                        className="space-y-2"
                     >
                         <div className="inline-block px-3 py-1 bg-[#E8E0FF] rounded-full text-xs font-medium text-[#706FE4]">
                             UK Medicine Access
@@ -428,26 +428,13 @@ const ProductCatalogue = () => {
                             <span className="font-extrabold">Medicines, Solved</span>
                         </h2>
 
-                        {/* <p className="text-[#5B6B7A] leading-relaxed text-sm lg:text-md lg:pr-10">
-                            The Halo Direct UK Drug Shortages platform helps
-                            healthcare professionals quickly find reliable
-                            alternatives for medicines currently facing shortages
-                            across the UK.
-                        </p>
-
-                        <p className="text-[#5B6B7A] leading-relaxed text-sm lg:text-md lg:pr-10">
-                            Access regularly updated information and available
-                            alternative options, helping ensure patients continue
-                            to receive the treatments they need without
-                            unnecessary delays.
-                        </p> */}
                         <p className="text-[#5B6B7A] leading-relaxed text-md">
                             Our platform provides healthcare professionals across the UK with 
                             up-to-date information on medicine shortages, ensuring you can make 
                             informed decisions for your patients.
                         </p>
 
-                        <div className="space-y-4">
+                        <div className="space-y-4 py-4">
                             <div className="flex items-start gap-3">
                                 <div className="w-6 h-6 rounded-full bg-[#706FE4] flex items-center justify-center flex-shrink-0 mt-1">
                                     <Check className="w-4 h-4 text-white" />

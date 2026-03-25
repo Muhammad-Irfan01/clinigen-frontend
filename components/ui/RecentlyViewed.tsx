@@ -111,27 +111,19 @@ export const RecentlyViewed = () => {
       <div className="max-w-7xl mx-auto px-6">
         <h2 className="text-3xl font-bold text-[#002B49] mb-10">Recently viewed:</h2>
 
-        {/* Slider Container */}
-        <div className="relative">
-          {/* Navigation Arrows - Desktop */}
+        {/* Slider Container with Navigation */}
+        <div className="relative flex items-center">
+          {/* Navigation Arrows - Desktop Left */}
           <button
             onClick={handlePrev}
-            className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-[#706FE4] hover:text-white hover:border-[#706FE4] transition-all"
+            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-[#706FE4] hover:text-white hover:border-[#706FE4] transition-all shrink-0 mr-4"
             aria-label="Previous products"
           >
             <ChevronLeft size={24} />
           </button>
 
-          <button
-            onClick={handleNext}
-            className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-[#706FE4] hover:text-white hover:border-[#706FE4] transition-all"
-            aria-label="Next products"
-          >
-            <ChevronRight size={24} />
-          </button>
-
           {/* Products Grid */}
-          <div className="overflow-hidden">
+          <div className="flex-1 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentIndex}
@@ -154,12 +146,23 @@ export const RecentlyViewed = () => {
                       productCode={product.sku || 'N/A'}
                       dosage={product.dosage_form_pack_size || 'N/A'}
                       availability={product.in_stock ? 'In Stock' : 'Out of Stock'}
+                      productId={product.id}
+                      productSlug={product.slug}
                     />
                   </motion.div>
                 ))}
               </motion.div>
             </AnimatePresence>
           </div>
+
+          {/* Navigation Arrows - Desktop Right */}
+          <button
+            onClick={handleNext}
+            className="hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 hover:bg-[#706FE4] hover:text-white hover:border-[#706FE4] transition-all shrink-0 ml-4"
+            aria-label="Next products"
+          >
+            <ChevronRight size={24} />
+          </button>
 
           {/* Mobile Navigation Arrows */}
           <div className="flex md:hidden justify-between items-center mt-6">

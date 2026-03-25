@@ -63,10 +63,16 @@ const ProductInfoCard: React.FC<ProductInfoCardProps> = ({ product, onAddToCart,
                     {/* Available Documents */}
                     <div className="mb-4">
                         <p className="text-xs font-semibold text-[#1A1A3F] mb-2">Available documents</p>
-                        <p className="text-sm text-gray-600 mb-1">SmPC, PIL, CoA (Log in to view full list)</p>
-                        <a href="#" className="text-sm text-[#706FE4] underline hover:text-[#5a5bd4]">
-                            Log in to view documents
-                        </a>
+                        {isAuthenticated ? (
+                            <p className="text-sm text-gray-500 italic">No documents available</p>
+                        ) : (
+                            <div>
+                                <p className="text-sm text-gray-600 mb-1">SmPC, PIL, CoA</p>
+                                <a href="/signin" className="text-sm text-[#706FE4] underline hover:text-[#5a5bd4]">
+                                    Log in to view documents
+                                </a>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -343,8 +349,14 @@ export default function DrugShortagesPage() {
                                 </div>
                             </div>
                             <div className="py-4 px-4 text-left">
-                                <span className="text-xs font-semibold text-[#1A1A3F]">Status</span>
+                                <div className="flex items-center gap-1">
+                                    <span className="text-xs font-semibold text-[#1A1A3F]">Status</span>
+                                    <ChevronDown size={12} className="text-[#1A1A3F]" />
+                                </div>
                             </div>
+                            {/* <div className="py-4 px-4 text-left">
+                                <span className="text-xs font-semibold text-[#1A1A3F]">Status</span>
+                            </div> */}
                             <div className="py-4 px-4 text-center">
                                 <span className="text-xs font-semibold text-[#1A1A3F]"></span>
                             </div>
@@ -523,7 +535,7 @@ export default function DrugShortagesPage() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="space-y-6"
+                        className="space-y-2"
                     >
                        <div className="inline-block px-3 py-1 bg-[#E8E0FF] rounded-full text-xs font-medium text-[#706FE4]">
                             UK Medicine Access
@@ -541,7 +553,7 @@ export default function DrugShortagesPage() {
                             informed decisions for your patients.
                         </p>
 
-                        <div className="space-y-4">
+                        <div className="space-y-4 py-4">
                             <div className="flex items-start gap-3">
                                 <div className="w-6 h-6 rounded-full bg-[#706FE4] flex items-center justify-center flex-shrink-0 mt-1">
                                     <Check className="w-4 h-4 text-white" />

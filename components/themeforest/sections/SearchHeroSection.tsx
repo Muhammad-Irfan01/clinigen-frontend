@@ -18,7 +18,7 @@ export default function SearchHeroSection() {
 
   return (
     <section className="w-full bg-[#f7f4f1] p-10 lg:p-40">
-      <div className="max-w-5xl mx-auto text-center space-y-6">
+      <div className="max-w-5xl mx-auto text-center space-y-6 py-10 lg:py-0">
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,7 +61,7 @@ export default function SearchHeroSection() {
               type="submit"
               className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#7A6FE4] hover:bg-[#6B5FD4] text-white px-4 md:px-6 py-4 md:py-4 rounded-r-full transition-colors flex items-center justify-center"
             >
-              <Search className="w-2.5 h-2.5 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-6 lg:h-5.5" />
+              <Search className="w-2.5 h-2.5 sm:w-5 sm:h-5 md:w-6 md:h-5 lg:w-6 lg:h-5.5" />
             </button>
           </div>
         </motion.form>

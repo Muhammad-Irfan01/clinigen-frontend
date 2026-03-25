@@ -136,19 +136,27 @@ export default function ContactPage() {
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center shrink-0">
                     <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-gray-700 text-sm sm:text-base break-all">123 456 7890</span>
+                  <span className="text-gray-700 text-sm sm:text-base break-all">+441218275531</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center shrink-0">
                     <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-gray-700 text-sm sm:text-base break-all">hi.avitex@gmail.com</span>
+                  <span className="text-gray-700 text-sm sm:text-base break-all">info@halodirect.io</span>
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4 bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center shrink-0">
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <span className="text-gray-700 text-sm sm:text-base break-all">4140 Rd. Allentown, New Mexico 31134</span>
+                  <span className="text-gray-700 text-sm sm:text-base break-all">Halo Direct Ltd Unit 2 Drayton Court Drayton Road Solihull B90 4NG</span>
+                </div>
+                <div className="bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg">
+                  <p className="text-gray-600 text-xs sm:text-sm">
+                    <span className="font-semibold">Companies House:</span> 16064222
+                  </p>
+                  <p className="text-gray-600 text-xs sm:text-sm">
+                    <span className="font-semibold">WDA(H):</span> 60862
+                  </p>
                 </div>
               </div>
             </motion.div>

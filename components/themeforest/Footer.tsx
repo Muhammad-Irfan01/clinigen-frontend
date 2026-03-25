@@ -30,7 +30,7 @@ const footerLinks = {
     // { label: "Terms of Use", href: "/terms-of-use" },
     // { label: "Terms of Sale", href: "/terms-of-sale" },
     // { label: "Cookie Policy", href: "/cookie-policy" },
-    { label: "Privacy Statement (PV)", href: "/privacy-pharmacovigilance" },
+    // { label: "Privacy Statement (PV)", href: "/privacy-pharmacovigilance" },
   ],
 };
 
@@ -226,6 +226,23 @@ export default function Footer({ theme = "light" }: FooterProps) {
                 </li>
               ))}
             </ul>
+            {/* Partner Logos */}
+            <div className="mt-6 space-y-4">
+              <Image
+                src="/images/logo-2.webp"
+                alt="Partner Logo"
+                width={120}
+                height={60}
+                className="h-auto max-w-full"
+              />
+              <Image
+                src="/images/medi.webp"
+                alt="Medi Logo"
+                width={120}
+                height={60}
+                className="h-auto max-w-full"
+              />
+            </div>
           </div>
         </div>
       </div>
