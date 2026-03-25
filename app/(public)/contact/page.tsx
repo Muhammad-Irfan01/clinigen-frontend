@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Send } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, Home, Building2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 // Custom filled social media icons
@@ -114,7 +114,7 @@ export default function ContactPage() {
               </p>
 
               {/* Social Icons */}
-              <div className="flex gap-2 sm:gap-3 mb-8 flex-wrap">
+              <div className="flex gap-2 sm:gap-3 mb-4 flex-wrap">
                 {SOCIAL_LINKS.map((social) => {
                   const IconComponent = social.icon;
                   return (
@@ -131,7 +131,7 @@ export default function ContactPage() {
               </div>
 
               {/* Contact Details */}
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-2 sm:space-y-2">
                 <div className="flex items-center gap-3 sm:gap-4 bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center shrink-0">
                     <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -150,13 +150,18 @@ export default function ContactPage() {
                   </div>
                   <span className="text-gray-700 text-sm sm:text-base break-all">Halo Direct Ltd Unit 2 Drayton Court Drayton Road Solihull B90 4NG</span>
                 </div>
-                <div className="bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg">
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    <span className="font-semibold">Companies House:</span> 16064222
-                  </p>
-                  <p className="text-gray-600 text-xs sm:text-sm">
-                    <span className="font-semibold">WDA(H):</span> 60862
-                  </p>
+                <div className="flex items-center gap-3 sm:gap-4 bg-white/60 backdrop-blur-sm px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[#7A6FE4] rounded-full flex items-center justify-center shrink-0">
+                    <Building2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-gray-600 text-xs sm:text-sm">
+                      <span className="font-semibold">Companies House:</span> 16064222
+                    </p>
+                    <p className="text-gray-600 text-xs sm:text-sm">
+                      <span className="font-semibold">WDA(H):</span> 60862
+                    </p>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -168,7 +173,7 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-10 shadow-sm order-2 lg:order-2"
             >
-              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-9">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                   <div>
                     <input
